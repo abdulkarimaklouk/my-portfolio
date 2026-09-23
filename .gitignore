@@ -6,6 +6,7 @@ Desktop.ini
 .env.*
 node_modules/
 .cursor/
+.vscode/
 
 # Unused template assets (not referenced by the site)
 assets/img/about.jpg
