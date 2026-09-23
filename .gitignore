@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+.env
+.env.*
+node_modules/
+.cursor/
+
+# Unused template assets (not referenced by the site)
+assets/img/about.jpg
+assets/img/perfil.png
+assets/img/testimonial*.png
+assets/img/work*.jpg
+assets/pdf/hailee-Cv.pdf
+preview/

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Abdulkarim Aklouk - Computer Engineering student and Full-Stack Web Developer in Cairo, building web applications, REST APIs, and database-driven systems.">
+    <meta name="author" content="Abdulkarim Aklouk">
+    <meta property="og:title" content="Abdulkarim Aklouk | Full-Stack Developer">
+    <meta property="og:description" content="Computer Engineering student and Full-Stack Web Developer. JavaScript, Node.js, Express.js, MongoDB, and MySQL.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Abdulkarim Aklouk | Full-Stack Developer">
+    <meta name="twitter:description" content="Computer Engineering student and Full-Stack Web Developer based in Cairo.">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicons/site.webmanifest">
+    <link rel="mask-icon" href="assets/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="assets/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="assets/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#a789d4">
+
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <title>Abdulkarim Aklouk | Full-Stack Developer</title>
+</head>
+
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#home" class="nav__logo">Abdulkarim</a>
+
+            <div class="nav__menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link" aria-label="Home"><i class="bx bx-home"></i></a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link" aria-label="About"><i class="bx bx-user"></i></a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#skills" class="nav__link" aria-label="Skills"><i class="bx bx-book"></i></a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#work" class="nav__link" aria-label="Projects"><i class="bx bx-briefcase-alt-2"></i></a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#experience" class="nav__link" aria-label="Experience and education"><i class="bx bx-briefcase"></i></a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link" aria-label="Contact"><i class="bx bx-message-square-dots"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <button type="button" class="change-theme change-theme-button" id="theme-button" aria-label="Toggle color theme">
+                <i class="bx bx-moon"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="home section" id="home">
+            <div class="home__container container grid">
+                <div class="home__data">
+                    <h1 class="home__name">Abdulkarim Aklouk</h1>
+                    <p class="home__education">Full-Stack Developer</p>
+                    <p class="home__description">
+                        Computer Engineering student in Cairo. I build web applications, RESTful APIs,
+                        authentication systems, and database-driven applications with JavaScript,
+                        Node.js, Express.js, MongoDB, and MySQL.
+                    </p>
+
+                    <div class="home__button">
+                        <a href="#work" class="button">View Projects</a>
+                        <a href="#contact" class="button">Contact Me</a>
+                        <a download href="assets/pdf/cv.pdf" class="button button--ghost">Download CV</a>
+                    </div>
+                </div>
+
+                <div class="home__social">
+                    <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="home__social-link" aria-label="GitHub">
+                        <i class="bx bxl-github"></i>
+                    </a>
+                </div>
+
+                <a href="#about" class="home__scroll">
+                    <i class="bx bx-mouse home__scroll-icon"></i>
+                    <span class="home__scroll-name">Scroll Down</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="about section" id="about">
+            <span class="section__subtitle">Introduction</span>
+            <h2 class="section__title">About Me</h2>
+
+            <div class="about__container container grid">
+                <div class="about__data">
+                    <div class="about__info">
+                        <div class="about__box">
+                            <i class="bx bx-book-open about__icon"></i>
+                            <h3 class="about__title">Education</h3>
+                            <span class="about__subtitle">Badr University</span>
+                        </div>
+                        <div class="about__box">
+                            <i class="bx bx-code-alt about__icon"></i>
+                            <h3 class="about__title">Focus</h3>
+                            <span class="about__subtitle">Full-Stack</span>
+                        </div>
+                        <div class="about__box">
+                            <i class="bx bx-map about__icon"></i>
+                            <h3 class="about__title">Location</h3>
+                            <span class="about__subtitle">Cairo, Egypt</span>
+                        </div>
+                    </div>
+
+                    <p class="about__description">
+                        I am a second-year Computer Engineering student at Badr University and a
+                        Full-Stack Web Developer. I work on maintainable backend systems and practical
+                        full-stack solutions using JavaScript, Node.js, Express.js, MongoDB, and MySQL.
+                    </p>
+                    <p class="about__description">
+                        I am a quick learner. I pick up new tools and APIs efficiently by reading
+                        documentation and applying them in real projects.
+                    </p>
+                    <p class="about__description">
+                        I use React in my skill set, but I am still developing that skill and do not
+                        yet consider myself a professional-level React developer.
+                    </p>
+
+                    <a href="#contact" class="button about__button-contact">Contact Me</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills section" id="skills">
+            <span class="section__subtitle">From my CV</span>
+            <h2 class="section__title">Skills</h2>
+
+            <div class="skills__container container grid">
+                <div class="skills__content">
+                    <h3 class="skills__title">Languages</h3>
+                    <div class="skills__box">
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">JavaScript</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">C++</h3>
+                                    <span class="skills__level">Academic</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills__content">
+                    <h3 class="skills__title">Frontend</h3>
+                    <div class="skills__box">
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">HTML5</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">CSS3</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">Bootstrap</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">JavaScript</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">React</h3>
+                                    <span class="skills__level">Learning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills__content">
+                    <h3 class="skills__title">Backend</h3>
+                    <div class="skills__box">
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">Node.js</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">Express.js</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">REST APIs</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills__content">
+                    <h3 class="skills__title">Databases</h3>
+                    <div class="skills__box">
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">MongoDB</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">MySQL</h3>
+                                    <span class="skills__level">In projects</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills__content">
+                    <h3 class="skills__title">Tools</h3>
+                    <div class="skills__box">
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">Git</h3>
+                                    <span class="skills__level">In use</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skills__group">
+                            <div class="skills__data">
+                                <i class="bx bxs-badge-check"></i>
+                                <div>
+                                    <h3 class="skills__name">GitHub</h3>
+                                    <span class="skills__level">In use</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="services section" id="services">
+            <span class="section__subtitle">What I work on</span>
+            <h2 class="section__title">Services</h2>
+
+            <div class="services__container container grid">
+                <article class="services__card">
+                    <h3 class="services__title">Backend &amp;<br>REST APIs</h3>
+                    <button type="button" class="services__button">
+                        See More <i class="bx bx-right-arrow services__icon"></i>
+                    </button>
+                    <div class="services__modal" role="dialog" aria-modal="true" aria-labelledby="service-modal-1">
+                        <div class="services__modal-content">
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <h3 class="services__modal-title" id="service-modal-1">Backend &amp; REST APIs</h3>
+                            <p class="services__modal-description">
+                                I build REST APIs with Node.js and Express.js for content, orders, users, and related resources.
+                            </p>
+                            <ul class="services__modal-list">
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">RESTful endpoints for meals, inventory, posts, and publishing workflows.</p>
+                                </li>
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">Authentication, media handling, and API error handling where the project needs it.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="services__card">
+                    <h3 class="services__title">Full-Stack<br>Web Development</h3>
+                    <button type="button" class="services__button">
+                        See More <i class="bx bx-right-arrow services__icon"></i>
+                    </button>
+                    <div class="services__modal" role="dialog" aria-modal="true" aria-labelledby="service-modal-2">
+                        <div class="services__modal-content">
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <h3 class="services__modal-title" id="service-modal-2">Full-Stack Web Development</h3>
+                            <p class="services__modal-description">
+                                I connect HTML, CSS, and JavaScript interfaces to backend APIs for complete application workflows.
+                            </p>
+                            <ul class="services__modal-list">
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">CRUD interfaces and dashboards for managing application data.</p>
+                                </li>
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">Responsive pages for restaurant, social, and template-style front ends.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="services__card">
+                    <h3 class="services__title">Databases &amp;<br>Authentication</h3>
+                    <button type="button" class="services__button">
+                        See More <i class="bx bx-right-arrow services__icon"></i>
+                    </button>
+                    <div class="services__modal" role="dialog" aria-modal="true" aria-labelledby="service-modal-3">
+                        <div class="services__modal-content">
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <h3 class="services__modal-title" id="service-modal-3">Databases &amp; Authentication</h3>
+                            <p class="services__modal-description">
+                                I work with MySQL and MongoDB, and I have implemented JWT-based authentication and authorization.
+                            </p>
+                            <ul class="services__modal-list">
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">Relational MySQL models for meals, ingredients, inventory, and orders.</p>
+                                </li>
+                                <li class="services__modal-item">
+                                    <i class="bx bx-check-circle"></i>
+                                    <p class="services__modal-info">MongoDB models for posts, comments, likes, and user profiles.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="work section" id="work">
+            <span class="section__subtitle">Selected work</span>
+            <h2 class="section__title">Projects</h2>
+
+            <div class="work__filters">
+                <button type="button" class="work__item active-work" data-filter="all">All</button>
+                <button type="button" class="work__item" data-filter=".fullstack">Full-Stack</button>
+                <button type="button" class="work__item" data-filter=".frontend">Frontend</button>
+            </div>
+
+            <div class="work__container container grid">
+                <article class="work__card mix fullstack">
+                    <h3 class="work__title">Restaurant Meal Management System</h3>
+                    <p class="work__description">
+                        Full-stack system for meals, ingredients, inventory, and orders using Node.js,
+                        Express.js, MySQL, and REST APIs.
+                    </p>
+                    <ul class="work__features">
+                        <li>Relational MySQL design with structured entity relationships</li>
+                        <li>REST APIs for meals, ingredients, inventory, and orders</li>
+                        <li>CRUD operations and backend business logic</li>
+                    </ul>
+                    <ul class="work__tags">
+                        <li>Node.js</li>
+                        <li>Express.js</li>
+                        <li>MySQL</li>
+                        <li>REST APIs</li>
+                        <li>JavaScript</li>
+                    </ul>
+                    <p class="work__note">
+                        <strong>Demo Note:</strong> The frontend is available as a live demo, but the backend is not currently hosted on a server. Therefore, backend-dependent data and functionality may not be available in the live demo.
+                    </p>
+                    <div class="work__actions">
+                        <a href="https://abdulkarimaklouk.github.io/restaurant-management-frontend/stores.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/restaurant-management-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/restaurant-management-backend" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code (API) <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="work__card mix fullstack">
+                    <h3 class="work__title">Social Media Application</h3>
+                    <p class="work__description">
+                        Full-stack social app with authentication, posts, comments, likes, and user
+                        profiles using Node.js, Express.js, MongoDB, and REST APIs.
+                    </p>
+                    <ul class="work__features">
+                        <li>JWT-based authentication and authorization</li>
+                        <li>REST APIs for posts, comments, likes, and profiles</li>
+                        <li>MongoDB data models and CRUD operations</li>
+                    </ul>
+                    <ul class="work__tags">
+                        <li>Node.js</li>
+                        <li>Express.js</li>
+                        <li>MongoDB</li>
+                        <li>JWT</li>
+                        <li>REST APIs</li>
+                    </ul>
+                    <p class="work__note">
+                        <strong>Demo Note:</strong> The frontend is available as a live demo, but the backend is not currently hosted on a server. Backend-dependent features and data will therefore not function in the live demo.
+                    </p>
+                    <div class="work__actions">
+                        <a href="https://abdulkarimaklouk.github.io/social-media-frontend/login.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/social-media-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/social-media-backend" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code (API) <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="work__card mix frontend">
+                    <h3 class="work__title">Product CRUD</h3>
+                    <p class="work__description">
+                        JavaScript product manager with complete Create, Read, Update, and Delete
+                        flows, plus search and calculated totals.
+                    </p>
+                    <ul class="work__features">
+                        <li>Create, read, update, and delete product records</li>
+                        <li>Search by title or category</li>
+                        <li>Price, taxes, ads, discount, and total fields</li>
+                    </ul>
+                    <ul class="work__tags">
+                        <li>HTML</li>
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                    </ul>
+                    <div class="work__actions">
+                        <a href="https://abdulkarimaklouk.github.io/crud-product-frontend/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/crud-product-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="work__card mix frontend">
+                    <h3 class="work__title">Aklouk Template</h3>
+                    <p class="work__description">
+                        Multi-section HTML and CSS landing template with articles, gallery, features,
+                        team, services, pricing, events, and contact blocks.
+                    </p>
+                    <ul class="work__features">
+                        <li>Articles, gallery, features, testimonials, and team sections</li>
+                        <li>Services, skills, how-it-works, events, and pricing plans</li>
+                        <li>Stats, discount request, and footer contact details</li>
+                    </ul>
+                    <ul class="work__tags">
+                        <li>HTML</li>
+                        <li>CSS</li>
+                    </ul>
+                    <div class="work__actions">
+                        <a href="https://abdulkarimaklouk.github.io/template-alaklouk/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/template-alaklouk" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="work__card mix frontend">
+                    <h3 class="work__title">Food Template</h3>
+                    <p class="work__description">
+                        Single-page restaurant landing page with home, about, offers, menu,
+                        daytime schedule, gallery, and contact.
+                    </p>
+                    <ul class="work__features">
+                        <li>Hero, about, special offers, and menu with prices</li>
+                        <li>Daytime schedule and food gallery</li>
+                        <li>Contact block with address and working hours</li>
+                    </ul>
+                    <ul class="work__tags">
+                        <li>HTML5</li>
+                        <li>CSS3</li>
+                        <li>JavaScript</li>
+                    </ul>
+                    <div class="work__actions">
+                        <a href="https://abdulkarimaklouk.github.io/food-lover/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                        <a href="https://github.com/abdulkarimaklouk/food-lover" target="_blank" rel="noopener noreferrer" class="work__button">
+                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="experience section" id="experience">
+            <span class="section__subtitle">Background</span>
+            <h2 class="section__title">Experience &amp; Education</h2>
+
+            <div class="experience__container container grid">
+                <article class="experience__card">
+                    <p class="experience__heading">Freelance</p>
+                    <h3 class="experience__role">Instagram Posting Tool</h3>
+                    <p class="experience__meta">Freelance Full-Stack Web Developer · March 2025 – April 2025 · Cairo, Egypt</p>
+                    <p class="experience__text">
+                        Instagram automation and content publishing platform with backend services for
+                        Instagram Graph API integration, authentication, media management, and publishing
+                        workflows. Used to schedule Instagram posts.
+                    </p>
+                    <ul class="experience__list">
+                        <li>Instagram Graph API for content publishing</li>
+                        <li>REST APIs with Node.js and Express.js for content management and publishing</li>
+                        <li>Authentication, media handling, third-party APIs, and API error handling</li>
+                    </ul>
+                </article>
+
+                <article class="experience__card">
+                    <p class="experience__heading">Freelance</p>
+                    <h3 class="experience__role">Shopify Website Project</h3>
+                    <p class="experience__meta">Freelance project</p>
+                    <p class="experience__text">
+                        Shopify website project completed as freelance work.
+                    </p>
+                </article>
+
+                <article class="experience__card">
+                    <p class="experience__heading">Ongoing</p>
+                    <h3 class="experience__role">Dashboard &amp; AI WhatsApp Chatbot</h3>
+                    <p class="experience__meta">Current work</p>
+                    <p class="experience__text">
+                        Currently building a dashboard and an AI-powered WhatsApp chatbot.
+                    </p>
+                </article>
+
+                <article class="experience__card">
+                    <p class="experience__heading">Education</p>
+                    <h3 class="experience__role">Bachelor of Computer Engineering</h3>
+                    <p class="experience__meta">Badr University · Cairo, Egypt · September 2025 – May 2030</p>
+                    <p class="experience__text">
+                        Second-year Computer Engineering student. Grade: 3.3/4.0. Focused on software
+                        development, computer systems, and programming.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section class="focus section">
+            <span class="section__subtitle">How I work</span>
+            <h2 class="section__title">Engineering Focus</h2>
+
+            <p class="focus__intro container">
+                I look for the most practical technical solution to a problem and follow established
+                software engineering practices. I work from a solid technical foundation and from the
+                theory behind the systems I use. I try to decide based on proven methods and expert
+                guidelines, and I keep improving quality, reliability, maintainability, and efficiency.
+            </p>
+
+            <div class="focus__container container grid">
+                <article class="focus__card">
+                    <i class="bx bx-bulb focus__icon"></i>
+                    <h3 class="focus__title">Practical solutions</h3>
+                    <p class="focus__text">
+                        Choose approaches that fit the problem, stay maintainable, and follow
+                        practices that are already established in the field.
+                    </p>
+                </article>
+                <article class="focus__card">
+                    <i class="bx bx-test-tube focus__icon"></i>
+                    <h3 class="focus__title">Testing &amp; Optimization</h3>
+                    <p class="focus__text">
+                        I test applications to find bugs and reliability issues, review how the
+                        system behaves, then optimize for performance, efficiency, stability, and
+                        overall quality.
+                    </p>
+                </article>
+                <article class="focus__card">
+                    <i class="bx bx-trending-up focus__icon"></i>
+                    <h3 class="focus__title">Continuous improvement</h3>
+                    <p class="focus__text">
+                        After a feature works, I keep tightening quality: clearer structure,
+                        more reliable behavior, and more efficient code paths.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section class="contact section" id="contact">
+            <span class="section__subtitle">Get in touch</span>
+            <h2 class="section__title">Contact Me</h2>
+
+            <div class="contact__container container grid">
+                <div class="contact__content">
+                    <h3 class="contact__title contact__title-info">Talk to me</h3>
+
+                    <div class="contact__info">
+                        <div class="contact__card">
+                            <i class="bx bx-mail-send contact__card-icon"></i>
+                            <h3 class="contact__card-title">Email</h3>
+                            <span class="contact__card-data">abdulkarim.aklouk@gmail.com</span>
+                            <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=abdulkarim.aklouk@gmail.com" target="_blank" rel="noopener noreferrer" class="contact__button" id="contact-email-link">
+                                Open Gmail <i class="bx bx-right-arrow contact__button-icon"></i>
+                            </a>
+                        </div>
+
+                        <div class="contact__card">
+                            <i class="bx bx-phone contact__card-icon"></i>
+                            <h3 class="contact__card-title">Phone</h3>
+                            <span class="contact__card-data">01158250466</span>
+                            <a href="tel:+201158250466" class="contact__button">
+                                Call <i class="bx bx-right-arrow contact__button-icon"></i>
+                            </a>
+                        </div>
+
+                        <div class="contact__card">
+                            <i class="bx bxl-github contact__card-icon"></i>
+                            <h3 class="contact__card-title">GitHub</h3>
+                            <span class="contact__card-data">abdulkarimaklouk</span>
+                            <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="contact__button">
+                                Open Profile <i class="bx bx-right-arrow contact__button-icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact__content">
+                    <h3 class="contact__title contact__title-form">Write a message</h3>
+                    <p class="contact__form-note">
+                        Sending opens Gmail with your message already filled in. Nothing is stored on this site.
+                    </p>
+
+                    <form class="contact__form" id="contact-form">
+                        <div class="contact__form-div">
+                            <label for="contact-name" class="contact__form-tag">Name</label>
+                            <input type="text" id="contact-name" name="name" placeholder="Your name" class="contact__form-input" required>
+                        </div>
+                        <div class="contact__form-div">
+                            <label for="contact-mail" class="contact__form-tag">Email</label>
+                            <input type="email" id="contact-mail" name="email" placeholder="Your email" class="contact__form-input" required>
+                        </div>
+                        <div class="contact__form-div contact__form-area">
+                            <label for="contact-message" class="contact__form-tag">Message</label>
+                            <textarea id="contact-message" name="message" cols="30" rows="10" placeholder="Your message" class="contact__form-input" required></textarea>
+                        </div>
+                        <button type="submit" class="button">Open in Gmail</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container container">
+            <h2 class="footer__title">Abdulkarim Aklouk</h2>
+
+            <ul class="footer__list">
+                <li class="footer__item"><a href="#home" class="footer__link">Home</a></li>
+                <li class="footer__item"><a href="#about" class="footer__link">About</a></li>
+                <li class="footer__item"><a href="#skills" class="footer__link">Skills</a></li>
+                <li class="footer__item"><a href="#work" class="footer__link">Projects</a></li>
+                <li class="footer__item"><a href="#experience" class="footer__link">Experience</a></li>
+                <li class="footer__item"><a href="#contact" class="footer__link">Contact</a></li>
+            </ul>
+
+            <ul class="footer__social">
+                <li class="footer__social-item">
+                    <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="GitHub">
+                        <i class="bx bxl-github footer__social-icon"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <span class="footer__copy">
+                &#169; <span id="footer-year">2026</span> Abdulkarim Aklouk. All rights reserved.
+            </span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+    <script src="assets/js/mixitup.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
