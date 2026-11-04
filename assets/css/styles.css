@@ -350,24 +350,40 @@ body.light-theme {
 }
 
 .home__img {
-  width: 160px;
+  width: 255px;
+  max-width: none;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 1;
+  transform: translateY(1.25rem);
+  filter: drop-shadow(0 1rem 1.5rem hsla(var(--second-hue), 48%, 4%, 0.28));
 }
 
 .home__handle {
   justify-self: center;
-  width: 190px;
-  height: 293px;
-  background: linear-gradient(
-    180deg,
-    hsla(var(--first-hue), var(--sat), var(--lig), 0.5),
-    hsla(var(--first-hue), var(--sat), var(--lig), 0.1)
-  );
-
-  border-radius: 10rem 10rem 1rem 1rem;
+  width: 230px;
+  height: 320px;
+  position: relative;
+  isolation: isolate;
+  background-color: hsla(var(--first-hue), var(--sat), var(--lig), 0.16);
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.55);
+  border-radius: 10rem 10rem 1.25rem 1.25rem;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 1.5rem 3rem hsla(var(--second-hue), 48%, 4%, 0.24);
+}
+
+.home__handle::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.2);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .home__button {
@@ -1056,7 +1072,7 @@ body.modal-open {
   }
 
   .home__img {
-    width: 130px;
+    width: 185px;
   }
 
   .about__info {
@@ -1234,7 +1250,7 @@ body.modal-open {
   }
 
   .home__img {
-    width: 220px;
+    width: 330px;
   }
   .home__social-link {
     padding: 0.4rem;
