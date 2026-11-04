@@ -37,6 +37,7 @@ let activeModalTrigger = null;
 function openModal(index) {
   if (!modalViews[index]) return;
   activeModalTrigger = modalBtns[index] || null;
+  if (activeModalTrigger) activeModalTrigger.setAttribute("aria-expanded", "true");
   modalViews[index].classList.add("active-modal");
   document.body.classList.add("modal-open");
   modalViews[index].focus();
@@ -44,6 +45,7 @@ function openModal(index) {
 
 function closeAllModals() {
   modalViews.forEach((modal) => modal.classList.remove("active-modal"));
+  modalBtns.forEach((btn) => btn.setAttribute("aria-expanded", "false"));
   document.body.classList.remove("modal-open");
   if (activeModalTrigger) {
     activeModalTrigger.focus();
