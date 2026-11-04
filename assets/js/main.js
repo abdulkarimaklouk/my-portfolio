@@ -77,8 +77,12 @@ if (typeof mixitup !== "undefined" && document.querySelector(".work__container")
 const workLinks = document.querySelectorAll(".work__item");
 
 function activeWork(workLink) {
-  workLinks.forEach((link) => link.classList.remove("active-work"));
+  workLinks.forEach((link) => {
+    link.classList.remove("active-work");
+    link.setAttribute("aria-pressed", "false");
+  });
   workLink.classList.add("active-work");
+  workLink.setAttribute("aria-pressed", "true");
 }
 
 workLinks.forEach((link) => {
