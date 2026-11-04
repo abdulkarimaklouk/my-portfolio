@@ -105,12 +105,15 @@ function scrollActive() {
 
     if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
       navLink.classList.add("active-link");
+      navLink.setAttribute("aria-current", "location");
     } else {
       navLink.classList.remove("active-link");
+      navLink.removeAttribute("aria-current");
     }
   });
 }
 window.addEventListener("scroll", scrollActive);
+scrollActive();
 
 /*=============== LIGHT DARK THEME ===============*/
 const themeButton = document.getElementById("theme-button");
