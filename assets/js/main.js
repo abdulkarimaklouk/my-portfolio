@@ -68,7 +68,26 @@ modalViews.forEach((modal) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeAllModals();
+  if (event.key === "Escape") return closeAllModals();
+  if (event.key !== "Tab") return;
+
+  const activeModal = [...modalViews].find((modal) => modal.classList.contains("active-modal"));
+  if (!activeModal) return;
+
+  const focusables = [...activeModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter((el) => !el.disabled && !el.hidden && el.offsetParent !== null && window.getComputedStyle(el).visibility !== "hidden");
+  if (!focusables.length) return event.preventDefault();
+
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  const isOutside = !activeModal.contains(document.activeElement) || document.activeElement === activeModal;
+
+  if (event.shiftKey && (document.activeElement === first || isOutside)) {
+    last.focus();
+    event.preventDefault();
+  } else if (!event.shiftKey && (document.activeElement === last || isOutside)) {
+    first.focus();
+    event.preventDefault();
+  }
 });
 
 /*=============== MIXITUP FILTER PORTFOLIO ===============*/
