@@ -160,7 +160,9 @@ if (contactForm) {
 }
 
 /*=============== SCROLL REVEAL ANIMATION ===============*/
-if (typeof ScrollReveal !== "undefined") {
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (typeof ScrollReveal !== "undefined" && !prefersReducedMotion) {
   const sr = ScrollReveal({
     origin: "top",
     distance: "60px",
