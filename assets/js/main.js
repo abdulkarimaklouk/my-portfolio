@@ -32,16 +32,23 @@ window.addEventListener("scroll", scrollHeader);
 const modalViews = document.querySelectorAll(".services__modal");
 const modalBtns = document.querySelectorAll(".services__button");
 const modalCloses = document.querySelectorAll(".services__modal-close");
+let activeModalTrigger = null;
 
 function openModal(index) {
   if (!modalViews[index]) return;
+  activeModalTrigger = modalBtns[index] || null;
   modalViews[index].classList.add("active-modal");
   document.body.classList.add("modal-open");
+  modalViews[index].focus();
 }
 
 function closeAllModals() {
   modalViews.forEach((modal) => modal.classList.remove("active-modal"));
   document.body.classList.remove("modal-open");
+  if (activeModalTrigger) {
+    activeModalTrigger.focus();
+    activeModalTrigger = null;
+  }
 }
 
 modalBtns.forEach((button, index) => {
