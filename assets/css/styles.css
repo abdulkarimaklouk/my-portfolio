@@ -103,6 +103,14 @@ button {
   outline: none;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--first-color);
+  outline-offset: 3px;
+}
+
 img {
   max-width: 100%;
   height: auto;
