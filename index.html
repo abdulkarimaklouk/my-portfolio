@@ -26,41 +26,43 @@
 </head>
 
 <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
     <header class="header" id="header">
-        <nav class="nav container">
+        <nav class="nav container" aria-label="Main navigation">
             <a href="#home" class="nav__logo">Abdulkarim</a>
 
             <div class="nav__menu">
                 <ul class="nav__list">
                     <li class="nav__item">
-                        <a href="#home" class="nav__link" aria-label="Home"><i class="bx bx-home"></i></a>
+                        <a href="#home" class="nav__link" aria-label="Home"><i class="bx bx-home" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav__item">
-                        <a href="#about" class="nav__link" aria-label="About"><i class="bx bx-user"></i></a>
+                        <a href="#about" class="nav__link" aria-label="About"><i class="bx bx-user" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav__item">
-                        <a href="#skills" class="nav__link" aria-label="Skills"><i class="bx bx-book"></i></a>
+                        <a href="#skills" class="nav__link" aria-label="Skills"><i class="bx bx-book" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav__item">
-                        <a href="#work" class="nav__link" aria-label="Projects"><i class="bx bx-briefcase-alt-2"></i></a>
+                        <a href="#work" class="nav__link" aria-label="Projects"><i class="bx bx-briefcase-alt-2" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav__item">
-                        <a href="#experience" class="nav__link" aria-label="Experience and education"><i class="bx bx-briefcase"></i></a>
+                        <a href="#experience" class="nav__link" aria-label="Experience and education"><i class="bx bx-briefcase" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav__item">
-                        <a href="#contact" class="nav__link" aria-label="Contact"><i class="bx bx-message-square-dots"></i></a>
+                        <a href="#contact" class="nav__link" aria-label="Contact"><i class="bx bx-message-square-dots" aria-hidden="true"></i></a>
                     </li>
                 </ul>
             </div>
 
             <button type="button" class="change-theme change-theme-button" id="theme-button" aria-label="Toggle color theme">
-                <i class="bx bx-moon"></i>
+                <i class="bx bx-moon" aria-hidden="true"></i>
             </button>
         </nav>
     </header>
 
-    <main class="main">
-        <section class="home section" id="home">
+    <main class="main" id="main" tabindex="-1">
+        <section class="home section" id="home" aria-label="Home">
             <div class="home__container container grid">
                 <div class="home__data">
                     <h1 class="home__name">Abdulkarim Aklouk</h1>
@@ -84,21 +86,21 @@
 
                 <div class="home__social">
                     <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="home__social-link" aria-label="GitHub">
-                        <i class="bx bxl-github"></i>
+                        <i class="bx bxl-github" aria-hidden="true"></i>
                     </a>
                     <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="home__social-link" aria-label="LinkedIn">
-                        <i class="bx bxl-linkedin"></i>
+                        <i class="bx bxl-linkedin" aria-hidden="true"></i>
                     </a>
                 </div>
 
                 <a href="#about" class="home__scroll">
-                    <i class="bx bx-mouse home__scroll-icon"></i>
+                    <i class="bx bx-mouse home__scroll-icon" aria-hidden="true"></i>
                     <span class="home__scroll-name">Scroll Down</span>
                 </a>
             </div>
         </section>
 
-        <section class="about section" id="about">
+        <section class="about section" id="about" aria-label="About Me">
             <span class="section__subtitle">Introduction</span>
             <h2 class="section__title">About Me</h2>
 
@@ -106,17 +108,17 @@
                 <div class="about__data">
                     <div class="about__info">
                         <div class="about__box">
-                            <i class="bx bx-book-open about__icon"></i>
+                            <i class="bx bx-book-open about__icon" aria-hidden="true"></i>
                             <h3 class="about__title">Education</h3>
                             <span class="about__subtitle">Badr University</span>
                         </div>
                         <div class="about__box">
-                            <i class="bx bx-code-alt about__icon"></i>
+                            <i class="bx bx-code-alt about__icon" aria-hidden="true"></i>
                             <h3 class="about__title">Focus</h3>
                             <span class="about__subtitle">Full-Stack</span>
                         </div>
                         <div class="about__box">
-                            <i class="bx bx-map about__icon"></i>
+                            <i class="bx bx-map about__icon" aria-hidden="true"></i>
                             <h3 class="about__title">Location</h3>
                             <span class="about__subtitle">Cairo, Egypt</span>
                         </div>
@@ -141,7 +143,7 @@
             </div>
         </section>
 
-        <section class="skills section" id="skills">
+        <section class="skills section" id="skills" aria-label="Skills">
             <span class="section__subtitle">From my CV</span>
             <h2 class="section__title">Skills</h2>
 
@@ -151,14 +153,14 @@
                     <div class="skills__box">
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">JavaScript</h3>
                                     <span class="skills__level">In projects</span>
                                 </div>
                             </div>
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">C++</h3>
                                     <span class="skills__level">Academic</span>
@@ -173,21 +175,21 @@
                     <div class="skills__box">
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">HTML5</h3>
                                     <span class="skills__level">In projects</span>
                                 </div>
                             </div>
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">CSS3</h3>
                                     <span class="skills__level">In projects</span>
                                 </div>
                             </div>
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">Bootstrap</h3>
                                     <span class="skills__level">In projects</span>
@@ -196,14 +198,14 @@
                         </div>
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">JavaScript</h3>
                                     <span class="skills__level">In projects</span>
                                 </div>
                             </div>
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">React</h3>
                                     <span class="skills__level">Learning</span>
@@ -218,14 +220,14 @@
                     <div class="skills__box">
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">Node.js</h3>
                                     <span class="skills__level">In projects</span>
                                 </div>
                             </div>
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">Express.js</h3>
                                     <span class="skills__level">In projects</span>
@@ -234,7 +236,7 @@
                         </div>
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">REST APIs</h3>
                                     <span class="skills__level">In projects</span>
@@ -249,7 +251,7 @@
                     <div class="skills__box">
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">MongoDB</h3>
                                     <span class="skills__level">In projects</span>
@@ -258,7 +260,7 @@
                         </div>
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">MySQL</h3>
                                     <span class="skills__level">In projects</span>
@@ -273,7 +275,7 @@
                     <div class="skills__box">
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">Git</h3>
                                     <span class="skills__level">In use</span>
@@ -282,7 +284,7 @@
                         </div>
                         <div class="skills__group">
                             <div class="skills__data">
-                                <i class="bx bxs-badge-check"></i>
+                                <i class="bx bxs-badge-check" aria-hidden="true"></i>
                                 <div>
                                     <h3 class="skills__name">GitHub</h3>
                                     <span class="skills__level">In use</span>
@@ -294,7 +296,7 @@
             </div>
         </section>
 
-        <section class="services section" id="services">
+        <section class="services section" id="services" aria-label="Services">
             <span class="section__subtitle">What I work on</span>
             <h2 class="section__title">Services</h2>
 
@@ -302,22 +304,22 @@
                 <article class="services__card">
                     <h3 class="services__title">Backend &amp;<br>REST APIs</h3>
                     <button type="button" class="services__button" aria-haspopup="dialog" aria-controls="service-dialog-1" aria-expanded="false">
-                        See More <i class="bx bx-right-arrow services__icon"></i>
+                        See More <i class="bx bx-right-arrow services__icon" aria-hidden="true"></i>
                     </button>
                     <div class="services__modal" id="service-dialog-1" role="dialog" aria-modal="true" aria-labelledby="service-modal-1" tabindex="-1">
                         <div class="services__modal-content">
-                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x" aria-hidden="true"></i></button>
                             <h3 class="services__modal-title" id="service-modal-1">Backend &amp; REST APIs</h3>
                             <p class="services__modal-description">
                                 I build REST APIs with Node.js and Express.js for content, orders, users, and related resources.
                             </p>
                             <ul class="services__modal-list">
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">RESTful endpoints for meals, inventory, posts, and publishing workflows.</p>
                                 </li>
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">Authentication, media handling, and API error handling where the project needs it.</p>
                                 </li>
                             </ul>
@@ -328,22 +330,22 @@
                 <article class="services__card">
                     <h3 class="services__title">Full-Stack<br>Web Development</h3>
                     <button type="button" class="services__button" aria-haspopup="dialog" aria-controls="service-dialog-2" aria-expanded="false">
-                        See More <i class="bx bx-right-arrow services__icon"></i>
+                        See More <i class="bx bx-right-arrow services__icon" aria-hidden="true"></i>
                     </button>
                     <div class="services__modal" id="service-dialog-2" role="dialog" aria-modal="true" aria-labelledby="service-modal-2" tabindex="-1">
                         <div class="services__modal-content">
-                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x" aria-hidden="true"></i></button>
                             <h3 class="services__modal-title" id="service-modal-2">Full-Stack Web Development</h3>
                             <p class="services__modal-description">
                                 I connect HTML, CSS, and JavaScript interfaces to backend APIs for complete application workflows.
                             </p>
                             <ul class="services__modal-list">
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">CRUD interfaces and dashboards for managing application data.</p>
                                 </li>
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">Responsive pages for restaurant, social, and template-style front ends.</p>
                                 </li>
                             </ul>
@@ -354,22 +356,22 @@
                 <article class="services__card">
                     <h3 class="services__title">Databases &amp;<br>Authentication</h3>
                     <button type="button" class="services__button" aria-haspopup="dialog" aria-controls="service-dialog-3" aria-expanded="false">
-                        See More <i class="bx bx-right-arrow services__icon"></i>
+                        See More <i class="bx bx-right-arrow services__icon" aria-hidden="true"></i>
                     </button>
                     <div class="services__modal" id="service-dialog-3" role="dialog" aria-modal="true" aria-labelledby="service-modal-3" tabindex="-1">
                         <div class="services__modal-content">
-                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x"></i></button>
+                            <button type="button" class="services__modal-close" aria-label="Close"><i class="bx bx-x" aria-hidden="true"></i></button>
                             <h3 class="services__modal-title" id="service-modal-3">Databases &amp; Authentication</h3>
                             <p class="services__modal-description">
                                 I work with MySQL and MongoDB, and I have implemented JWT-based authentication and authorization.
                             </p>
                             <ul class="services__modal-list">
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">Relational MySQL models for meals, ingredients, inventory, and orders.</p>
                                 </li>
                                 <li class="services__modal-item">
-                                    <i class="bx bx-check-circle"></i>
+                                    <i class="bx bx-check-circle" aria-hidden="true"></i>
                                     <p class="services__modal-info">MongoDB models for posts, comments, likes, and user profiles.</p>
                                 </li>
                             </ul>
@@ -379,7 +381,7 @@
             </div>
         </section>
 
-        <section class="work section" id="work">
+        <section class="work section" id="work" aria-label="Projects">
             <span class="section__subtitle">Selected work</span>
             <h2 class="section__title">Projects</h2>
 
@@ -413,13 +415,13 @@
                     </p>
                     <div class="work__actions">
                         <a href="https://abdulkarimaklouk.github.io/restaurant-management-frontend/stores.html" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                            Live Demo <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/restaurant-management-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/restaurant-management-backend" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code (API) <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code (API) <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -447,13 +449,13 @@
                     </p>
                     <div class="work__actions">
                         <a href="https://abdulkarimaklouk.github.io/social-media-frontend/login.html" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                            Live Demo <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/social-media-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/social-media-backend" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code (API) <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code (API) <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -476,10 +478,10 @@
                     </ul>
                     <div class="work__actions">
                         <a href="https://abdulkarimaklouk.github.io/crud-product-frontend/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                            Live Demo <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/crud-product-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -501,10 +503,10 @@
                     </ul>
                     <div class="work__actions">
                         <a href="https://abdulkarimaklouk.github.io/template-alaklouk/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                            Live Demo <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/template-alaklouk" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -527,17 +529,17 @@
                     </ul>
                     <div class="work__actions">
                         <a href="https://abdulkarimaklouk.github.io/food-lover/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Live Demo <i class="bx bx-right-arrow work__icon"></i>
+                            Live Demo <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                         <a href="https://github.com/abdulkarimaklouk/food-lover" target="_blank" rel="noopener noreferrer" class="work__button">
-                            Source Code <i class="bx bx-right-arrow work__icon"></i>
+                            Source Code <i class="bx bx-right-arrow work__icon" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
             </div>
         </section>
 
-        <section class="experience section" id="experience">
+        <section class="experience section" id="experience" aria-label="Experience & Education">
             <span class="section__subtitle">Background</span>
             <h2 class="section__title">Experience &amp; Education</h2>
 
@@ -588,7 +590,7 @@
             </div>
         </section>
 
-        <section class="focus section">
+        <section class="focus section" aria-label="Engineering Focus">
             <span class="section__subtitle">How I work</span>
             <h2 class="section__title">Engineering Focus</h2>
 
@@ -601,7 +603,7 @@
 
             <div class="focus__container container grid">
                 <article class="focus__card">
-                    <i class="bx bx-bulb focus__icon"></i>
+                    <i class="bx bx-bulb focus__icon" aria-hidden="true"></i>
                     <h3 class="focus__title">Practical solutions</h3>
                     <p class="focus__text">
                         Choose approaches that fit the problem, stay maintainable, and follow
@@ -609,7 +611,7 @@
                     </p>
                 </article>
                 <article class="focus__card">
-                    <i class="bx bx-test-tube focus__icon"></i>
+                    <i class="bx bx-test-tube focus__icon" aria-hidden="true"></i>
                     <h3 class="focus__title">Testing &amp; Optimization</h3>
                     <p class="focus__text">
                         I test applications to find bugs and reliability issues, review how the
@@ -618,7 +620,7 @@
                     </p>
                 </article>
                 <article class="focus__card">
-                    <i class="bx bx-trending-up focus__icon"></i>
+                    <i class="bx bx-trending-up focus__icon" aria-hidden="true"></i>
                     <h3 class="focus__title">Continuous improvement</h3>
                     <p class="focus__text">
                         After a feature works, I keep tightening quality: clearer structure,
@@ -628,7 +630,7 @@
             </div>
         </section>
 
-        <section class="contact section" id="contact">
+        <section class="contact section" id="contact" aria-label="Contact Me">
             <span class="section__subtitle">Get in touch</span>
             <h2 class="section__title">Contact Me</h2>
 
@@ -638,38 +640,38 @@
 
                     <div class="contact__info">
                         <div class="contact__card">
-                            <i class="bx bx-mail-send contact__card-icon"></i>
+                            <i class="bx bx-mail-send contact__card-icon" aria-hidden="true"></i>
                             <h3 class="contact__card-title">Email</h3>
                             <span class="contact__card-data">abdulkarim.aklouk@gmail.com</span>
                             <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=abdulkarim.aklouk@gmail.com" target="_blank" rel="noopener noreferrer" class="contact__button" id="contact-email-link">
-                                Open Gmail <i class="bx bx-right-arrow contact__button-icon"></i>
+                                Open Gmail <i class="bx bx-right-arrow contact__button-icon" aria-hidden="true"></i>
                             </a>
                         </div>
 
                         <div class="contact__card">
-                            <i class="bx bx-phone contact__card-icon"></i>
+                            <i class="bx bx-phone contact__card-icon" aria-hidden="true"></i>
                             <h3 class="contact__card-title">Phone</h3>
                             <span class="contact__card-data">01158250466</span>
                             <a href="tel:+201158250466" class="contact__button">
-                                Call <i class="bx bx-right-arrow contact__button-icon"></i>
+                                Call <i class="bx bx-right-arrow contact__button-icon" aria-hidden="true"></i>
                             </a>
                         </div>
 
                         <div class="contact__card">
-                            <i class="bx bxl-github contact__card-icon"></i>
+                            <i class="bx bxl-github contact__card-icon" aria-hidden="true"></i>
                             <h3 class="contact__card-title">GitHub</h3>
                             <span class="contact__card-data">abdulkarimaklouk</span>
                             <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="contact__button">
-                                Open Profile <i class="bx bx-right-arrow contact__button-icon"></i>
+                                Open Profile <i class="bx bx-right-arrow contact__button-icon" aria-hidden="true"></i>
                             </a>
                         </div>
 
                         <div class="contact__card">
-                            <i class="bx bxl-linkedin contact__card-icon"></i>
+                            <i class="bx bxl-linkedin contact__card-icon" aria-hidden="true"></i>
                             <h3 class="contact__card-title">LinkedIn</h3>
                             <span class="contact__card-data">abdulkarim-aklouk</span>
                             <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="contact__button">
-                                Open Profile <i class="bx bx-right-arrow contact__button-icon"></i>
+                                Open Profile <i class="bx bx-right-arrow contact__button-icon" aria-hidden="true"></i>
                             </a>
                         </div>
                     </div>
@@ -705,24 +707,26 @@
         <div class="footer__container container">
             <h2 class="footer__title">Abdulkarim Aklouk</h2>
 
-            <ul class="footer__list">
+            <nav class="footer__nav" aria-label="Footer navigation">
+                <ul class="footer__list">
                 <li class="footer__item"><a href="#home" class="footer__link">Home</a></li>
                 <li class="footer__item"><a href="#about" class="footer__link">About</a></li>
                 <li class="footer__item"><a href="#skills" class="footer__link">Skills</a></li>
                 <li class="footer__item"><a href="#work" class="footer__link">Projects</a></li>
                 <li class="footer__item"><a href="#experience" class="footer__link">Experience</a></li>
                 <li class="footer__item"><a href="#contact" class="footer__link">Contact</a></li>
-            </ul>
+                </ul>
+            </nav>
 
             <ul class="footer__social">
                 <li class="footer__social-item">
                     <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="GitHub">
-                        <i class="bx bxl-github footer__social-icon"></i>
+                        <i class="bx bxl-github footer__social-icon" aria-hidden="true"></i>
                     </a>
                 </li>
                 <li class="footer__social-item">
                     <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="LinkedIn">
-                        <i class="bx bxl-linkedin footer__social-icon"></i>
+                        <i class="bx bxl-linkedin footer__social-icon" aria-hidden="true"></i>
                     </a>
                 </li>
             </ul>
