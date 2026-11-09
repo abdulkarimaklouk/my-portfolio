@@ -250,3 +250,98 @@ if (typeof ScrollReveal !== "undefined" && !prefersReducedMotion) {
     distance: "30px",
   });
 }
+
+/*=============== 3D BACKGROUND PARALLAX CONTROLLER ===============*/
+(function initBg3D() {
+  const bg = document.getElementById("bg-3d");
+  if (!bg) return;
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+  if (prefersReducedMotion || !hasFinePointer) return;
+
+  let targetRotX = 0, targetRotY = 0;
+  let currentRotX = 0, currentRotY = 0;
+  let targetTransX = 0, targetTransY = 0;
+  let currentTransX = 0, currentTransY = 0;
+  let isInteracting = false;
+  let rafId = null;
+
+  // Maximum subtle bounds: ~2-3 degrees rotation, ~8-12px translation
+  const maxTilt = 2.5;
+  const maxTrans = 10;
+  const ease = 0.08;
+
+  function startLoop() {
+    if (!rafId) {
+      rafId = requestAnimationFrame(render);
+    }
+  }
+
+  function resetTransforms() {
+    currentRotX = 0;
+    currentRotY = 0;
+    currentTransX = 0;
+    currentTransY = 0;
+    bg.style.removeProperty("--bg-rot-x");
+    bg.style.removeProperty("--bg-rot-y");
+    bg.style.removeProperty("--bg-trans-x");
+    bg.style.removeProperty("--bg-trans-y");
+  }
+
+  function onPointerMove(e) {
+    const width = window.innerWidth || 1;
+    const height = window.innerHeight || 1;
+    const normX = Math.max(-1, Math.min(1, (e.clientX / width) * 2 - 1));
+    const normY = Math.max(-1, Math.min(1, (e.clientY / height) * 2 - 1));
+
+    targetRotY = normX * maxTilt;
+    targetRotX = -normY * (maxTilt * 0.8);
+    targetTransX = normX * maxTrans;
+    targetTransY = normY * maxTrans;
+
+    isInteracting = true;
+    startLoop();
+  }
+
+  function onPointerLeave() {
+    isInteracting = false;
+    targetRotX = 0;
+    targetRotY = 0;
+    targetTransX = 0;
+    targetTransY = 0;
+    startLoop();
+  }
+
+  function render() {
+    currentRotX += (targetRotX - currentRotX) * ease;
+    currentRotY += (targetRotY - currentRotY) * ease;
+    currentTransX += (targetTransX - currentTransX) * ease;
+    currentTransY += (targetTransY - currentTransY) * ease;
+
+    const deltaRot = Math.abs(targetRotX - currentRotX) + Math.abs(targetRotY - currentRotY);
+    const deltaTrans = Math.abs(targetTransX - currentTransX) + Math.abs(targetTransY - currentTransY);
+    const isMoving = deltaRot > 0.01 || deltaTrans > 0.02;
+
+    if (!isInteracting && !isMoving) {
+      resetTransforms();
+      rafId = null;
+      return;
+    }
+
+    bg.style.setProperty("--bg-rot-x", `${currentRotX.toFixed(2)}deg`);
+    bg.style.setProperty("--bg-rot-y", `${currentRotY.toFixed(2)}deg`);
+    bg.style.setProperty("--bg-trans-x", `${currentTransX.toFixed(2)}px`);
+    bg.style.setProperty("--bg-trans-y", `${currentTransY.toFixed(2)}px`);
+
+    if (isMoving) {
+      rafId = requestAnimationFrame(render);
+    } else {
+      rafId = null;
+    }
+  }
+
+  window.addEventListener("pointermove", onPointerMove, { passive: true });
+  document.documentElement.addEventListener("pointerleave", onPointerLeave, { passive: true });
+  window.addEventListener("blur", onPointerLeave, { passive: true });
+})();

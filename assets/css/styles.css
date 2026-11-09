@@ -4,7 +4,7 @@
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  /*   
+  /*
         Purple: hsl(250, 66%, 75%)
         Blue: hsl(207, 90%, 72%)
         Pink: hsl(356, 66%, 75%)
@@ -166,8 +166,8 @@ body.light-theme {
   --container-color: #e9e9e9;
 }
 
-/*========== 
-    Color changes in some parts of 
+/*==========
+    Color changes in some parts of
     the website, in light theme
 ==========*/
 .light-theme .scroll-header {
@@ -233,6 +233,8 @@ body.light-theme {
 }
 
 .main {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -1392,5 +1394,212 @@ body.modal-open {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/*=============== 3D PERSPECTIVE BACKGROUND ===============*/
+.bg-3d {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+}
+
+.bg-3d__stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--bg-rot-x, 0deg)) rotateY(var(--bg-rot-y, 0deg));
+  will-change: transform;
+}
+
+/* Ambient lighting */
+.bg-3d__ambient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 18%, hsla(var(--first-hue), 66%, 75%, 0.08), transparent 70%),
+    radial-gradient(circle at 85% 75%, hsla(var(--second-hue), 60%, 55%, 0.04), transparent 60%);
+  pointer-events: none;
+}
+
+/* Layer positioning */
+.bg-3d__layer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Layer 1: Perspective wireframe grid (Depth: 0.4) */
+.bg-3d__layer--grid {
+  transform: translate3d(calc(var(--bg-trans-x, 0px) * 0.4), calc(var(--bg-trans-y, 0px) * 0.4), -60px);
+}
+
+.bg-3d__grid {
+  position: absolute;
+  width: 200%;
+  height: 150%;
+  left: -50%;
+  bottom: -25%;
+  transform: rotateX(66deg);
+  transform-origin: 50% 100%;
+  background-image:
+    linear-gradient(to right, hsla(var(--first-hue), var(--sat), var(--lig), 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, hsla(var(--first-hue), var(--sat), var(--lig), 0.12) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 85%, black 20%, rgba(0, 0, 0, 0.4) 55%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 85%, black 20%, rgba(0, 0, 0, 0.4) 55%, transparent 80%);
+}
+
+/* Layer 2: Geometric Orbitals (Depth: 0.75) */
+.bg-3d__layer--orbits {
+  transform: translate3d(calc(var(--bg-trans-x, 0px) * 0.75), calc(var(--bg-trans-y, 0px) * 0.75), 0px);
+}
+
+.bg-3d__orbital {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bg-3d__orbital--1 {
+  width: 720px;
+  height: 720px;
+  border: 1px dashed hsla(var(--first-hue), var(--sat), var(--lig), 0.12);
+  transform: translate(-50%, -50%) rotateX(68deg) rotateY(12deg);
+}
+
+.bg-3d__orbital--2 {
+  width: 480px;
+  height: 480px;
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.10);
+  transform: translate(-50%, -50%) rotateX(68deg) rotateY(-18deg);
+}
+
+.bg-3d__orbital--3 {
+  width: 280px;
+  height: 280px;
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.16);
+  border-top-color: hsla(var(--first-hue), var(--sat), var(--lig), 0.32);
+  transform: translate(-50%, -50%) rotateX(68deg) rotateY(4deg);
+}
+
+/* Layer 3: Spatial Accents (Depth: 1.1) */
+.bg-3d__layer--accents {
+  transform: translate3d(calc(var(--bg-trans-x, 0px) * 1.1), calc(var(--bg-trans-y, 0px) * 1.1), 40px);
+}
+
+.bg-3d__cross {
+  position: absolute;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: hsla(var(--first-hue), var(--sat), var(--lig), 0.22);
+  user-select: none;
+}
+
+.bg-3d__cross--tl { top: 6rem; left: 3rem; }
+.bg-3d__cross--tr { top: 6rem; right: 3rem; }
+.bg-3d__cross--bl { bottom: 6rem; left: 3rem; }
+.bg-3d__cross--br { bottom: 6rem; right: 3rem; }
+
+/* Light theme adaptations */
+.light-theme .bg-3d__ambient {
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 18%, hsla(var(--first-hue), 50%, 65%, 0.05), transparent 70%),
+    radial-gradient(circle at 85% 75%, hsla(var(--second-hue), 30%, 60%, 0.03), transparent 60%);
+}
+
+.light-theme .bg-3d__grid {
+  background-image:
+    linear-gradient(to right, hsla(var(--first-hue), 40%, 60%, 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, hsla(var(--first-hue), 40%, 60%, 0.10) 1px, transparent 1px);
+}
+
+.light-theme .bg-3d__orbital--1 {
+  border-color: hsla(var(--first-hue), 40%, 60%, 0.14);
+}
+
+.light-theme .bg-3d__orbital--2 {
+  border-color: hsla(var(--first-hue), 40%, 60%, 0.12);
+}
+
+.light-theme .bg-3d__orbital--3 {
+  border-color: hsla(var(--first-hue), 40%, 60%, 0.18);
+  border-top-color: hsla(var(--first-hue), 50%, 55%, 0.35);
+}
+
+.light-theme .bg-3d__cross {
+  color: hsla(var(--first-hue), 40%, 50%, 0.25);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .bg-3d__stage,
+  .bg-3d__layer {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Mobile & Tablet responsiveness */
+@media screen and (max-width: 768px) {
+  .bg-3d__grid {
+    background-size: 48px 48px;
+    height: 120%;
+    bottom: -15%;
+  }
+
+  .bg-3d__orbital--1 {
+    width: 480px;
+    height: 480px;
+  }
+
+  .bg-3d__orbital--2 {
+    width: 340px;
+    height: 340px;
+  }
+
+  .bg-3d__orbital--3 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .bg-3d__cross--tl,
+  .bg-3d__cross--tr {
+    top: 5rem;
+  }
+
+  .bg-3d__cross--tl,
+  .bg-3d__cross--bl {
+    left: 1rem;
+  }
+
+  .bg-3d__cross--tr,
+  .bg-3d__cross--br {
+    right: 1rem;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .bg-3d__orbital--1 {
+    width: 360px;
+    height: 360px;
+  }
+
+  .bg-3d__orbital--2 {
+    display: none;
   }
 }
