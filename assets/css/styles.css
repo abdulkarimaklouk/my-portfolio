@@ -1454,15 +1454,28 @@ body.modal-open {
 .bg-3d__grid {
   position: absolute;
   width: 200%;
-  height: 150%;
+  height: 160%;
   left: -50%;
-  bottom: -25%;
+  bottom: -28%;
   transform: rotateX(66deg);
   transform-origin: 50% 100%;
   background-image:
-    linear-gradient(to right, rgba(82, 125, 170, 0.24) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(128, 100, 201, 0.22) 1px, transparent 1px);
-  background-size: 64px 64px;
+    /* Major grid: larger square divisions (128px) with subtle optical glow */
+    linear-gradient(to right, rgba(167, 137, 212, 0.38) 0px, rgba(167, 137, 212, 0.38) 1.2px, rgba(82, 125, 170, 0.14) 2.5px, transparent 3.5px),
+    linear-gradient(to bottom, rgba(128, 100, 201, 0.36) 0px, rgba(128, 100, 201, 0.36) 1.2px, rgba(128, 100, 201, 0.12) 2.5px, transparent 3.5px),
+    /* Fine grid: small, consistent square cells (32px) */
+    linear-gradient(to right, rgba(82, 125, 170, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 100, 201, 0.14) 1px, transparent 1px);
+  background-size:
+    128px 128px,
+    128px 128px,
+    32px 32px,
+    32px 32px;
+  background-position:
+    center bottom,
+    center bottom,
+    center bottom,
+    center bottom;
   mask-image: radial-gradient(ellipse 80% 65% at 50% 90%, black 25%, rgba(0, 0, 0, 0.45) 60%, transparent 85%);
   -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 90%, black 25%, rgba(0, 0, 0, 0.45) 60%, transparent 85%);
 }
@@ -1541,8 +1554,12 @@ body.modal-open {
 
 .light-theme .bg-3d__grid {
   background-image:
-    linear-gradient(to right, rgba(82, 125, 170, 0.22) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(128, 100, 201, 0.20) 1px, transparent 1px);
+    /* Major grid: larger square divisions in light theme */
+    linear-gradient(to right, rgba(128, 100, 201, 0.36) 0px, rgba(128, 100, 201, 0.36) 1.2px, rgba(82, 125, 170, 0.12) 2.5px, transparent 3.5px),
+    linear-gradient(to bottom, rgba(128, 100, 201, 0.34) 0px, rgba(128, 100, 201, 0.34) 1.2px, rgba(128, 100, 201, 0.10) 2.5px, transparent 3.5px),
+    /* Fine grid: small, consistent square cells in light theme */
+    linear-gradient(to right, rgba(82, 125, 170, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 100, 201, 0.15) 1px, transparent 1px);
 }
 
 .light-theme .bg-3d__orbital--1 {
@@ -1581,7 +1598,11 @@ body.modal-open {
 /* Mobile & Tablet responsiveness */
 @media screen and (max-width: 768px) {
   .bg-3d__grid {
-    background-size: 48px 48px;
+    background-size:
+      96px 96px,
+      96px 96px,
+      24px 24px,
+      24px 24px;
     height: 120%;
     bottom: -15%;
   }
