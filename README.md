@@ -1,8 +1,10 @@
 # Abdulkarim Aklouk — Portfolio
 
-Personal website for **Abdulkarim Aklouk**, a Computer Engineering student and Full-Stack Web Developer in Cairo.
+Personal website for **Abdulkarim Aklouk**, a Computer Engineering student and Full-Stack Web Developer based in Cairo, Egypt.
 
-The site is static HTML, CSS, and JavaScript. Open `index.html` locally, or use VS Code Live Server (port 5501).
+The portfolio showcases my development skills, selected projects, and experience in frontend and backend web development.
+
+The website is built using static HTML, CSS, and JavaScript. Open `index.html` locally, or use VS Code Live Server (port 5501).
 
 **Contact**
 
@@ -12,26 +14,27 @@ The site is static HTML, CSS, and JavaScript. Open `index.html` locally, or use 
 
 ---
 
-## Featured projects
+## Featured Projects
 
-The following projects are listed on the portfolio. Each entry states whether a backend is hosted.
+The following projects are showcased in the portfolio. Each project includes its overview, key features, technologies, source code, live demo, and backend deployment status.
 
 ---
 
 ### 1. Restaurant Meal Management System
 
 **Project Overview**  
-A full-stack restaurant system for managing meals, ingredients, inventory, and orders.
+A full-stack restaurant management application for managing meals, ingredients, inventory, stock levels, and orders.
 
 **Purpose**  
-Give a restaurant a structured way to keep meal data, stock, and orders in one place instead of tracking them by hand.
+Provide restaurants with a structured system to manage meal data, inventory, and orders instead of relying on manual tracking.
 
 **Key Features**
 
-- Relational MySQL design with structured entity relationships
-- REST APIs for meals, ingredients, inventory, and orders
-- CRUD operations and backend business logic
-- Frontend pages for stores, meals, ingredients, inventory, orders, and sales
+- Relational database design using MySQL.
+- RESTful APIs for meals, ingredients, inventory, and orders.
+- CRUD operations and backend business logic.
+- Inventory and stock management.
+- Frontend interfaces for stores, meals, ingredients, inventory, orders, and sales.
 
 **Technologies Used**
 
@@ -40,7 +43,7 @@ Give a restaurant a structured way to keep meal data, stock, and orders in one p
 - Database: MySQL
 
 **My Role**  
-I designed the database, implemented the REST API, and built the frontend pages.
+I designed the relational database, implemented the REST APIs and backend business logic, and developed the frontend pages.
 
 **Live Demo**  
 [stores.html](https://abdulkarimaklouk.github.io/restaurant-management-frontend/stores.html)
@@ -57,26 +60,28 @@ I designed the database, implemented the REST API, and built the frontend pages.
 ### 2. Social Media Application
 
 **Project Overview**  
-A full-stack social application with authentication, posts, comments, likes, and user profiles.
+A full-stack social media application featuring authentication, posts, comments, likes, and user profiles.
 
 **Purpose**  
-Provide a complete social workflow — sign in, manage a profile, and interact with posts — through a REST API and a browser client.
+Provide a complete social interaction experience through a REST API and a browser-based frontend.
 
 **Key Features**
 
-- JWT-based authentication and authorization
-- REST APIs for posts, comments, likes, and profiles
-- MongoDB data models and CRUD operations
-- Login and main application pages on the frontend
+- User registration and login.
+- JWT-based authentication and authorization.
+- RESTful APIs for posts, comments, likes, and profiles.
+- MongoDB data models and CRUD operations.
+- Frontend interfaces for authentication and application workflows.
 
 **Technologies Used**
 
 - Frontend: HTML, CSS, JavaScript
-- Backend: Node.js, Express.js, REST APIs, JWT
+- Backend: Node.js, Express.js, REST APIs
 - Database: MongoDB
+- Authentication: JSON Web Tokens (JWT)
 
 **My Role**  
-I implemented the API, authentication, data models, and the frontend screens.
+I implemented the backend API, authentication and authorization, database models, and frontend application screens.
 
 **Live Demo**  
 [login.html](https://abdulkarimaklouk.github.io/social-media-frontend/login.html)
@@ -93,25 +98,26 @@ I implemented the API, authentication, data models, and the frontend screens.
 ### 3. Product CRUD
 
 **Project Overview**  
-A JavaScript product manager with complete Create, Read, Update, and Delete flows.
+A JavaScript-based product management application implementing complete Create, Read, Update, and Delete operations.
 
 **Purpose**  
-Practice and demonstrate a full CRUD interface for product records, including search and price totals.
+Demonstrate a complete client-side CRUD workflow for managing product records, including search and price calculations.
 
 **Key Features**
 
-- Create, read, update, and delete product records
-- Search by title or category
-- Price, taxes, ads, discount, and total fields
+- Create, read, update, and delete product records.
+- Search by title or category.
+- Manage product prices, taxes, advertising costs, discounts, and totals.
+- Store product data using browser Local Storage.
 
 **Technologies Used**
 
 - Frontend: HTML, CSS, JavaScript
-- Backend: none
-- Database: browser storage on the client
+- Backend: None
+- Storage: Browser Local Storage
 
 **My Role**  
-I implemented the full interface and CRUD logic.
+I implemented the complete frontend interface, CRUD operations, search functionality, and product price calculations.
 
 **Live Demo**  
 [index.html](https://abdulkarimaklouk.github.io/crud-product-frontend/index.html)
@@ -126,25 +132,28 @@ I implemented the full interface and CRUD logic.
 ### 4. Aklouk Template
 
 **Project Overview**  
-A multi-section HTML and CSS landing template (Articles, Gallery, Features, Team, Services, Pricing, Events, and contact blocks).
+A multi-section HTML and CSS landing page template featuring Articles, Gallery, Features, Team, Services, Pricing, Events, and Contact sections.
 
 **Purpose**  
-A reusable front-end layout for a personal or company landing page.
+Provide a reusable frontend layout for personal websites and business landing pages.
 
 **Key Features**
 
-- Articles, gallery, features, testimonials, and team sections
-- Services, skills, how-it-works, events, and pricing plans
-- Stats, discount request, and footer contact details
+- Articles, gallery, features, and testimonials.
+- Team and services sections.
+- Skills and how-it-works sections.
+- Events and pricing plans.
+- Statistics and discount request sections.
+- Footer with contact details.
 
 **Technologies Used**
 
 - Frontend: HTML, CSS
-- Backend: none
-- Database: none
+- Backend: None
+- Database: None
 
 **My Role**  
-I built and structured the template pages and styles.
+I designed and structured the template pages and implemented the frontend styles.
 
 **Live Demo**  
 [index.html](https://abdulkarimaklouk.github.io/template-alaklouk/index.html)
@@ -152,32 +161,34 @@ I built and structured the template pages and styles.
 **Source Code**  
 [template-alaklouk](https://github.com/abdulkarimaklouk/template-alaklouk)
 
-**Backend Status:** This project has no backend. The live demo is the full static page.
+**Backend Status:** This project has no backend. The live demo is the complete static page.
 
 ---
 
 ### 5. Food Template
 
 **Project Overview**  
-A single-page restaurant landing page with home, about, offers, menu, daytime schedule, gallery, and contact.
+A single-page restaurant landing page featuring Home, About, Offers, Menu, Daytime Schedule, Gallery, and Contact sections.
 
 **Purpose**  
-Present a restaurant’s story, menu, hours, and contact details in one static page.
+Present a restaurant's story, menu, special offers, operating hours, and contact information through a single-page website.
 
 **Key Features**
 
-- Hero, about, special offers, and menu with prices
-- Daytime schedule and food gallery
-- Contact block with address and working hours
+- Hero and restaurant introduction sections.
+- Special offers and menu with prices.
+- Daytime schedule.
+- Food gallery.
+- Contact section with address and working hours.
 
 **Technologies Used**
 
 - Frontend: HTML5, CSS3, JavaScript
-- Backend: none
-- Database: none
+- Backend: None
+- Database: None
 
 **My Role**  
-I built the page layout, sections, and front-end structure.
+I developed the page layout, structured the content sections, and implemented the frontend design.
 
 **Live Demo**  
 [index.html](https://abdulkarimaklouk.github.io/food-lover/index.html)
@@ -185,22 +196,46 @@ I built the page layout, sections, and front-end structure.
 **Source Code**  
 [food-lover](https://github.com/abdulkarimaklouk/food-lover)
 
-**Backend Status:** This project has no backend. The live demo is the full static page.
+**Backend Status:** This project has no backend. The live demo is the complete static page.
 
 ---
 
-## Portfolio site structure
+## Portfolio Site Structure
 
 ```text
 index.html
 README.md
 assets/
-  css/styles.css
-  js/main.js
-  js/mixitup.min.js
-  img/
-  pdf/cv.pdf
-  favicons/
+├── css/
+│   └── styles.css
+├── js/
+│   ├── main.js
+│   └── mixitup.min.js
+├── img/
+├── pdf/
+│   └── cv.pdf
+└── favicons/
 ```
 
-Theme (dark/light) is stored in `localStorage`. Project cards are filtered with Mixitup. Scroll animations use ScrollReveal from a CDN.
+**Features & Implementation**
+
+- **Static Website:** Built using HTML, CSS, and JavaScript.
+- **Dark / Light Theme:** Theme preference is stored in `localStorage`.
+- **Project Filtering:** Project cards are filtered using MixItUp.
+- **Scroll Animations:** ScrollReveal is integrated through a CDN.
+- **CV:** PDF version of my CV is included in the assets directory.
+
+**Running Locally**
+
+1. Clone or download the repository.
+2. Open the project folder in VS Code.
+3. Open `index.html` directly in your browser, or use the Live Server extension.
+4. Live Server runs on port `5501`.
+
+---
+
+## About
+
+This portfolio represents my work as a Computer Engineering student and Full-Stack Web Developer, highlighting my experience building web applications, designing databases, developing REST APIs, and implementing frontend interfaces.
+
+I continuously work on improving my software engineering skills and building practical, maintainable applications.
