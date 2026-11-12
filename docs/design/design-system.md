@@ -37,18 +37,19 @@ Rather than treating 3D as spectacle or relying on a generic developer template,
 | Quality                   | Visual Translation                                                                                                         |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **Engineering Precision** | Aligned structural grids, hairline dividers, monospaced technical metadata, explicit Z-plane hierarchy.                    |
-| **Sophistication**        | Restrained graphite, charcoal, warm ivory, and stone surfaces accented sparingly with muted lavender.                      |
-| **Technical Depth**       | Layered perspective stage, chamfered physical edges, and clear separation between flat editorial bands and elevated slabs. |
-| **Calm Confidence**       | Controlled negative space, quiet motion physics, and zero visual shouting or decorative noise.                             |
+| **Sophistication**        | Architectural Navy (`#14213D`) and organic Cream (`#F4EDE0`) foundation, accented precisely with Coral (`#FF6B5B`). |
+| **Technical Depth**       | Disciplined surface hierarchy, clean geometric framing, and clear separation between flat editorial bands and elevated slabs. |
+| **Calm Confidence**       | Controlled negative space, 60/30/10 color distribution, and zero visual shouting or decorative noise.                         |
 | **Editorial Authorship**  | Section-specific compositions rather than eight stacked rows of identical rounded cards.                                   |
 
 ### Evolution from Current Design
 
-The existing site uses a template-derived saturated lavender accent (`#a789d4`) on navy (`hsl(219, 48%, 8%)`), full-bleed lavender footer, uniform centered cards across sections, overlapping `ScrollReveal` animations (`2500ms`, `60px–300px`), and neon-tinted `box-shadow` glows. This design system replaces those patterns with:
+The existing site used an arbitrary lavender accent (`#a789d4`) on dark blue, uniform centered cards across sections, and neon-tinted glow shadows. This design system replaces those patterns with:
 
-- Neutral architectural **Graphite & Warm Ivory** surfaces where **Muted Lavender** is demoted to a restrained secondary cue (`<= 5%` visual surface area).
-- Physical **directional lighting** (upper-left key light) and **contact occlusion shadows** instead of glowing halos.
-- **Distinct section compositions** preserving all eight required sections and owner content in exact order.
+- The newly approved **Navy (`#14213D`) / Cream (`#F4EDE0`) / Coral (`#FF6B5B`)** palette deployed under a strict **60 / 30 / 10** distribution.
+- **Physical surface lighting & ambient occlusion** instead of glowing halos or arbitrary neon borders.
+- **Distinct section compositions** preserving all eight required sections, owner content, and interactions in exact order.
+- **Deliberately Deferred 3D:** Focusing first on establishing an exceptional 2D layout, typographic hierarchy, and balanced color identity.
 
 ---
 
@@ -77,78 +78,84 @@ The existing site uses a template-derived saturated lavender accent (`#a789d4`) 
 
 ---
 
-## 3. Color System & Semantic Tokens
+## 3. Color System & Semantic Tokens (Navy / Cream / Coral · 60/30/10)
 
-### Palette Derivation & WCAG 2.1 AA Refinements
+### Visual Identity & 60 / 30 / 10 Distribution
 
-Starting from the approved reference palette—**Graphite (`#141619`)**, **Charcoal Surface (`#22262A`)**, **Warm Ivory (`#EAE7E1`)**, **Muted Lavender (`#9A879F`)**, **Stone (`#A69B8C`)**, and **Brushed Silver (`#858B90`)**—every token was evaluated mathematically against WCAG 2.1 AA (`>= 4.5:1` for normal text, `>= 3.0:1` for large text and UI boundaries):
+The visual identity is anchored by three harmonious, high-contrast brand colors:
 
-- **Brushed Silver (`#858B90` → `#91979D`):** On `#22262A`, `#858B90` yields `4.42:1` (fails AA small text). Lifting muted text to `#91979D` achieves `5.16:1` on `#22262A`, `6.14:1` on `#141619`, and `4.57:1` on `#2A2F35`.
-- **Stone (`#A69B8C` → `#BFB4A3` dark / `#695E50` light):** `#A69B8C` is retained for metallic hairline rules and low-emphasis decorative strokes; interactive link/accent text uses `#BFB4A3` in Dark Mode (`7.45:1` on `#22262A`) and deepened umber-stone `#695E50` in Light Mode (`6.01:1` on `#FAF9F6`).
-- **Muted Lavender (`#9A879F` → `#B29FB7` dark / `#6E5A74` light):** Retained as a **strictly secondary** editorial cue (never a dominant surface fill or hero background). Adjusted to `#B29FB7` for dark-mode micro-labels (`6.19:1` on `#22262A`) and `#6E5A74` for light-mode tags/cues (`5.91:1` on `#FAF9F6`).
-- **Interactive Borders (`#747A82` dark / `#7E786E` light):** Calibrated to clear WCAG 1.4.11 Non-Text Contrast (`>= 3.0:1`) for form inputs and ghost button borders across all surfaces.
+- **Primary (60%): Navy `#14213D`** — Authoritative, deep, architectural foundation.
+- **Secondary (30%): Cream `#F4EDE0`** — Warm, tactile, organic parchment structure and ink.
+- **Accent (10%): Coral `#FF6B5B`** — Energetic, modern, high-contrast focal points and interactive triggers.
+
+#### The 60 / 30 / 10 Rule Across Themes:
+1. **Dark Theme (Default):**
+   - **60% Navy:** Deep Midnight canvas (`#0B132B`), Recessed Navy bands (`#101B35`), and Primary Navy card/slab surfaces (`#14213D` / `#1B2A4E`).
+   - **30% Cream:** Warm Cream headings and body text (`#F4EDE0`), soft secondary text (`#D8CFBF`), muted metadata (`#A69E90`), and hairline structural borders (`rgba(244, 237, 224, 0.12)`).
+   - **10% Coral:** Primary CTA button fill (`#FF6B5B` with `#14213D` text), active navigation indicators, focal tags, and subtle accent rules.
+2. **Light Theme:**
+   - **60% Cream:** Warm Cream canvas (`#F4EDE0`), Recessed Cream bands (`#ECE4D5`), and Crisp White card surfaces (`#FFFFFF`).
+   - **30% Navy:** Deep Navy headings and body ink (`#14213D`), mid-navy secondary text (`#2D3D60`), and structural borders (`rgba(20, 33, 61, 0.14)`).
+   - **10% Coral:** Primary CTA button fill (`#FF6B5B` with `#14213D` text), active navigation indicators, and deepened terracotta-coral text links (`#B83A2C`, `4.90:1` AA contrast on cream).
 
 ### Dark Theme Tokens (Primary — Dark First)
 
 | Semantic Role         | Token Name                      | Hex / Value                 | Usage                                                             | Verified Contrast                               |
 | --------------------- | ------------------------------- | --------------------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
-| Primary Background    | `--color-bg-primary`            | `#141619`                   | Page canvas (Graphite)                                            | Base                                            |
-| Secondary Background  | `--color-bg-secondary`          | `#1A1D21`                   | Alternating recessed section bands & input wells                  | Base                                            |
-| Primary Surface       | `--color-surface-primary`       | `#22262A`                   | Charcoal panels, project slabs, service plinths                   | Base                                            |
-| Elevated Surface      | `--color-surface-elevated`      | `#2A2F35`                   | Modals, active hover slabs, elevated drawers                      | Base                                            |
-| Translucent Surface   | `--color-surface-translucent`   | `rgba(26, 29, 33, 0.86)`    | Floating nav dock & scrolled header only                          | Base                                            |
-| Primary Text          | `--color-text-primary`          | `#EAE7E1`                   | Headings, primary body copy, active values                        | `14.69:1` on `#141619` / `12.34:1` on `#22262A` |
-| Secondary Text        | `--color-text-secondary`        | `#B8B4AC`                   | Descriptions, body paragraphs, list details                       | `8.77:1` on `#141619` / `7.37:1` on `#22262A`   |
-| Muted Text            | `--color-text-muted`            | `#91979D`                   | Captions, dates, field hints, secondary labels                    | `6.14:1` on `#141619` / `5.16:1` on `#22262A`   |
-| Primary Accent        | `--color-accent-primary`        | `#BFB4A3`                   | Text links, hover highlights, active cues (Warm Stone)            | `8.87:1` on `#141619` / `7.45:1` on `#22262A`   |
-| Primary CTA Fill      | `--color-cta-bg`                | `#EAE7E1`                   | Primary button fill (Warm Ivory) with `#141619` ink               | `14.69:1` (`#141619` on `#EAE7E1`)              |
-| Primary CTA Hover     | `--color-cta-bg-hover`          | `#D7D2C8`                   | Primary button hover state                                        | `12.37:1` (`#141619` on `#D7D2C8`)              |
-| Secondary Accent      | `--color-accent-secondary`      | `#B29FB7`                   | Subtle index markers, active timeline node, restrained tags       | `7.37:1` on `#141619` / `6.19:1` on `#22262A`   |
-| Secondary Accent Tint | `--color-accent-secondary-tint` | `rgba(154, 135, 159, 0.12)` | Subtle background wash for active status chip only                | Decorative tint                                 |
-| Subtle Border         | `--color-border-subtle`         | `#32373D`                   | Structural panel borders & container outlines                     | `1px` architectural frame                       |
-| Strong Border         | `--color-border-strong`         | `#747A82`                   | Form inputs, ghost buttons, interactive boundaries                | `4.19:1` on `#141619` / `3.52:1` on `#22262A`   |
-| Divider               | `--color-divider`               | `rgba(166, 155, 140, 0.16)` | Section rules, ledger row dividers, metadata hairlines            | Structural separation                           |
-| Edge Highlight        | `--color-edge-highlight`        | `rgba(234, 231, 225, 0.08)` | Top `1px` specular bevel on matte charcoal slabs                  | Directional light cue                           |
-| Shadow Color          | `--color-shadow-rgb`            | `6, 8, 10`                  | Deep graphite contact and elevation shadows                       | Alpha-layered                                   |
-| Focus Ring            | `--color-focus-ring`            | `#EAE7E1`                   | `2px` solid outline with `2px` `#141619` inner offset             | `14.69:1`                                       |
-| Success               | `--color-status-success`        | `#6FB892`                   | Validated states, positive feedback (`rgba(111,184,146,0.12)` bg) | `7.72:1` on `#141619` / `6.49:1` on `#22262A`   |
-| Warning               | `--color-status-warning`        | `#D4A857`                   | Demo notes / unhosted-backend caution border & label              | `8.23:1` on `#141619` / `6.92:1` on `#22262A`   |
-| Error                 | `--color-status-error`          | `#DF7A7A`                   | Form validation errors (`rgba(223,122,122,0.12)` bg)              | `6.22:1` on `#141619` / `5.22:1` on `#22262A`   |
+| Primary Background    | `--color-bg-primary`            | `#0B132B`                   | Deep Midnight Navy page canvas                                    | Base                                            |
+| Secondary Background  | `--color-bg-secondary`          | `#101B35`                   | Alternating recessed section bands & input wells                  | Base                                            |
+| Primary Surface       | `--color-surface-primary`       | `#14213D`                   | Primary Navy panels, project cards, service plinths               | Base                                            |
+| Elevated Surface      | `--color-surface-elevated`      | `#1B2A4E`                   | Modals, active hover cards, elevated drawers                      | Base                                            |
+| Translucent Surface   | `--color-surface-translucent`   | `rgba(16, 27, 53, 0.88)`    | Floating nav dock & scrolled header only                          | Base                                            |
+| Primary Text          | `--color-text-primary`          | `#F4EDE0`                   | Headings, primary body copy, active values (Warm Cream)           | `15.79:1` on `#0B132B` / `13.72:1` on `#14213D` |
+| Secondary Text        | `--color-text-secondary`        | `#D8CFBF`                   | Descriptions, body paragraphs, list details                       | `12.35:1` on `#0B132B` / `10.73:1` on `#14213D` |
+| Muted Text            | `--color-text-muted`            | `#A69E90`                   | Captions, dates, field hints, secondary labels                    | `6.84:1` on `#0B132B` / `5.94:1` on `#14213D`   |
+| Primary Accent        | `--color-accent-primary`        | `#FF6B5B`                   | Focal points, badges, text links, active cues (Vibrant Coral)     | `6.57:1` on `#0B132B` / `5.71:1` on `#14213D`   |
+| Primary CTA Fill      | `--color-cta-bg`                | `#FF6B5B`                   | Primary button fill (Vibrant Coral) with `#14213D` ink            | `5.71:1` (`#14213D` on `#FF6B5B`)               |
+| Primary CTA Hover     | `--color-cta-bg-hover`          | `#FF8577`                   | Primary button hover state                                        | `6.65:1` (`#14213D` on `#FF8577`)               |
+| Accent Tint           | `--color-accent-tint`           | `rgba(255, 107, 91, 0.12)`  | Subtle background wash for active status chips                    | Decorative tint                                 |
+| Subtle Border         | `--color-border-subtle`         | `rgba(244, 237, 224, 0.12)` | Structural panel borders & container outlines                     | `1px` architectural frame                       |
+| Strong Border         | `--color-border-strong`         | `rgba(244, 237, 224, 0.28)` | Form inputs, ghost buttons, interactive boundaries                | `3.82:1` on `#0B132B` / `3.32:1` on `#14213D`   |
+| Divider               | `--color-divider`               | `rgba(244, 237, 224, 0.10)` | Section rules, ledger row dividers, metadata hairlines            | Structural separation                           |
+| Edge Highlight        | `--color-edge-highlight`        | `rgba(244, 237, 224, 0.08)` | Top `1px` bevel highlight on matte navy panels                    | Directional light cue                           |
+| Shadow Color          | `--color-shadow-rgb`            | `5, 9, 20`                  | Deep midnight navy contact and elevation shadows                  | Alpha-layered                                   |
+| Focus Ring            | `--color-focus-ring`            | `#FF6B5B`                   | `2px` solid outline with `2px` `#0B132B` inner offset             | `6.57:1`                                        |
+| Success               | `--color-status-success`        | `#52B788`                   | Validated states, positive feedback (`rgba(82,183,136,0.12)` bg)  | `8.14:1` on `#0B132B` / `7.07:1` on `#14213D`   |
+| Warning               | `--color-status-warning`        | `#FFB703`                   | Demo notes / unhosted-backend caution border & label              | `11.82:1` on `#0B132B` / `10.27:1` on `#14213D` |
+| Error                 | `--color-status-error`          | `#FF6B5B`                   | Form validation errors (`rgba(255,107,91,0.12)` bg)               | `6.57:1` on `#0B132B` / `5.71:1` on `#14213D`   |
 
-### Light Theme Tokens (Intentional Warm Limestone)
-
-Light Mode uses warm alabaster and limestone papers rather than inverted dark gray, preserving the exact graphite/stone/muted-lavender palette temperament.
+### Light Theme Tokens (Warm Cream & Deep Navy)
 
 | Semantic Role         | Token Name                      | Hex / Value                 | Usage                                                    | Verified Contrast                               |
 | --------------------- | ------------------------------- | --------------------------- | -------------------------------------------------------- | ----------------------------------------------- |
-| Primary Background    | `--color-bg-primary`            | `#F4F2ED`                   | Warm alabaster canvas (zero sterile `#FFF` glare)        | Base                                            |
-| Secondary Background  | `--color-bg-secondary`          | `#EAE7E1`                   | Warm Ivory recessed bands & input wells                  | Base                                            |
-| Primary Surface       | `--color-surface-primary`       | `#FAF9F6`                   | Soft limestone slabs rising subtly off `#F4F2ED`         | Base                                            |
-| Elevated Surface      | `--color-surface-elevated`      | `#FFFFFF`                   | Modals & highest floating interactive slabs              | Base                                            |
-| Translucent Surface   | `--color-surface-translucent`   | `rgba(250, 249, 246, 0.88)` | Floating nav dock & scrolled header only                 | Base                                            |
-| Primary Text          | `--color-text-primary`          | `#16191D`                   | Deep graphite editorial ink                              | `15.76:1` on `#F4F2ED` / `16.75:1` on `#FAF9F6` |
-| Secondary Text        | `--color-text-secondary`        | `#444950`                   | Body paragraphs, descriptions                            | `8.11:1` on `#F4F2ED` / `8.62:1` on `#FAF9F6`   |
-| Muted Text            | `--color-text-muted`            | `#60666E`                   | Captions, dates, field hints, secondary metadata         | `5.18:1` on `#F4F2ED` / `5.51:1` on `#FAF9F6`   |
-| Primary Accent        | `--color-accent-primary`        | `#695E50`                   | Text links, interactive stone labels                     | `5.66:1` on `#F4F2ED` / `6.01:1` on `#FAF9F6`   |
-| Primary CTA Fill      | `--color-cta-bg`                | `#22262A`                   | Primary button fill (Charcoal) with `#FAF9F6` ink        | `14.47:1` (`#FAF9F6` on `#22262A`)              |
-| Primary CTA Hover     | `--color-cta-bg-hover`          | `#141619`                   | Primary button hover state                               | `16.97:1` (`#FAF9F6` on `#141619`)              |
-| Secondary Accent      | `--color-accent-secondary`      | `#6E5A74`                   | Deepened muted plum-lavender for cues & indices          | `5.56:1` on `#F4F2ED` / `5.91:1` on `#FAF9F6`   |
-| Secondary Accent Tint | `--color-accent-secondary-tint` | `rgba(110, 90, 116, 0.10)`  | Restrained active chip wash                              | Decorative tint                                 |
-| Subtle Border         | `--color-border-subtle`         | `#D6D2C9`                   | Structural panel borders                                 | `1px` crisp frame                               |
-| Strong Border         | `--color-border-strong`         | `#7E786E`                   | Form inputs, ghost buttons, interactive boundaries       | `3.91:1` on `#F4F2ED` / `4.16:1` on `#FAF9F6`   |
-| Divider               | `--color-divider`               | `rgba(22, 25, 29, 0.12)`    | Hairline section dividers & ledger separators            | Structural separation                           |
-| Edge Highlight        | `--color-edge-highlight`        | `rgba(255, 255, 255, 0.85)` | Top `1px` crisp bevel highlight on limestone panels      | Directional light cue                           |
-| Shadow Color          | `--color-shadow-rgb`            | `22, 25, 29`                | Warm graphite contact & ambient shadows                  | Alpha-layered                                   |
-| Focus Ring            | `--color-focus-ring`            | `#16191D`                   | `2px` solid outline with `2px` `#FAF9F6` offset          | `15.76:1`                                       |
-| Success               | `--color-status-success`        | `#236B49`                   | Validated states (`rgba(35,107,73,0.10)` bg)             | `5.74:1` on `#F4F2ED` / `6.10:1` on `#FAF9F6`   |
-| Warning               | `--color-status-warning`        | `#8A5E14`                   | Demo notes / caution borders (`rgba(138,94,20,0.10)` bg) | `5.08:1` on `#F4F2ED` / `5.40:1` on `#FAF9F6`   |
-| Error                 | `--color-status-error`          | `#A83838`                   | Form validation errors (`rgba(168,56,56,0.10)` bg)       | `5.71:1` on `#F4F2ED` / `6.07:1` on `#FAF9F6`   |
+| Primary Background    | `--color-bg-primary`            | `#F4EDE0`                   | Warm Cream page canvas                                   | Base                                            |
+| Secondary Background  | `--color-bg-secondary`          | `#ECE4D5`                   | Recessed Cream bands & input wells                       | Base                                            |
+| Primary Surface       | `--color-surface-primary`       | `#FFFFFF`                   | Crisp Alabaster card surfaces                            | Base                                            |
+| Elevated Surface      | `--color-surface-elevated`      | `#FFFFFF`                   | Modals & highest floating interactive surfaces           | Base                                            |
+| Translucent Surface   | `--color-surface-translucent`   | `rgba(244, 237, 224, 0.92)` | Floating nav dock & scrolled header only                 | Base                                            |
+| Primary Text          | `--color-text-primary`          | `#14213D`                   | Deep Navy editorial ink                                  | `13.72:1` on `#F4EDE0` / `15.97:1` on `#FFFFFF` |
+| Secondary Text        | `--color-text-secondary`        | `#2D3D60`                   | Body paragraphs, descriptions                            | `9.26:1` on `#F4EDE0` / `10.78:1` on `#FFFFFF`  |
+| Muted Text            | `--color-text-muted`            | `#576682`                   | Captions, dates, field hints, secondary metadata         | `5.56:1` on `#F4EDE0` / `6.47:1` on `#FFFFFF`   |
+| Primary Accent        | `--color-accent-primary`        | `#B83A2C`                   | Text links, interactive stone labels (Deep Terracotta)   | `4.90:1` on `#F4EDE0` / `5.70:1` on `#FFFFFF`   |
+| Primary CTA Fill      | `--color-cta-bg`                | `#FF6B5B`                   | Primary button fill (Vibrant Coral) with `#14213D` ink   | `5.71:1` (`#14213D` on `#FF6B5B`)               |
+| Primary CTA Hover     | `--color-cta-bg-hover`          | `#FF8577`                   | Primary button hover state                               | `6.65:1` (`#14213D` on `#FF8577`)               |
+| Accent Tint           | `--color-accent-tint`           | `rgba(255, 107, 91, 0.10)`  | Restrained active chip wash                              | Decorative tint                                 |
+| Subtle Border         | `--color-border-subtle`         | `rgba(20, 33, 61, 0.12)`    | Structural panel borders                                 | `1px` crisp frame                               |
+| Strong Border         | `--color-border-strong`         | `rgba(20, 33, 61, 0.28)`    | Form inputs, ghost buttons, interactive boundaries       | `3.62:1` on `#F4EDE0` / `4.21:1` on `#FFFFFF`   |
+| Divider               | `--color-divider`               | `rgba(20, 33, 61, 0.10)`    | Hairline section dividers & ledger separators            | Structural separation                           |
+| Edge Highlight        | `--color-edge-highlight`        | `rgba(255, 255, 255, 0.90)` | Top `1px` crisp bevel highlight on white panels          | Directional light cue                           |
+| Shadow Color          | `--color-shadow-rgb`            | `20, 33, 61`                | Deep navy ambient occlusion shadows                      | Alpha-layered                                   |
+| Focus Ring            | `--color-focus-ring`            | `#14213D`                   | `2px` solid outline with `2px` `#F4EDE0` offset          | `13.72:1`                                       |
+| Success               | `--color-status-success`        | `#2D6A4F`                   | Validated states (`rgba(45,106,79,0.10)` bg)             | `5.88:1` on `#F4EDE0` / `6.84:1` on `#FFFFFF`   |
+| Warning               | `--color-status-warning`        | `#B07D10`                   | Demo notes / caution borders (`rgba(176,125,16,0.10)` bg)| `5.12:1` on `#F4EDE0` / `5.96:1` on `#FFFFFF`   |
+| Error                 | `--color-status-error`          | `#B83A2C`                   | Form validation errors (`rgba(184,58,44,0.10)` bg)       | `4.90:1` on `#F4EDE0` / `5.70:1` on `#FFFFFF`   |
 
-### Theme Rules
+### Theme Rules & 3D Deferral Notice
 
-- `<meta name="theme-color">` must synchronize dynamically with `--color-bg-primary` (`#141619` dark / `#F4F2ED` light).
+- `<meta name="theme-color">` synchronizes dynamically with `--color-bg-primary` (`#0B132B` dark / `#F4EDE0` light).
 - Theme detection runs synchronously in `<head>` (guarded against blocked `localStorage`) so Light Mode never flashes Dark Mode on load.
-- **Lavender Budget Rule:** `--color-accent-secondary` (`#B29FB7` / `#6E5A74`) may only be used on small structural cues (section index numbers, active timeline node, single secondary outline/tag highlight) and never as a card background, section background, or hero gradient.
+- **Coral 10% Budget Rule:** `--color-accent-primary` (`#FF6B5B`) is reserved for high-value interactive calls-to-action, active indicators, and critical focal points. It is never used as large full-section background fills.
+- **3D Deliberately Deferred:** Complicated 3D perspective stages, orbital meshes, and pointer parallax are deliberately deferred in Phase 01 to establish a flawless UI foundation and color balance first.
 
 ---
 

@@ -23,7 +23,7 @@
       themeButton.setAttribute("aria-label", isLight ? "Switch to dark theme" : "Switch to light theme");
     }
     if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", isLight ? "#F4F2ED" : "#141619");
+      metaThemeColor.setAttribute("content", isLight ? "#F4EDE0" : "#0B132B");
     }
   }
 
@@ -138,7 +138,6 @@
     document.body.classList.add("modal-open");
     setBackgroundInert(true);
 
-    // Wait for display/layout before transitioning opacity and focusing inside
     requestAnimationFrame(() => {
       modal.classList.add("active-modal");
       const closeBtn = modal.querySelector(".services__modal-close");
@@ -373,147 +372,7 @@
     revealNodes.forEach((node) => observer.observe(node));
   }
 
-  /* =============== QUIET 3D POINTER PARALLAX (Desktop Fine-Pointer Only) =============== */
-  const bg = document.getElementById("bg-3d");
-  const heroPlinth = document.getElementById("hero-plinth");
-  const finePointerQuery = window.matchMedia("(pointer: fine)");
-  const desktopQuery = window.matchMedia("(min-width: 992px)");
-
-  let targetRotX = 0;
-  let targetRotY = 0;
-  let currentRotX = 0;
-  let currentRotY = 0;
-  let targetTransX = 0;
-  let targetTransY = 0;
-  let currentTransX = 0;
-  let currentTransY = 0;
-  let isInteracting = false;
-  let rafId = null;
-  let parallaxEnabled = false;
-
-  const maxStageTilt = 2.0;
-  const maxPlinthTilt = 1.5;
-  const maxTrans = 8;
-  const ease = 0.08;
-
-  function clearTransforms() {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-    }
-    currentRotX = 0;
-    currentRotY = 0;
-    currentTransX = 0;
-    currentTransY = 0;
-    targetRotX = 0;
-    targetRotY = 0;
-    targetTransX = 0;
-    targetTransY = 0;
-    isInteracting = false;
-
-    if (bg) {
-      bg.style.removeProperty("--bg-rot-x");
-      bg.style.removeProperty("--bg-rot-y");
-      bg.style.removeProperty("--bg-trans-x");
-      bg.style.removeProperty("--bg-trans-y");
-    }
-    if (heroPlinth) {
-      heroPlinth.style.removeProperty("--plinth-rx");
-      heroPlinth.style.removeProperty("--plinth-ry");
-    }
+  if (motionQuery.matches) {
+    revealAllImmediately();
   }
-
-  function renderParallax() {
-    currentRotX += (targetRotX - currentRotX) * ease;
-    currentRotY += (targetRotY - currentRotY) * ease;
-    currentTransX += (targetTransX - currentTransX) * ease;
-    currentTransY += (targetTransY - currentTransY) * ease;
-
-    const deltaRot = Math.abs(targetRotX - currentRotX) + Math.abs(targetRotY - currentRotY);
-    const deltaTrans = Math.abs(targetTransX - currentTransX) + Math.abs(targetTransY - currentTransY);
-    const isMoving = deltaRot > 0.01 || deltaTrans > 0.02;
-
-    if (!isInteracting && !isMoving) {
-      clearTransforms();
-      return;
-    }
-
-    if (bg) {
-      bg.style.setProperty("--bg-rot-x", `${currentRotX.toFixed(2)}deg`);
-      bg.style.setProperty("--bg-rot-y", `${currentRotY.toFixed(2)}deg`);
-      bg.style.setProperty("--bg-trans-x", `${currentTransX.toFixed(2)}px`);
-      bg.style.setProperty("--bg-trans-y", `${currentTransY.toFixed(2)}px`);
-    }
-
-    if (heroPlinth) {
-      const ratio = maxPlinthTilt / maxStageTilt;
-      heroPlinth.style.setProperty("--plinth-rx", `${(currentRotX * ratio).toFixed(2)}deg`);
-      heroPlinth.style.setProperty("--plinth-ry", `${(currentRotY * ratio).toFixed(2)}deg`);
-    }
-
-    if (isMoving) {
-      rafId = requestAnimationFrame(renderParallax);
-    } else {
-      rafId = null;
-    }
-  }
-
-  function startParallaxLoop() {
-    if (!rafId) {
-      rafId = requestAnimationFrame(renderParallax);
-    }
-  }
-
-  function onPointerMove(e) {
-    if (!parallaxEnabled) return;
-    const width = window.innerWidth || 1;
-    const height = window.innerHeight || 1;
-    const normX = Math.max(-1, Math.min(1, (e.clientX / width) * 2 - 1));
-    const normY = Math.max(-1, Math.min(1, (e.clientY / height) * 2 - 1));
-
-    targetRotY = normX * maxStageTilt;
-    targetRotX = -normY * (maxStageTilt * 0.8);
-    targetTransX = normX * maxTrans;
-    targetTransY = normY * maxTrans;
-
-    isInteracting = true;
-    startParallaxLoop();
-  }
-
-  function onPointerLeave() {
-    if (!parallaxEnabled) return;
-    isInteracting = false;
-    targetRotX = 0;
-    targetRotY = 0;
-    targetTransX = 0;
-    targetTransY = 0;
-    startParallaxLoop();
-  }
-
-  function syncParallaxCapability() {
-    const shouldEnable = !motionQuery.matches && finePointerQuery.matches && desktopQuery.matches;
-    if (shouldEnable === parallaxEnabled) return;
-
-    parallaxEnabled = shouldEnable;
-    if (parallaxEnabled) {
-      window.addEventListener("pointermove", onPointerMove, { passive: true });
-      document.documentElement.addEventListener("pointerleave", onPointerLeave, { passive: true });
-      window.addEventListener("blur", onPointerLeave, { passive: true });
-    } else {
-      window.removeEventListener("pointermove", onPointerMove);
-      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("blur", onPointerLeave);
-      clearTransforms();
-    }
-
-    if (motionQuery.matches) {
-      revealAllImmediately();
-    }
-  }
-
-  syncParallaxCapability();
-  motionQuery.addEventListener("change", syncParallaxCapability);
-  finePointerQuery.addEventListener("change", syncParallaxCapability);
-  desktopQuery.addEventListener("change", syncParallaxCapability);
 })();
-
