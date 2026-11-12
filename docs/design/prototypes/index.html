@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#141619" id="meta-theme-color">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23141619'/%3E%3Crect x='9' y='9' width='14' height='14' rx='2' fill='none' stroke='%23BFB4A3' stroke-width='2'/%3E%3C/svg%3E">
+    <title>Abdulkarim Aklouk | Quiet 3D Visual Prototype</title>
+    <meta name="description" content="Phase 03 Quiet 3D visual prototype for Abdulkarim Aklouk's portfolio.">
+
+    <!-- Synchronous pre-paint theme guard to prevent FOUC -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("portfolio-proto-theme");
+                if (saved === "light") {
+                    document.documentElement.classList.add("light-theme");
+                    var meta = document.getElementById("meta-theme-color");
+                    if (meta) meta.setAttribute("content", "#F4F2ED");
+                }
+            } catch (e) {
+                // Storage access blocked; fall back to Dark First default
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Global Quiet 3D Architectural Backdrop -->
+    <div class="bg-3d" id="bg-3d" aria-hidden="true">
+        <div class="bg-3d__stage">
+            <div class="bg-3d__ambient"></div>
+            <div class="bg-3d__layer bg-3d__layer--grid">
+                <div class="bg-3d__grid"></div>
+            </div>
+            <div class="bg-3d__layer bg-3d__layer--orbits">
+                <div class="bg-3d__orbital bg-3d__orbital--1"></div>
+                <div class="bg-3d__orbital bg-3d__orbital--2"></div>
+            </div>
+            <div class="bg-3d__layer bg-3d__layer--accents">
+                <span class="bg-3d__cross bg-3d__cross--tl">+</span>
+                <span class="bg-3d__cross bg-3d__cross--tr">+</span>
+                <span class="bg-3d__cross bg-3d__cross--bl">+</span>
+                <span class="bg-3d__cross bg-3d__cross--br">+</span>
+            </div>
+        </div>
+    </div>
+
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Global Header & Floating Navigation Dock -->
+    <header class="header" id="header">
+        <nav class="nav container" aria-label="Main navigation">
+            <a href="#home" class="nav__logo">
+                <span class="nav__logo-mark" aria-hidden="true"></span>
+                <span>Abdulkarim</span>
+            </a>
+
+            <div class="nav__actions">
+                <span class="nav__proto-badge">PROTOTYPE · QUIET 3D</span>
+                <button type="button" class="theme-toggle" id="theme-button" aria-label="Switch to light theme" aria-pressed="false">
+                    <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link" aria-label="Home" aria-current="location" data-tooltip="Home">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1v-9.5z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link" aria-label="About" data-tooltip="About">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M5 20a7 7 0 0 1 14 0"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#skills" class="nav__link" aria-label="Skills" data-tooltip="Skills">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#work" class="nav__link" aria-label="Projects" data-tooltip="Projects">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="4" width="7" height="7" rx="1"/>
+                                <rect x="14" y="4" width="7" height="7" rx="1"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#experience" class="nav__link" aria-label="Experience and education" data-tooltip="Experience">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="7" width="18" height="13" rx="2"/>
+                                <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link" aria-label="Contact" data-tooltip="Contact">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/>
+                                <path d="m3 7 9 6 9-6"/>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" id="main" tabindex="-1">
+        <!-- 01. HERO SECTION -->
+        <section class="hero section section--primary" id="home" aria-label="Home">
+            <div class="container hero__grid">
+                <div class="hero__content">
+                    <p class="eyebrow">01 / CAIRO, EGYPT · FULL-STACK ENGINEERING</p>
+                    <h1 class="hero__name">Abdulkarim Aklouk</h1>
+                    <p class="hero__role">Full-Stack Developer</p>
+                    <p class="hero__description">
+                        Computer Engineering student in Cairo. I build web applications, RESTful APIs,
+                        authentication systems, and database-driven applications with JavaScript,
+                        Node.js, Express.js, MongoDB, and MySQL.
+                    </p>
+
+                    <div class="hero__cta-group">
+                        <a href="#work" class="btn btn--primary">View Projects</a>
+                        <a href="#contact" class="btn btn--ghost">Contact Me</a>
+                        <a download href="../../../assets/pdf/cv.pdf" class="btn btn--ghost">Download CV</a>
+                    </div>
+
+                    <div class="hero__meta-bar">
+                        <div class="hero__socials" aria-label="Social links">
+                            <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+                                </svg>
+                            </a>
+                            <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="LinkedIn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <a href="#about" class="hero__scroll">
+                            <span>Scroll to 02 / About</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 5v14M19 12l-7 7-7-7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero 3D Architectural Portrait Pedestal -->
+                <div class="hero__visual">
+                    <div class="hero__plinth-perspective">
+                        <figure class="hero__plinth" id="hero-plinth">
+                            <div class="hero__plinth-well">
+                                <div class="hero__plinth-hairline" aria-hidden="true"></div>
+                                <img
+                                    src="../../../assets/img/profile.png"
+                                    alt="Abdulkarim Aklouk"
+                                    width="768"
+                                    height="768"
+                                    class="hero__img"
+                                >
+                            </div>
+                            <figcaption class="hero__plinth-caption">
+                                <span>PROFILE // 01</span>
+                                <span>CAIRO, EG</span>
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02. ABOUT SECTION (Flat Editorial Ledger + Prose) -->
+        <section class="about section section--secondary" id="about" aria-label="About Me">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">02 / INTRODUCTION</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">About Me</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <div class="about__grid" data-reveal>
+                    <dl class="about__ledger">
+                        <div class="about__ledger-row">
+                            <dt class="about__ledger-key">Education</dt>
+                            <dd class="about__ledger-val">Badr University</dd>
+                        </div>
+                        <div class="about__ledger-row">
+                            <dt class="about__ledger-key">Focus</dt>
+                            <dd class="about__ledger-val">Full-Stack</dd>
+                        </div>
+                        <div class="about__ledger-row">
+                            <dt class="about__ledger-key">Location</dt>
+                            <dd class="about__ledger-val">Cairo, Egypt</dd>
+                        </div>
+                    </dl>
+
+                    <div class="about__prose">
+                        <p class="about__description">
+                            I am a second-year Computer Engineering student at Badr University and a
+                            Full-Stack Web Developer. I work on maintainable backend systems and practical
+                            full-stack solutions using JavaScript, Node.js, Express.js, MongoDB, and MySQL.
+                        </p>
+                        <p class="about__description">
+                            I am a quick learner. I pick up new tools and APIs efficiently by reading
+                            documentation and applying them in real projects.
+                        </p>
+                        <p class="about__description">
+                            I use React in my skill set, but I am still developing that skill and do not
+                            yet consider myself a professional-level React developer.
+                        </p>
+
+                        <div class="about__cta">
+                            <a href="#contact" class="btn btn--ghost">Contact Me</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03. SKILLS SECTION (Balanced 2-Column Technical Matrix) -->
+        <section class="skills section section--primary" id="skills" aria-label="Skills">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">03 / FROM MY CV</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Skills</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <div class="skills__grid">
+                    <!-- Left Stack: Languages & Frontend -->
+                    <div class="skills__col">
+                        <article class="skills__panel" data-reveal>
+                            <div class="skills__panel-header">
+                                <span class="skills__index">01</span>
+                                <h3 class="skills__title">Languages</h3>
+                            </div>
+                            <ul class="skills__list">
+                                <li class="skills__row">
+                                    <span class="skills__name">JavaScript</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">C++</span>
+                                    <span class="chip">Academic</span>
+                                </li>
+                            </ul>
+                        </article>
+
+                        <article class="skills__panel" data-reveal>
+                            <div class="skills__panel-header">
+                                <span class="skills__index">02</span>
+                                <h3 class="skills__title">Frontend</h3>
+                            </div>
+                            <ul class="skills__list">
+                                <li class="skills__row">
+                                    <span class="skills__name">HTML5</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">CSS3</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">Bootstrap</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">JavaScript</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">React</span>
+                                    <span class="chip chip--secondary">Learning</span>
+                                </li>
+                            </ul>
+                        </article>
+                    </div>
+
+                    <!-- Right Stack: Backend, Databases, Tools -->
+                    <div class="skills__col">
+                        <article class="skills__panel" data-reveal>
+                            <div class="skills__panel-header">
+                                <span class="skills__index">03</span>
+                                <h3 class="skills__title">Backend</h3>
+                            </div>
+                            <ul class="skills__list">
+                                <li class="skills__row">
+                                    <span class="skills__name">Node.js</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">Express.js</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">REST APIs</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                            </ul>
+                        </article>
+
+                        <article class="skills__panel" data-reveal>
+                            <div class="skills__panel-header">
+                                <span class="skills__index">04</span>
+                                <h3 class="skills__title">Databases</h3>
+                            </div>
+                            <ul class="skills__list">
+                                <li class="skills__row">
+                                    <span class="skills__name">MongoDB</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">MySQL</span>
+                                    <span class="chip">In projects</span>
+                                </li>
+                            </ul>
+                        </article>
+
+                        <article class="skills__panel" data-reveal>
+                            <div class="skills__panel-header">
+                                <span class="skills__index">05</span>
+                                <h3 class="skills__title">Tools</h3>
+                            </div>
+                            <ul class="skills__list">
+                                <li class="skills__row">
+                                    <span class="skills__name">Git</span>
+                                    <span class="chip">In use</span>
+                                </li>
+                                <li class="skills__row">
+                                    <span class="skills__name">GitHub</span>
+                                    <span class="chip">In use</span>
+                                </li>
+                            </ul>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04. SERVICES SECTION (Architectural Plinths + Elevated Modals) -->
+        <section class="services section section--secondary" id="services" aria-label="Services">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">04 / WHAT I WORK ON</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Services</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <div class="services__grid">
+                    <article class="services__plinth" data-reveal>
+                        <div class="services__plinth-top">
+                            <span class="services__index">01</span>
+                            <h3 class="services__title">Backend &amp;<br>REST APIs</h3>
+                        </div>
+                        <button type="button" class="services__button" data-modal-target="service-dialog-1" aria-haspopup="dialog" aria-controls="service-dialog-1" aria-expanded="false">
+                            <span>See More</span>
+                            <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </button>
+                    </article>
+
+                    <article class="services__plinth" data-reveal>
+                        <div class="services__plinth-top">
+                            <span class="services__index">02</span>
+                            <h3 class="services__title">Full-Stack<br>Web Development</h3>
+                        </div>
+                        <button type="button" class="services__button" data-modal-target="service-dialog-2" aria-haspopup="dialog" aria-controls="service-dialog-2" aria-expanded="false">
+                            <span>See More</span>
+                            <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </button>
+                    </article>
+
+                    <article class="services__plinth" data-reveal>
+                        <div class="services__plinth-top">
+                            <span class="services__index">03</span>
+                            <h3 class="services__title">Databases &amp;<br>Authentication</h3>
+                        </div>
+                        <button type="button" class="services__button" data-modal-target="service-dialog-3" aria-haspopup="dialog" aria-controls="service-dialog-3" aria-expanded="false">
+                            <span>See More</span>
+                            <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </button>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05. PROJECTS SECTION (DEFERRED SCOPE — Preserved Existing Card Treatment) -->
+        <section class="work section section--primary" id="work" aria-label="Projects">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">05 / SELECTED WORK</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Projects</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <div class="work__deferred-note" role="note">
+                    <span class="chip chip--secondary">DEFERRED SCOPE</span>
+                    <p>
+                        Projects card layout and copy are intentionally preserved from production in this prototype.
+                        Future integration applies Quiet 3D elevation, segmented filter rails, and recessed Demo Note wells.
+                    </p>
+                </div>
+
+                <div class="work__filters">
+                    <button type="button" class="work__item active-work" data-filter="all" aria-pressed="true">All</button>
+                    <button type="button" class="work__item" data-filter=".fullstack" aria-pressed="false">Full-Stack</button>
+                    <button type="button" class="work__item" data-filter=".frontend" aria-pressed="false">Frontend</button>
+                </div>
+                <p class="sr-only" id="work-filter-status" aria-live="polite"></p>
+
+                <div class="work__container">
+                    <article class="work__card mix fullstack">
+                        <h3 class="work__title">Restaurant Meal Management System</h3>
+                        <p class="work__description">
+                            Full-stack system for meals, ingredients, inventory, and orders using Node.js,
+                            Express.js, MySQL, and REST APIs.
+                        </p>
+                        <ul class="work__features">
+                            <li>Relational MySQL design with structured entity relationships</li>
+                            <li>REST APIs for meals, ingredients, inventory, and orders</li>
+                            <li>CRUD operations and backend business logic</li>
+                        </ul>
+                        <ul class="work__tags">
+                            <li>Node.js</li>
+                            <li>Express.js</li>
+                            <li>MySQL</li>
+                            <li>REST APIs</li>
+                            <li>JavaScript</li>
+                        </ul>
+                        <p class="work__note">
+                            <strong>Demo Note:</strong> The frontend is available as a live demo, but the backend is not currently hosted on a server. Therefore, backend-dependent data and functionality may not be available in the live demo.
+                        </p>
+                        <div class="work__actions">
+                            <a href="https://abdulkarimaklouk.github.io/restaurant-management-frontend/stores.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Live Demo <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/restaurant-management-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/restaurant-management-backend" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code (API) <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="work__card mix fullstack">
+                        <h3 class="work__title">Social Media Application</h3>
+                        <p class="work__description">
+                            Full-stack social app with authentication, posts, comments, likes, and user
+                            profiles using Node.js, Express.js, MongoDB, and REST APIs.
+                        </p>
+                        <ul class="work__features">
+                            <li>JWT-based authentication and authorization</li>
+                            <li>REST APIs for posts, comments, likes, and profiles</li>
+                            <li>MongoDB data models and CRUD operations</li>
+                        </ul>
+                        <ul class="work__tags">
+                            <li>Node.js</li>
+                            <li>Express.js</li>
+                            <li>MongoDB</li>
+                            <li>JWT</li>
+                            <li>REST APIs</li>
+                        </ul>
+                        <p class="work__note">
+                            <strong>Demo Note:</strong> The frontend is available as a live demo, but the backend is not currently hosted on a server. Backend-dependent features and data will therefore not function in the live demo.
+                        </p>
+                        <div class="work__actions">
+                            <a href="https://abdulkarimaklouk.github.io/social-media-frontend/login.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Live Demo <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/social-media-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/social-media-backend" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code (API) <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="work__card mix frontend">
+                        <h3 class="work__title">Product CRUD</h3>
+                        <p class="work__description">
+                            JavaScript product manager with complete Create, Read, Update, and Delete
+                            flows, plus search and calculated totals.
+                        </p>
+                        <ul class="work__features">
+                            <li>Create, read, update, and delete product records</li>
+                            <li>Search by title or category</li>
+                            <li>Price, taxes, ads, discount, and total fields</li>
+                        </ul>
+                        <ul class="work__tags">
+                            <li>HTML</li>
+                            <li>CSS</li>
+                            <li>JavaScript</li>
+                        </ul>
+                        <div class="work__actions">
+                            <a href="https://abdulkarimaklouk.github.io/crud-product-frontend/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Live Demo <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/crud-product-frontend" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="work__card mix frontend">
+                        <h3 class="work__title">Aklouk Template</h3>
+                        <p class="work__description">
+                            Multi-section HTML and CSS landing template with articles, gallery, features,
+                            team, services, pricing, events, and contact blocks.
+                        </p>
+                        <ul class="work__features">
+                            <li>Articles, gallery, features, testimonials, and team sections</li>
+                            <li>Services, skills, how-it-works, events, and pricing plans</li>
+                            <li>Stats, discount request, and footer contact details</li>
+                        </ul>
+                        <ul class="work__tags">
+                            <li>HTML</li>
+                            <li>CSS</li>
+                        </ul>
+                        <div class="work__actions">
+                            <a href="https://abdulkarimaklouk.github.io/template-alaklouk/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Live Demo <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/template-alaklouk" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="work__card mix frontend">
+                        <h3 class="work__title">Food Template</h3>
+                        <p class="work__description">
+                            Single-page restaurant landing page with home, about, offers, menu,
+                            daytime schedule, gallery, and contact.
+                        </p>
+                        <ul class="work__features">
+                            <li>Hero, about, special offers, and menu with prices</li>
+                            <li>Daytime schedule and food gallery</li>
+                            <li>Contact block with address and working hours</li>
+                        </ul>
+                        <ul class="work__tags">
+                            <li>HTML5</li>
+                            <li>CSS3</li>
+                            <li>JavaScript</li>
+                        </ul>
+                        <div class="work__actions">
+                            <a href="https://abdulkarimaklouk.github.io/food-lover/index.html" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Live Demo <span aria-hidden="true">&rarr;</span>
+                            </a>
+                            <a href="https://github.com/abdulkarimaklouk/food-lover" target="_blank" rel="noopener noreferrer" class="work__button">
+                                Source Code <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06. EXPERIENCE & EDUCATION SECTION (Architectural Vertical Timeline) -->
+        <section class="experience section section--secondary" id="experience" aria-label="Experience & Education">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">06 / BACKGROUND</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Experience &amp; Education</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <ol class="timeline">
+                    <li class="timeline__item" data-reveal>
+                        <span class="timeline__node" aria-hidden="true"></span>
+                        <div class="timeline__meta-col">
+                            <span class="chip">Freelance</span>
+                            <h3 class="timeline__role">Instagram Posting Tool</h3>
+                            <p class="timeline__meta">Freelance Full-Stack Web Developer · March 2025 – April 2025 · Cairo, Egypt</p>
+                        </div>
+                        <div class="timeline__panel">
+                            <p class="timeline__text">
+                                Instagram automation and content publishing platform with backend services for
+                                Instagram Graph API integration, authentication, media management, and publishing
+                                workflows. Used to schedule Instagram posts.
+                            </p>
+                            <ul class="timeline__list">
+                                <li>Instagram Graph API for content publishing</li>
+                                <li>REST APIs with Node.js and Express.js for content management and publishing</li>
+                                <li>Authentication, media handling, third-party APIs, and API error handling</li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="timeline__item" data-reveal>
+                        <span class="timeline__node" aria-hidden="true"></span>
+                        <div class="timeline__meta-col">
+                            <span class="chip">Freelance</span>
+                            <h3 class="timeline__role">Shopify Website Project</h3>
+                            <p class="timeline__meta">Freelance project</p>
+                        </div>
+                        <div class="timeline__panel">
+                            <p class="timeline__text">
+                                Shopify website project completed as freelance work.
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="timeline__item timeline__item--ongoing" data-reveal>
+                        <span class="timeline__node timeline__node--ongoing" aria-hidden="true"></span>
+                        <div class="timeline__meta-col">
+                            <span class="chip chip--secondary">Ongoing</span>
+                            <h3 class="timeline__role">Dashboard &amp; AI WhatsApp Chatbot</h3>
+                            <p class="timeline__meta">Current work</p>
+                        </div>
+                        <div class="timeline__panel">
+                            <p class="timeline__text">
+                                Currently building a dashboard and an AI-powered WhatsApp chatbot.
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="timeline__item" data-reveal>
+                        <span class="timeline__node" aria-hidden="true"></span>
+                        <div class="timeline__meta-col">
+                            <span class="chip">Education</span>
+                            <h3 class="timeline__role">Bachelor of Computer Engineering</h3>
+                            <p class="timeline__meta">Badr University · Cairo, Egypt · September 2025 – May 2030</p>
+                        </div>
+                        <div class="timeline__panel">
+                            <p class="timeline__text">
+                                Second-year Computer Engineering student. Grade: 3.3/4.0. Focused on software
+                                development, computer systems, and programming.
+                            </p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 07. ENGINEERING FOCUS SECTION (Flat Editorial Statement + 3 Rule-Divided Pillars) -->
+        <section class="focus section section--primary" id="focus" aria-label="Engineering Focus">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">07 / HOW I WORK</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Engineering Focus</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <p class="focus__intro" data-reveal>
+                    I look for the most practical technical solution to a problem and follow established
+                    software engineering practices. I work from a solid technical foundation and from the
+                    theory behind the systems I use. I try to decide based on proven methods and expert
+                    guidelines, and I keep improving quality, reliability, maintainability, and efficiency.
+                </p>
+
+                <div class="focus__grid">
+                    <article class="focus__pillar" data-reveal>
+                        <div class="focus__rule" aria-hidden="true"></div>
+                        <div class="focus__pillar-head">
+                            <span class="focus__index">01</span>
+                            <svg class="focus__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="focus__title">Practical solutions</h3>
+                        <p class="focus__text">
+                            Choose approaches that fit the problem, stay maintainable, and follow
+                            practices that are already established in the field.
+                        </p>
+                    </article>
+
+                    <article class="focus__pillar" data-reveal>
+                        <div class="focus__rule" aria-hidden="true"></div>
+                        <div class="focus__pillar-head">
+                            <span class="focus__index">02</span>
+                            <svg class="focus__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 3h6M10 3v5l-5 8.5A2 2 0 0 0 6.7 19.5h10.6a2 2 0 0 0 1.7-3L14 8V3"/>
+                            </svg>
+                        </div>
+                        <h3 class="focus__title">Testing &amp; Optimization</h3>
+                        <p class="focus__text">
+                            I test applications to find bugs and reliability issues, review how the
+                            system behaves, then optimize for performance, efficiency, stability, and
+                            overall quality.
+                        </p>
+                    </article>
+
+                    <article class="focus__pillar" data-reveal>
+                        <div class="focus__rule" aria-hidden="true"></div>
+                        <div class="focus__pillar-head">
+                            <span class="focus__index">03</span>
+                            <svg class="focus__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 17l6-6 4 4 8-8M17 7h4v4"/>
+                            </svg>
+                        </div>
+                        <h3 class="focus__title">Continuous improvement</h3>
+                        <p class="focus__text">
+                            After a feature works, I keep tightening quality: clearer structure,
+                            more reliable behavior, and more efficient code paths.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 08. CONTACT SECTION (Asymmetric 5/7 Split: Hairline Channels + Recessed Form Well) -->
+        <section class="contact section section--secondary" id="contact" aria-label="Contact Me">
+            <div class="container">
+                <header class="section__header">
+                    <p class="eyebrow">08 / GET IN TOUCH</p>
+                    <div class="section__title-row">
+                        <h2 class="section__title">Contact Me</h2>
+                        <span class="section__rule" aria-hidden="true"></span>
+                    </div>
+                </header>
+
+                <div class="contact__grid">
+                    <div class="contact__channels" data-reveal>
+                        <h3 class="contact__subheading">Talk to me</h3>
+                        <ul class="contact__list">
+                            <li class="contact__row">
+                                <span class="contact__label">Email</span>
+                                <span class="contact__value">abdulkarim.aklouk@gmail.com</span>
+                                <div class="contact__row-actions">
+                                    <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=abdulkarim.aklouk@gmail.com" target="_blank" rel="noopener noreferrer" class="text-action" id="contact-email-link">
+                                        <span>Open Gmail</span>
+                                        <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                                        </svg>
+                                    </a>
+                                    <button type="button" class="copy-btn" id="copy-email-btn">Copy Email</button>
+                                </div>
+                                <span class="copy-status" id="copy-email-status" aria-live="polite"></span>
+                            </li>
+
+                            <li class="contact__row">
+                                <span class="contact__label">Phone</span>
+                                <span class="contact__value">01158250466</span>
+                                <div class="contact__row-actions">
+                                    <a href="tel:+201158250466" class="text-action">
+                                        <span>Call</span>
+                                        <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <li class="contact__row">
+                                <span class="contact__label">GitHub</span>
+                                <span class="contact__value">abdulkarimaklouk</span>
+                                <div class="contact__row-actions">
+                                    <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="text-action">
+                                        <span>Open Profile</span>
+                                        <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <li class="contact__row">
+                                <span class="contact__label">LinkedIn</span>
+                                <span class="contact__value">abdulkarim-aklouk</span>
+                                <div class="contact__row-actions">
+                                    <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="text-action">
+                                        <span>Open Profile</span>
+                                        <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="contact__form-panel" data-reveal>
+                        <h3 class="contact__subheading">Write a message</h3>
+                        <p class="contact__form-note" id="contact-form-note">
+                            Sending opens Gmail with your message already filled in. Nothing is stored on this site.
+                        </p>
+
+                        <form class="contact__form" id="contact-form" aria-describedby="contact-form-note" novalidate>
+                            <div class="form-field">
+                                <label for="contact-name" class="form-field__label">Name</label>
+                                <input type="text" id="contact-name" name="name" placeholder="Your name" class="form-field__input" autocomplete="name" required>
+                                <span class="form-field__error" id="error-name" aria-live="polite"></span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="contact-mail" class="form-field__label">Email</label>
+                                <input type="email" id="contact-mail" name="email" placeholder="Your email" class="form-field__input" autocomplete="email" required>
+                                <span class="form-field__error" id="error-mail" aria-live="polite"></span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="contact-message" class="form-field__label">Message</label>
+                                <textarea id="contact-message" name="message" rows="6" placeholder="Your message" class="form-field__input form-field__textarea" required></textarea>
+                                <span class="form-field__error" id="error-message" aria-live="polite"></span>
+                            </div>
+
+                            <div class="contact__submit-row">
+                                <button type="submit" class="btn btn--primary btn--full-mobile">Open in Gmail</button>
+                                <span class="contact__submit-feedback" id="contact-submit-feedback" aria-live="polite"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Grounded Architectural Footer -->
+    <footer class="footer" id="footer">
+        <div class="footer__top-rule" aria-hidden="true"></div>
+        <div class="container footer__container">
+            <div class="footer__main">
+                <h2 class="footer__title">Abdulkarim Aklouk</h2>
+
+                <nav class="footer__nav" aria-label="Footer navigation">
+                    <ul class="footer__list">
+                        <li><a href="#home" class="footer__link">Home</a></li>
+                        <li><a href="#about" class="footer__link">About</a></li>
+                        <li><a href="#skills" class="footer__link">Skills</a></li>
+                        <li><a href="#work" class="footer__link">Projects</a></li>
+                        <li><a href="#experience" class="footer__link">Experience</a></li>
+                        <li><a href="#contact" class="footer__link">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <ul class="footer__social" aria-label="Footer social links">
+                    <li>
+                        <a href="https://github.com/abdulkarimaklouk" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="GitHub">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/abdulkarim-aklouk-78773037a/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="footer__copy">
+                &#169; <span id="footer-year">2026</span> Abdulkarim Aklouk. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Service Detail Modals (Elevated Foreground Layer) -->
+    <div class="services__modal" id="service-dialog-1" role="dialog" aria-modal="true" aria-labelledby="service-modal-title-1" hidden>
+        <div class="services__modal-content">
+            <div class="services__modal-header">
+                <span class="eyebrow">01 / SERVICE DETAIL</span>
+                <button type="button" class="services__modal-close" aria-label="Close dialog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="services__modal-title" id="service-modal-title-1">Backend &amp; REST APIs</h3>
+            <p class="services__modal-description">
+                I build REST APIs with Node.js and Express.js for content, orders, users, and related resources.
+            </p>
+            <ul class="services__modal-list">
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>RESTful endpoints for meals, inventory, posts, and publishing workflows.</p>
+                </li>
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>Authentication, media handling, and API error handling where the project needs it.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="services__modal" id="service-dialog-2" role="dialog" aria-modal="true" aria-labelledby="service-modal-title-2" hidden>
+        <div class="services__modal-content">
+            <div class="services__modal-header">
+                <span class="eyebrow">02 / SERVICE DETAIL</span>
+                <button type="button" class="services__modal-close" aria-label="Close dialog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="services__modal-title" id="service-modal-title-2">Full-Stack Web Development</h3>
+            <p class="services__modal-description">
+                I connect HTML, CSS, and JavaScript interfaces to backend APIs for complete application workflows.
+            </p>
+            <ul class="services__modal-list">
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>CRUD interfaces and dashboards for managing application data.</p>
+                </li>
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>Responsive pages for restaurant, social, and template-style front ends.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="services__modal" id="service-dialog-3" role="dialog" aria-modal="true" aria-labelledby="service-modal-title-3" hidden>
+        <div class="services__modal-content">
+            <div class="services__modal-header">
+                <span class="eyebrow">03 / SERVICE DETAIL</span>
+                <button type="button" class="services__modal-close" aria-label="Close dialog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="services__modal-title" id="service-modal-title-3">Databases &amp; Authentication</h3>
+            <p class="services__modal-description">
+                I work with MySQL and MongoDB, and I have implemented JWT-based authentication and authorization.
+            </p>
+            <ul class="services__modal-list">
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>Relational MySQL models for meals, ingredients, inventory, and orders.</p>
+                </li>
+                <li class="services__modal-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <p>MongoDB models for posts, comments, likes, and user profiles.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../../../assets/js/mixitup.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
+
