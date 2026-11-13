@@ -484,42 +484,153 @@
         v_uv = a_uv;
         v_ribbon = a_ribbon;
 
-        float x = a_basePos.x;
-        float z = a_basePos.y;
+        float u = a_uv.x;
+        float vNorm = a_uv.y;
+        float v = vNorm - 0.5; // [-0.5, 0.5]
 
-        // Subtle mouse parallax influence
-        float mouseAtten = 1.0 - a_ribbon * 0.28;
-        x += u_mouse.x * 0.22 * mouseAtten;
-
-        // Spatial curvature along Z
-        float curve = sin(z * 0.48 + a_ribbon * 1.30) * 0.45;
-        float xc = x + curve;
-
-        // Multi-harmonic traveling wave
-        float t = u_time * (0.34 + a_ribbon * 0.08);
-        float w1 = sin(xc * 0.72 - z * 0.38 + t * 0.58);
-        float w2 = cos(xc * 1.25 + z * 0.62 - t * 0.44 + a_ribbon * 1.85);
-        float w3 = sin(xc * 2.18 - z * 1.12 + t * 0.72 + a_ribbon * 0.88) * 0.35;
-        float w4 = cos(length(vec2(xc - 1.15, z + 0.35)) * 0.82 - u_time * 0.22) * 0.45;
-
-        // Non-linear crest sharpening
-        float rawWave = w1 * 0.62 + w2 * 0.42 + w3 * 0.22 + w4 * 0.28;
-        float crest = sign(rawWave) * pow(abs(rawWave), 1.42);
-
-        // Boundary envelope falloff
-        float envU = smoothstep(0.0, 0.15, a_uv.x) * smoothstep(1.0, 0.85, a_uv.x);
-        float envV = smoothstep(0.0, 0.16, a_uv.y) * smoothstep(1.0, 0.84, a_uv.y);
+        // Boundary envelopes to fade mesh cleanly at all outer edges
+        float envU = smoothstep(0.0, 0.08, u) * smoothstep(1.0, 0.90, u);
+        float envV = smoothstep(0.0, 0.10, vNorm) * smoothstep(1.0, 0.90, vNorm);
         float envelope = envU * envV;
 
-        float baseAmp = (a_ribbon == 0.0) ? 0.95 : (a_ribbon == 1.0 ? 0.72 : 0.52);
-        float altitude = (a_ribbon == 0.0) ? -0.16 : (a_ribbon == 1.0 ? 0.26 : 0.66);
+        vec3 pos = vec3(0.0);
+        float elev = 0.0;
 
-        float y = altitude + crest * baseAmp * envelope;
+        if (a_ribbon < 0.5) {
+          // =========================================================================
+          // RIBBON 0: PRIMARY SCULPTURAL WAVE (Hero Organic Fluid Surface)
+          // Features deep curling folds, multi-ridge cross section, and organic S-flow.
+          // =========================================================================
+          float t = u_time * 0.24;
 
-        v_elevation = y;
-        v_worldX = x;
+          // 3D Space Curve Spine C(u)
+          // Enters from upper-right background, sweeps in a dynamic curve behind
+          // the portrait card, and curls gracefully forward into the foreground.
+          float cx = 1.45 + 1.70 * cos(u * 2.6 - 0.45) + 0.35 * sin(u * 5.2);
+          float cz = -1.90 + 3.60 * u - 0.45 * sin(u * 3.14159);
+          float cy = 0.20 + 0.85 * sin(u * 3.0 - 0.50) + 0.30 * cos(u * 6.0);
 
-        vec4 worldPos = vec4(x, y, z, 1.0);
+          // Dynamic 3D banking (reverses roll along spine to create sculptural twist)
+          float roll = 0.90 * sin(u * 3.2 + 0.70) + 0.25;
+          float ribbonWidth = 3.10 + 0.80 * sin(u * 3.14159);
+
+          // Moving frame: Binormal B and Normal N
+          vec3 B = vec3(cos(roll), sin(roll), -0.50 * sin(roll));
+          vec3 N = vec3(-sin(roll) * 0.80, cos(roll), 0.60 * cos(roll));
+
+          // Multi-ridge cross-sectional profile (two distinct wave crests + deep valley)
+          // Ridge 1 at v ~ +0.22, Ridge 2 at v ~ -0.22, deep canyon at v ~ 0.0
+          float crossRidge = 0.65 * cos(v * 12.56) - 0.35 * cos(v * 6.28);
+
+          // Trochoidal / Gerstner lateral displacement (streamlines pinch at crests)
+          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.1);
+          float vp = v + pinch;
+
+          // Multi-octave organic traveling wave harmonics
+          float s1 = u * 4.6 - vp * 3.8 - t * 1.20;
+          float w1 = sin(s1);
+          float crest1 = sign(w1) * pow(abs(w1), 1.60);
+
+          float s2 = u * 2.8 + vp * 4.6 + t * 0.80 + 0.90;
+          float w2 = cos(s2);
+
+          float s3 = u * 8.2 - vp * 5.4 - t * 1.50;
+          float w3 = sin(s3) * 0.30;
+
+          float s4 = cos(length(vec2(cx - 1.2, cz + 0.3)) * 0.80 - t * 0.40) * 0.45;
+
+          // Total 3D fold amplitude
+          float foldAmp = (crest1 * 1.10 + w2 * 0.50 + w3 + s4 + crossRidge * 0.75) * envelope;
+
+          // Pointer parallax
+          cx += u_mouse.x * 0.22 * (1.0 - u * 0.35);
+          cy += u_mouse.y * 0.15;
+
+          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
+          elev = pos.y;
+
+        } else if (a_ribbon < 1.5) {
+          // =========================================================================
+          // RIBBON 1: SECONDARY TOWERING RIDGE (Distant Layer)
+          // Positioned deeper in space (z ~ -2.4 to 0.4), soaring higher in Y
+          // to create dramatic layered silhouettes behind the primary wave.
+          // =========================================================================
+          float t = u_time * 0.18;
+
+          float pinch = 0.12 * sin(v * 5.8 + u * 3.4 - t);
+          float vp = v + pinch;
+
+          float cx = 1.70 + 2.00 * cos(u * 2.2 + 0.50);
+          float cz = -2.50 + 2.90 * u;
+          float cy = 0.80 + 1.15 * sin(u * 2.5 + 0.40) + 0.45 * cos(u * 4.8);
+
+          float roll = 0.60 * cos(u * 2.4 - 0.35) + 0.35;
+          float ribbonWidth = 2.70 + 0.70 * sin(u * 3.14159);
+
+          vec3 B = vec3(cos(roll), sin(roll), -0.40 * sin(roll));
+          vec3 N = vec3(-sin(roll) * 0.65, cos(roll), 0.70 * cos(roll));
+
+          float crossRidge = 0.50 * cos(v * 10.0);
+
+          float s1 = u * 3.6 - vp * 2.8 - t * 1.05;
+          float w1 = sin(s1);
+          float crest1 = sign(w1) * pow(abs(w1), 1.50);
+
+          float s2 = u * 2.0 + vp * 3.4 + t * 0.65;
+          float w2 = cos(s2) * 0.60;
+
+          float foldAmp = (crest1 * 0.90 + w2 + crossRidge) * envelope;
+
+          cx += u_mouse.x * 0.16;
+          cy += u_mouse.y * 0.10;
+
+          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
+          elev = pos.y + 0.25;
+
+        } else {
+          // =========================================================================
+          // RIBBON 2: FOREGROUND FLUID FOUNDATION
+          // Sweeps through lower-right space (y ~ -0.5 to 0.5, x ~ 0.9 to 3.6)
+          // creating an expansive fluid base that anchors the 3D composition.
+          // =========================================================================
+          float t = u_time * 0.28;
+
+          float pinch = 0.14 * sin(v * 5.4 + u * 3.8 - t * 1.1);
+          float vp = v + pinch;
+
+          float cx = 1.50 + 1.85 * sin(u * 2.2 - 0.20) + 0.30 * cos(u * 4.4);
+          float cz = -0.60 + 2.90 * u;
+          float cy = -0.45 + 0.75 * sin(u * 2.7 + 0.85) - 0.25 * cos(u * 5.2);
+
+          float roll = -0.30 * sin(u * 2.4) - 0.10;
+          float ribbonWidth = 3.20 + 0.80 * sin(u * 3.14159);
+
+          vec3 B = vec3(cos(roll), sin(roll), -0.30 * sin(roll));
+          vec3 N = vec3(-sin(roll) * 0.50, cos(roll), 0.85);
+
+          float crossRidge = 0.40 * cos(v * 8.0);
+
+          float s1 = u * 4.4 - vp * 3.4 - t * 1.30;
+          float w1 = sin(s1);
+          float crest1 = sign(w1) * pow(abs(w1), 1.45);
+
+          float foldAmp = (crest1 * 0.75 + sin(u * 2.2 + vp * 2.6) * 0.40 + crossRidge) * envelope;
+
+          cx += u_mouse.x * 0.24;
+          cy += u_mouse.y * 0.14;
+
+          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
+          elev = pos.y - 0.15;
+        }
+
+        // Text area readability protection (softly dampens elevation if approaching hero copy)
+        float textProtection = smoothstep(-1.2, 0.15, pos.x);
+        pos.y *= mix(0.50, 1.0, textProtection);
+
+        v_elevation = elev;
+        v_worldX = pos.x;
+
+        vec4 worldPos = vec4(pos, 1.0);
         vec4 clipPos = u_mvp * worldPos;
         v_depth = clipPos.w;
         gl_Position = clipPos;
@@ -550,7 +661,7 @@
 
         // 4. Luminous Ridge Lighting:
         // Elevation mapped across [-0.25, 1.10]
-        float ridgeFactor = clamp((v_elevation + 0.25) / 1.35, 0.0, 1.0);
+        float ridgeFactor = clamp((v_elevation + 0.40) / 2.50, 0.0, 1.0);
 
         // Color Palette:
         // Trough: Deep Obsidian Emerald (#091C11)
@@ -573,9 +684,9 @@
         color = mix(color, colApex, apexGlow * 0.75);
 
         // 5. Alpha calculation:
-        float baseAlpha = mix(0.03, 0.90, pow(ridgeFactor, 1.35));
-        float lineWeight = (u_lineType > 0.5) ? 0.38 : 1.0;
-        float ribbonAtten = (v_ribbon == 0.0) ? 1.0 : (v_ribbon == 1.0 ? 0.84 : 0.64);
+        float baseAlpha = mix(0.035, 0.72, pow(ridgeFactor, 1.40));
+        float lineWeight = (u_lineType > 0.5) ? 0.75 : 1.0;
+        float ribbonAtten = (v_ribbon == 0.0) ? 1.0 : (v_ribbon == 1.0 ? 0.86 : 0.70);
 
         float alpha = baseAlpha * edgeFade * depthFade * textFade * lineWeight * ribbonAtten;
 
@@ -586,7 +697,7 @@
           return;
         }
 
-        if (alpha < 0.012) discard;
+        if (alpha < 0.008) discard;
         gl_FragColor = vec4(color, alpha);
       }
     `;
@@ -640,24 +751,18 @@
       const ribbons = [
         {
           id: 0.0,
-          uCount: isMobile ? 50 : 80,
-          vCount: isMobile ? 32 : 50,
-          minX: -1.2, maxX: 3.4,
-          minZ: -0.8, maxZ: 2.2,
+          uCount: isMobile ? 95 : 160,
+          vCount: isMobile ? 60 : 100,
         },
         {
           id: 1.0,
-          uCount: isMobile ? 44 : 70,
-          vCount: isMobile ? 28 : 45,
-          minX: -0.8, maxX: 3.8,
-          minZ: -1.8, maxZ: 1.2,
+          uCount: isMobile ? 80 : 135,
+          vCount: isMobile ? 50 : 80,
         },
         {
           id: 2.0,
-          uCount: isMobile ? 38 : 60,
-          vCount: isMobile ? 24 : 38,
-          minX: -1.6, maxX: 2.8,
-          minZ: -3.0, maxZ: 0.2,
+          uCount: isMobile ? 70 : 120,
+          vCount: isMobile ? 44 : 70,
         },
       ];
 
@@ -667,18 +772,13 @@
       let vertexOffset = 0;
 
       ribbons.forEach((rib) => {
-        const { id, uCount, vCount, minX, maxX, minZ, maxZ } = rib;
+        const { id, uCount, vCount } = rib;
 
         for (let j = 0; j < vCount; j++) {
           const v = j / (vCount - 1);
-          const z = minZ + v * (maxZ - minZ);
-
           for (let i = 0; i < uCount; i++) {
             const u = i / (uCount - 1);
-            const x = minX + u * (maxX - minX);
-
-            // [x, z, u, v, id]
-            vertexList.push(x, z, u, v, id);
+            vertexList.push(u, v, u, v, id);
           }
         }
 
@@ -715,7 +815,6 @@
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, allIndices, gl.STATIC_DRAW);
 
-      // Stride = 5 floats * 4 = 20 bytes
       const stride = 20;
       gl.enableVertexAttribArray(aBasePosLoc);
       gl.vertexAttribPointer(aBasePosLoc, 2, gl.FLOAT, false, stride, 0);
@@ -775,8 +874,8 @@
       currentMouseY += (targetMouseY - currentMouseY) * 0.05;
 
       // Camera view calculation with subtle tilt
-      const eye = [currentMouseX * 0.40, 2.9 - currentMouseY * 0.25, 4.3];
-      const target = [0.4, 0.05, -0.4];
+      const eye = [currentMouseX * 0.35 + 0.2, 2.15 - currentMouseY * 0.25, 4.3];
+      const target = [0.85, 0.45, -0.3];
       const up = [0, 1, 0];
 
       mat4LookAt(viewMatrix, eye, target, up);
