@@ -108,6 +108,16 @@ The visual identity is anchored by a bold, architectural palette combined with r
 - **Anti-AI & Anti-Gaming Guardrails:** Zero constellation lines, zero glowing neon halos, zero starfield acceleration, and zero clustered particle swarms.
 - **Performance & Accessibility:** Automatically pauses `requestAnimationFrame` when tab is hidden (`visibilitychange`). Detects `prefers-reduced-motion: reduce` to render a single static frame with zero ongoing animation loop. DPR scaled up to 2.0. Light Theme reduces canvas opacity to `0.16` via CSS for whisper-quiet integration.
 
+#### 3D Flowing Wireframe Waves (Hero Visual Milestone):
+- **Sculptural Fluid Environment:** An immersive, generative WebGL 3D wireframe mesh environment layered inside `#home` via `<canvas id="hero-waves-canvas" class="hero-waves-canvas" aria-hidden="true"></canvas>`, isolated at `z-index: 0` behind Hero content (`z-index: 1`).
+- **GPU-Deformed Wave Surfaces:** 100% computed inside custom GLSL vertex and fragment shaders. Composed of 3 overlapping wave ribbons (foreground crest, midground ridge, distant swell) spanning $9,430$ vertices and $18,500$ line segments.
+- **Non-Linear Razor Crests:** Procedural multi-harmonic traveling waves deformed along angled vectors with non-linear crest sharpening ($\text{sign}(w) \cdot |w|^{1.42}$), creating defined mountain/wave ridges and smooth valley troughs.
+- **Luminous Ridge Color Hierarchy:** Fragment shader maps elevation into selective luminous Lime Green (`#C6F432`) and Apex Electric Lime (`#D9FF4A`) along wave crests, rich emerald tones (`#19542E`) along mid-slopes, and deep obsidian emerald (`#091C11`) in troughs that dissolve naturally into the `#0B0B0C` Midnight Black canvas.
+- **Negative Space & Readability Protection:** Sculptural envelope and text-area protection function attenuate wave elevation and alpha toward the left quadrant ($X < -0.2$), guaranteeing that Hero copy, CTAs, and badges retain 100% legibility and high contrast.
+- **Multi-Plane Indexing:** Renders longitudinal flow lines at full weight ($1.0$) and transverse cross-ribs at delicate weight ($0.38$) with zero vertex duplication using unified 16-bit indices (`gl.UNSIGNED_SHORT`).
+- **Performance & Lifecycle Optimization:** IntersectionObserver pauses the WebGL render loop when the Hero section scrolls out of view, preserving 100% GPU resources across the rest of the site. Page visibility listener halts RAF during background tabs. `prefers-reduced-motion` renders a single static 3D frame. WebGL context loss/absence gracefully degrades to the ambient lime radial bloom.
+- **Particle Layer Coexistence:** `.hero` has `background-color: var(--color-bg-primary)` (`#0B0B0C`), cleanly covering the global particle field while viewing Hero, and allowing particles to drift across subsequent sections without competing effects.
+
 ### Dark Theme Tokens (Primary — Dark First)
 
 | Semantic Role         | Token Name                      | Hex / Value                 | Usage                                                             | Verified Contrast                               |
