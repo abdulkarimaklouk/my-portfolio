@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0B132B" id="meta-theme-color">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314213D'/%3E%3Crect x='8' y='8' width='16' height='16' rx='2' fill='none' stroke='%23FF6B5B' stroke-width='2.5'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#0B0B0C" id="meta-theme-color">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B0B0C'/%3E%3Crect x='8' y='8' width='16' height='16' rx='2' fill='none' stroke='%23C6F432' stroke-width='2.5'/%3E%3C/svg%3E">
     <title>Abdulkarim Aklouk | Full-Stack Developer</title>
     <meta name="description" content="Personal portfolio of Abdulkarim Aklouk. Full-Stack Web Developer and Computer Engineering student in Cairo, Egypt.">
 
@@ -13,11 +13,12 @@
     <script>
         (function () {
             try {
-                var saved = localStorage.getItem("portfolio-proto-theme");
+                var params = new URLSearchParams(window.location.search);
+                var saved = params.get("theme") || localStorage.getItem("portfolio-proto-theme");
                 if (saved === "light") {
                     document.documentElement.classList.add("light-theme");
                     var meta = document.getElementById("meta-theme-color");
-                    if (meta) meta.setAttribute("content", "#F4EDE0");
+                    if (meta) meta.setAttribute("content", "#F5F5F5");
                 }
             } catch (e) {
                 // Storage access blocked; fall back to Dark First default
@@ -34,6 +35,9 @@
 <body>
     <a href="#main" class="skip-link">Skip to main content</a>
 
+    <!-- Subtle 3D Ambient Particle Field Canvas -->
+    <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+
     <!-- Global Header & Floating Navigation Dock -->
     <header class="header" id="header">
         <nav class="nav container" aria-label="Main navigation">
@@ -43,7 +47,7 @@
             </a>
 
             <div class="nav__actions">
-                <span class="nav__proto-badge">NAVY / CREAM / CORAL · 60/30/10</span>
+                <span class="nav__proto-badge">ELECTRIC ELEGANCE · ATMOSPHERIC</span>
                 <button type="button" class="theme-toggle" id="theme-button" aria-label="Switch to light theme" aria-pressed="false">
                     <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>

@@ -1,48 +1,61 @@
 /* ==========================================================================
    ABDULKARIM AKLOUK — PERSONAL PORTFOLIO
-   Visual Identity: Navy (#14213D) / Cream (#F4EDE0) / Coral (#FF6B5B)
-   Target Distribution: 60% Navy / 30% Cream / 10% Coral
+   Visual Identity: Electric Elegance + Immersive Digital
+   Selected Palette: Midnight Black (#0B0B0C) / Pure White (#FFFFFF) / Lime Green (#C6F432)
+   Atmospheric Backgrounds: Selective, restrained architectural lighting
    ========================================================================== */
 
 :root {
   color-scheme: dark;
 
-  /* 60% Navy Foundation (Dark Theme — Default) */
-  --color-bg-primary: #0B132B;       /* Deep Midnight Navy canvas */
-  --color-bg-secondary: #101B35;     /* Recessed Navy section bands */
-  --color-surface-primary: #14213D;  /* Primary Navy card/slab surface */
-  --color-surface-elevated: #1B2A4E; /* Elevated Navy surface (hover/modals) */
-  --color-surface-translucent: rgba(16, 27, 53, 0.88); /* Translucent chrome */
+  /* 60% Midnight Black Foundation (Dark Theme — Default) */
+  --color-bg-primary: #0B0B0C;       /* Dominant Midnight Black canvas */
+  --color-bg-secondary: #121214;     /* Recessed Deep Obsidian section bands */
+  --color-bg-band: rgba(18, 18, 20, 0.90); /* Translucent obsidian band allowing subtle 3D particle drift */
+  --color-surface-primary: #171719;  /* Primary dark slab surface */
+  --color-surface-elevated: #202023; /* Elevated dark slab surface (hover/modals) */
+  --color-surface-translucent: rgba(11, 11, 12, 0.90); /* Translucent chrome */
 
-  /* 30% Cream Structure & Ink */
-  --color-text-primary: #F4EDE0;     /* Cream primary ink (15.79:1 on #0B132B) */
-  --color-text-secondary: #D8CFBF;   /* Soft Cream secondary ink (12.35:1) */
-  --color-text-muted: #A69E90;       /* Muted warm taupe-cream (6.84:1) */
+  /* 30% Pure White Structure & Ink */
+  --color-text-primary: #FFFFFF;     /* Pure White ink (19.5:1 on #0B0B0C, 15.8:1 on #171719) */
+  --color-text-secondary: #CCCCCC;   /* Light Gray secondary ink (11.5:1 on #0B0B0C, 9.3:1 on #171719) */
+  --color-text-muted: #949494;       /* Mid Gray muted ink (6.1:1 on #0B0B0C, 4.9:1 on #171719) */
 
-  /* 10% Coral Accent & Energy */
-  --color-accent-primary: #FF6B5B;   /* Vibrant Coral (6.57:1 on #0B132B, 5.71:1 on #14213D) */
-  --color-accent-hover: #FF8577;     /* Lighter Coral hover */
-  --color-accent-tint: rgba(255, 107, 91, 0.12); /* Subtle Coral background wash */
-  --color-accent-border: rgba(255, 107, 91, 0.35);
+  /* 10% Lime Green Accent & Energy */
+  --color-accent-primary: #C6F432;   /* Vivid Lime Green (15.3:1 on #0B0B0C, 12.4:1 on #171719) */
+  --color-accent-brand: #C6F432;     /* Exact brand Lime accent */
+  --color-accent-hover: #D4F755;     /* Lighter Lime hover */
+  --color-accent-tint: rgba(198, 244, 50, 0.12); /* Subtle Lime background wash */
+  --color-accent-border: rgba(198, 244, 50, 0.40);
 
   /* Primary Action Buttons */
-  --color-cta-bg: #FF6B5B;           /* Vibrant Coral button fill */
-  --color-cta-bg-hover: #FF8577;     /* Coral button hover */
-  --color-cta-text: #14213D;         /* Deep Navy text on Coral (5.71:1 contrast) */
+  --color-cta-bg: #C6F432;           /* Vivid Lime button fill */
+  --color-cta-bg-hover: #B4DF28;     /* Refined deeper lime hover */
+  --color-cta-text: #0B0B0C;         /* Midnight Black text on Lime (14.6:1 contrast) */
+  --color-cta-border: transparent;
+  --color-cta-border-hover: transparent;
+  --color-cta-shadow: rgba(0, 0, 0, 0.45);
+
+  /* Atmospheric Gradients (Dark Theme Peaks: Hero, Projects, Contact) */
+  --gradient-hero-bloom: radial-gradient(ellipse 950px 700px at 75% 30%, rgba(198, 244, 50, 0.12) 0%, rgba(198, 244, 50, 0.03) 50%, transparent 75%);
+  --gradient-work-spotlight: radial-gradient(ellipse 1100px 550px at 50% 20%, rgba(198, 244, 50, 0.07) 0%, rgba(198, 244, 50, 0.015) 50%, transparent 75%);
+  --gradient-contact-beacon: radial-gradient(ellipse 850px 650px at 50% 50%, rgba(198, 244, 50, 0.14) 0%, rgba(198, 244, 50, 0.02) 55%, transparent 75%);
 
   /* Borders & Dividers */
-  --color-border-subtle: rgba(244, 237, 224, 0.12);
-  --color-border-strong: rgba(244, 237, 224, 0.28);
-  --color-divider: rgba(244, 237, 224, 0.10);
-  --color-edge-highlight: rgba(244, 237, 224, 0.08);
-  --color-coral-rule: linear-gradient(90deg, #FF6B5B 0%, rgba(255, 107, 91, 0.3) 60%, transparent 100%);
+  --color-border-subtle: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.22);
+  --color-divider: rgba(255, 255, 255, 0.08);
+  --color-edge-highlight: rgba(255, 255, 255, 0.06);
+  --color-lime-rule: linear-gradient(90deg, #C6F432 0%, rgba(198, 244, 50, 0.3) 60%, transparent 100%);
+  --color-purple-rule: var(--color-lime-rule);
+  --color-coral-rule: var(--color-lime-rule);
 
   /* Focus & Feedback */
-  --color-focus-ring: #FF6B5B;
-  --color-status-success: #52B788;
-  --color-status-warning: #FFB703;
-  --color-status-error: #FF6B5B;
-  --color-scrim: rgba(11, 19, 43, 0.85);
+  --color-focus-ring: #C6F432;
+  --color-status-success: #4ADE80;
+  --color-status-warning: #FBBF24;
+  --color-status-error: #F87171;
+  --color-scrim: rgba(0, 0, 0, 0.85);
 
   /* Typography */
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -84,12 +97,12 @@
   --radius-xl: 18px;
   --radius-pill: 9999px;
 
-  /* Shadows (Navy-Tinted Occlusion) */
-  --shadow-recessed: inset 0 2px 6px rgba(5, 9, 20, 0.6);
-  --shadow-elevation-1: 0 2px 8px rgba(5, 9, 20, 0.4), 0 1px 2px rgba(5, 9, 20, 0.3);
-  --shadow-elevation-2: 0 6px 18px rgba(5, 9, 20, 0.48), 0 2px 4px rgba(5, 9, 20, 0.35);
-  --shadow-elevation-3: 0 12px 32px rgba(5, 9, 20, 0.55), 0 4px 8px rgba(5, 9, 20, 0.4);
-  --shadow-elevation-4: 0 24px 64px rgba(5, 9, 20, 0.75), 0 8px 16px rgba(5, 9, 20, 0.5);
+  /* Shadows (Physical Neutral Black Ambient Occlusion — No Neon Glow) */
+  --shadow-recessed: inset 0 2px 6px rgba(0, 0, 0, 0.7);
+  --shadow-elevation-1: 0 2px 8px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-elevation-2: 0 6px 18px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.45);
+  --shadow-elevation-3: 0 12px 32px rgba(0, 0, 0, 0.7), 0 4px 8px rgba(0, 0, 0, 0.5);
+  --shadow-elevation-4: 0 24px 64px rgba(0, 0, 0, 0.85), 0 8px 16px rgba(0, 0, 0, 0.6);
 
   /* Motion */
   --motion-duration-instant: 100ms;
@@ -109,54 +122,67 @@
 }
 
 /* ==========================================================================
-   LIGHT THEME (60% Cream / 30% Navy / 10% Coral)
+   LIGHT THEME (60% White / 30% Midnight Black / 10% Lime)
+   Atmospheric note: Clean, crisp, neutral surfaces with zero muddy olive washes
    ========================================================================== */
 html.light-theme {
   color-scheme: light;
 
-  /* 60% Cream Foundation */
-  --color-bg-primary: #F4EDE0;       /* Warm Cream page canvas */
-  --color-bg-secondary: #ECE4D5;     /* Recessed Cream section bands */
-  --color-surface-primary: #FFFFFF;  /* Crisp Alabaster card surface */
-  --color-surface-elevated: #FFFFFF; /* Elevated white surface */
-  --color-surface-translucent: rgba(244, 237, 224, 0.92);
+  /* 60% Crisp White Foundation */
+  --color-bg-primary: #F5F5F5;       /* Crisp Off-White canvas */
+  --color-bg-secondary: #ECECEC;     /* Recessed soft off-white section bands */
+  --color-bg-band: rgba(236, 236, 236, 0.92); /* Subtle off-white translucent band */
+  --color-surface-primary: #FFFFFF;  /* Pure White card surface */
+  --color-surface-elevated: #FFFFFF; /* Elevated Pure White surface */
+  --color-surface-translucent: rgba(245, 245, 245, 0.92);
 
-  /* 30% Navy Structure & Ink */
-  --color-text-primary: #14213D;     /* Deep Navy primary ink (13.72:1 on #F4EDE0) */
-  --color-text-secondary: #2D3D60;   /* Mid Navy secondary ink (9.26:1) */
-  --color-text-muted: #576682;       /* Slate Navy muted ink (5.56:1) */
+  /* 30% Midnight Black Structure & Ink */
+  --color-text-primary: #0B0B0C;     /* Deep Midnight Black ink (17.8:1 on #F5F5F5, 19.5:1 on #FFFFFF) */
+  --color-text-secondary: #383838;   /* Charcoal secondary ink (10.5:1 on #F5F5F5, 11.5:1 on #FFFFFF) */
+  --color-text-muted: #616161;       /* Neutral Gray muted ink (5.7:1 on #F5F5F5, 6.2:1 on #FFFFFF) */
 
-  /* 10% Coral Accent & Energy */
-  --color-accent-primary: #B83A2C;   /* Deepened Terracotta-Coral for text links (4.90:1 on #F4EDE0) */
-  --color-accent-hover: #D44232;
-  --color-accent-tint: rgba(255, 107, 91, 0.10);
-  --color-accent-border: rgba(184, 58, 44, 0.30);
+  /* 10% Lime Accent & Energy */
+  --color-accent-primary: #3E5200;   /* Deep Crisp Acidic Olive text link (7.8:1 on #F5F5F5, 8.5:1 on #FFFFFF) */
+  --color-accent-brand: #C6F432;     /* Exact brand Lime accent */
+  --color-accent-hover: #304000;     /* Darker Olive hover */
+  --color-accent-tint: rgba(198, 244, 50, 0.15);
+  --color-accent-border: rgba(62, 82, 0, 0.30);
 
   /* Primary Action Buttons */
-  --color-cta-bg: #FF6B5B;           /* Vibrant Coral button fill */
-  --color-cta-bg-hover: #FF8577;     /* Lighter Coral hover */
-  --color-cta-text: #14213D;         /* Deep Navy text on Coral (5.71:1) */
+  --color-cta-bg: #C6F432;           /* Vivid Lime button fill */
+  --color-cta-bg-hover: #B4DF28;     /* Deeper Lime hover */
+  --color-cta-text: #0B0B0C;         /* Midnight Black text on Lime (14.6:1 contrast) */
+  --color-cta-border: #0B0B0C;       /* Crisp Black outline for 17.8:1 boundary definition on #F5F5F5 */
+  --color-cta-border-hover: #0B0B0C;
+  --color-cta-shadow: rgba(11, 11, 12, 0.15);
+
+  /* Atmospheric Gradients (Light Theme: Clean & unobtrusive, zero muddy tints) */
+  --gradient-hero-bloom: none;
+  --gradient-work-spotlight: none;
+  --gradient-contact-beacon: none;
 
   /* Borders & Dividers */
-  --color-border-subtle: rgba(20, 33, 61, 0.12);
-  --color-border-strong: rgba(20, 33, 61, 0.28);
-  --color-divider: rgba(20, 33, 61, 0.10);
+  --color-border-subtle: rgba(11, 11, 12, 0.10);
+  --color-border-strong: rgba(11, 11, 12, 0.25);
+  --color-divider: rgba(11, 11, 12, 0.08);
   --color-edge-highlight: rgba(255, 255, 255, 0.90);
-  --color-coral-rule: linear-gradient(90deg, #FF6B5B 0%, rgba(255, 107, 91, 0.3) 60%, transparent 100%);
+  --color-lime-rule: linear-gradient(90deg, #3E5200 0%, rgba(62, 82, 0, 0.3) 60%, transparent 100%);
+  --color-purple-rule: var(--color-lime-rule);
+  --color-coral-rule: var(--color-lime-rule);
 
   /* Focus & Feedback */
-  --color-focus-ring: #14213D;
-  --color-status-success: #2D6A4F;
-  --color-status-warning: #B07D10;
-  --color-status-error: #B83A2C;
-  --color-scrim: rgba(20, 33, 61, 0.55);
+  --color-focus-ring: #0B0B0C;
+  --color-status-success: #15803D;
+  --color-status-warning: #B45309;
+  --color-status-error: #B91C1C;
+  --color-scrim: rgba(11, 11, 12, 0.60);
 
   /* Soft Ambient Occlusion Shadows */
-  --shadow-recessed: inset 0 2px 4px rgba(20, 33, 61, 0.08);
-  --shadow-elevation-1: 0 2px 6px rgba(20, 33, 61, 0.06), 0 1px 2px rgba(20, 33, 61, 0.04);
-  --shadow-elevation-2: 0 6px 16px rgba(20, 33, 61, 0.08), 0 2px 4px rgba(20, 33, 61, 0.05);
-  --shadow-elevation-3: 0 12px 28px rgba(20, 33, 61, 0.10), 0 4px 8px rgba(20, 33, 61, 0.06);
-  --shadow-elevation-4: 0 20px 48px rgba(20, 33, 61, 0.16), 0 8px 16px rgba(20, 33, 61, 0.08);
+  --shadow-recessed: inset 0 2px 4px rgba(11, 11, 12, 0.08);
+  --shadow-elevation-1: 0 2px 6px rgba(11, 11, 12, 0.06), 0 1px 2px rgba(11, 11, 12, 0.04);
+  --shadow-elevation-2: 0 6px 16px rgba(11, 11, 12, 0.08), 0 2px 4px rgba(11, 11, 12, 0.05);
+  --shadow-elevation-3: 0 12px 28px rgba(11, 11, 12, 0.10), 0 4px 8px rgba(11, 11, 12, 0.06);
+  --shadow-elevation-4: 0 20px 48px rgba(11, 11, 12, 0.16), 0 8px 16px rgba(11, 11, 12, 0.08);
 }
 
 /* ==========================================================================
@@ -268,6 +294,24 @@ img {
 }
 
 /* ==========================================================================
+   SUBTLE 3D AMBIENT PARTICLE FIELD
+   ========================================================================== */
+.particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--z-bg);
+  opacity: 1;
+  transition: opacity var(--motion-duration-slow) var(--motion-ease-out);
+}
+
+html.light-theme .particle-canvas {
+  opacity: 0.16;
+}
+
+/* ==========================================================================
    LAYOUT CONTAINERS & SECTION GRAMMAR
    ========================================================================== */
 .main {
@@ -292,7 +336,7 @@ img {
 }
 
 .section--secondary {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-bg-band);
   border-top: 1px solid var(--color-divider);
   border-bottom: 1px solid var(--color-divider);
 }
@@ -364,13 +408,15 @@ img {
 .btn--primary {
   background-color: var(--color-cta-bg);
   color: var(--color-cta-text);
+  border: 1px solid var(--color-cta-border, transparent);
   box-shadow: var(--shadow-elevation-1);
 }
 
 .btn--primary:hover {
   background-color: var(--color-cta-bg-hover);
+  border-color: var(--color-cta-border-hover, var(--color-cta-border, transparent));
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255, 107, 91, 0.35);
+  box-shadow: 0 6px 18px var(--color-cta-shadow, rgba(0, 0, 0, 0.45));
 }
 
 .btn--ghost {
@@ -647,6 +693,23 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   align-items: center;
   padding-top: calc(var(--header-height) + var(--space-8));
   padding-bottom: var(--space-16);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero-bloom);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .hero__grid {
@@ -1132,6 +1195,26 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
 /* ==========================================================================
    05. PROJECTS SECTION (#work) — DEFERRED SCOPE PRESERVED
    ========================================================================== */
+.work {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.work::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-work-spotlight);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.work .container {
+  position: relative;
+  z-index: 1;
+}
+
 .work__deferred-note {
   display: flex;
   align-items: center;
@@ -1170,8 +1253,8 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
 .work__item.active-work {
   background-color: var(--color-cta-bg);
   color: var(--color-cta-text);
-  border-color: var(--color-cta-bg);
-  box-shadow: 0 4px 12px rgba(255, 107, 91, 0.3);
+  border-color: var(--color-cta-border, var(--color-cta-bg));
+  box-shadow: 0 4px 12px var(--color-cta-shadow, rgba(0, 0, 0, 0.35));
 }
 
 .work__container {
@@ -1429,6 +1512,26 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
 /* ==========================================================================
    08. CONTACT SECTION (#contact) — Direct Channels & Form Terminal
    ========================================================================== */
+.contact {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-contact-beacon);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.contact .container {
+  position: relative;
+  z-index: 1;
+}
+
 .contact__grid {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -1585,7 +1688,7 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
 .footer {
   position: relative;
   z-index: var(--z-content);
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-bg-band);
   border-top: 1px solid var(--color-divider);
 }
 
