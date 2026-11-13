@@ -508,35 +508,45 @@
         if (a_ribbon < 0.5) {
           // =========================================================================
           // RIBBON 0: PRIMARY SCULPTURAL WAVE (Hero Organic Fluid Surface)
+          // Slow, continuous traveling wave flow with natural 3D breathing and flexing
           // =========================================================================
-          float t = u_time * 0.24;
+          float t = u_time * 0.22;
 
-          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.1);
+          // Organic traveling streamline compression (pinch moves along wave)
+          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.15 + 0.30 * sin(t * 0.45));
           float vp = v + pinch;
+
+          // Subtle organic breathing of the 3D space spine
+          float spineBreath = 0.09 * sin(u * 2.2 - t * 0.85);
+          float rollBreath = 0.10 * cos(u * 1.8 - t * 0.70);
 
           float cx = 1.45 + 1.70 * cos(u * 2.6 - 0.45) + 0.35 * sin(u * 5.2);
           float cz = -1.90 + 3.60 * u - 0.45 * sin(u * 3.14159);
-          float cy = 0.20 + 0.85 * sin(u * 3.0 - 0.50) + 0.30 * cos(u * 6.0);
+          float cy = 0.20 + 0.85 * sin(u * 3.0 - 0.50) + 0.30 * cos(u * 6.0) + spineBreath;
 
-          float roll = 0.90 * sin(u * 3.2 + 0.70) + 0.25;
+          float roll = 0.90 * sin(u * 3.2 + 0.70) + 0.25 + rollBreath;
           float ribbonWidth = 3.10 + 0.80 * sin(u * 3.14159);
 
           vec3 B = vec3(cos(roll), sin(roll), -0.50 * sin(roll));
           vec3 N = vec3(-sin(roll) * 0.80, cos(roll), 0.60 * cos(roll));
 
-          float crossRidge = 0.65 * cos(v * 12.56) - 0.35 * cos(v * 6.28);
+          // Evolving cross-ridge folds (ridge peaks gently breathe and travel)
+          float ridgePhase = t * 0.65;
+          float crossRidge = (0.65 + 0.10 * sin(t * 0.40 + u * 1.5)) * cos(v * 12.56 - ridgePhase)
+                           - 0.35 * cos(v * 6.28 + ridgePhase * 0.70);
 
-          float s1 = u * 4.6 - vp * 3.8 - t * 1.20;
+          // Multi-harmonic traveling waves with non-linear phase modulation
+          float s1 = u * 4.6 - vp * 3.8 - t * 1.25 + 0.30 * sin(u * 2.0 - t * 0.55);
           float w1 = sin(s1);
           float crest1 = sign(w1) * pow(abs(w1), 1.60);
 
-          float s2 = u * 2.8 + vp * 4.6 + t * 0.80 + 0.90;
+          float s2 = u * 2.8 + vp * 4.6 + t * 0.85 + 0.90;
           float w2 = cos(s2);
 
-          float s3 = u * 8.2 - vp * 5.4 - t * 1.50;
+          float s3 = u * 8.2 - vp * 5.4 - t * 1.65;
           float w3 = sin(s3) * 0.30;
 
-          float s4 = cos(length(vec2(cx - 1.2, cz + 0.3)) * 0.80 - t * 0.40) * 0.45;
+          float s4 = cos(length(vec2(cx - 1.2, cz + 0.3)) * 0.80 - t * 0.45) * 0.45;
 
           float foldAmp = (crest1 * 1.10 + w2 * 0.50 + w3 + s4 + crossRidge * 0.75) * envelope;
 
@@ -546,44 +556,44 @@
           pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
           elev = pos.y;
 
-          // Local curvature intensity
           curv = clamp(crest1 * 0.65 + crossRidge * 0.45 + 0.30, 0.0, 1.0);
 
-          // Directional + grazing rim illumination
           float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
           float rim = clamp(1.0 - abs(N.z), 0.0, 1.0);
           diff = clamp(NdotL * 0.75 + rim * 0.35, 0.08, 1.0);
 
-          // Selective focal modulation (hero wave crest beside card is brightest)
           float focalCurve = smoothstep(0.12, 0.42, u) * smoothstep(0.92, 0.60, u);
           focalWeight = mix(0.55, 1.0, focalCurve);
 
         } else if (a_ribbon < 1.5) {
           // =========================================================================
           // RIBBON 1: SECONDARY TOWERING RIDGE (Distant Layer)
+          // Slower, majestic background pace with independent harmonic evolution
           // =========================================================================
-          float t = u_time * 0.18;
+          float t = u_time * 0.16 + 1.75;
 
-          float pinch = 0.12 * sin(v * 5.8 + u * 3.4 - t);
+          float pinch = 0.12 * sin(v * 5.8 + u * 3.4 - t * 0.95);
           float vp = v + pinch;
+
+          float spineBreath = 0.08 * sin(u * 2.0 - t * 0.75);
 
           float cx = 1.70 + 2.00 * cos(u * 2.2 + 0.50);
           float cz = -2.50 + 2.90 * u;
-          float cy = 0.80 + 1.15 * sin(u * 2.5 + 0.40) + 0.45 * cos(u * 4.8);
+          float cy = 0.80 + 1.15 * sin(u * 2.5 + 0.40) + 0.45 * cos(u * 4.8) + spineBreath;
 
-          float roll = 0.60 * cos(u * 2.4 - 0.35) + 0.35;
+          float roll = 0.60 * cos(u * 2.4 - 0.35) + 0.35 + 0.08 * sin(t * 0.60);
           float ribbonWidth = 2.70 + 0.70 * sin(u * 3.14159);
 
           vec3 B = vec3(cos(roll), sin(roll), -0.40 * sin(roll));
           vec3 N = vec3(-sin(roll) * 0.65, cos(roll), 0.70 * cos(roll));
 
-          float crossRidge = 0.50 * cos(v * 10.0);
+          float crossRidge = (0.50 + 0.08 * cos(t * 0.45)) * cos(v * 10.0 - t * 0.50);
 
-          float s1 = u * 3.6 - vp * 2.8 - t * 1.05;
+          float s1 = u * 3.6 - vp * 2.8 - t * 1.10 + 0.25 * sin(u * 1.8 - t * 0.50);
           float w1 = sin(s1);
           float crest1 = sign(w1) * pow(abs(w1), 1.50);
 
-          float s2 = u * 2.0 + vp * 3.4 + t * 0.65;
+          float s2 = u * 2.0 + vp * 3.4 + t * 0.70;
           float w2 = cos(s2) * 0.60;
 
           float foldAmp = (crest1 * 0.90 + w2 + crossRidge) * envelope;
@@ -597,34 +607,37 @@
           curv = clamp(crest1 * 0.60 + crossRidge * 0.40 + 0.25, 0.0, 1.0);
           float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
           diff = clamp(NdotL * 0.70 + 0.15, 0.06, 1.0);
-          focalWeight = 0.68; // Softer, more recessed illumination
+          focalWeight = 0.68;
 
         } else {
           // =========================================================================
           // RIBBON 2: FOREGROUND FLUID FOUNDATION
+          // Fluid foundation swell with rolling organic undulations
           // =========================================================================
-          float t = u_time * 0.28;
+          float t = u_time * 0.25 + 3.40;
 
-          float pinch = 0.14 * sin(v * 5.4 + u * 3.8 - t * 1.1);
+          float pinch = 0.14 * sin(v * 5.4 + u * 3.8 - t * 1.20);
           float vp = v + pinch;
+
+          float spineBreath = 0.07 * cos(u * 2.4 - t * 0.90);
 
           float cx = 1.50 + 1.85 * sin(u * 2.2 - 0.20) + 0.30 * cos(u * 4.4);
           float cz = -0.60 + 2.90 * u;
-          float cy = -0.45 + 0.75 * sin(u * 2.7 + 0.85) - 0.25 * cos(u * 5.2);
+          float cy = -0.45 + 0.75 * sin(u * 2.7 + 0.85) - 0.25 * cos(u * 5.2) + spineBreath;
 
-          float roll = -0.30 * sin(u * 2.4) - 0.10;
+          float roll = -0.30 * sin(u * 2.4) - 0.10 + 0.07 * sin(t * 0.65);
           float ribbonWidth = 3.20 + 0.80 * sin(u * 3.14159);
 
           vec3 B = vec3(cos(roll), sin(roll), -0.30 * sin(roll));
           vec3 N = vec3(-sin(roll) * 0.50, cos(roll), 0.85);
 
-          float crossRidge = 0.40 * cos(v * 8.0);
+          float crossRidge = (0.40 + 0.08 * sin(t * 0.50)) * cos(v * 8.0 - t * 0.40);
 
-          float s1 = u * 4.4 - vp * 3.4 - t * 1.30;
+          float s1 = u * 4.4 - vp * 3.4 - t * 1.35 + 0.28 * sin(u * 2.2 - t * 0.60);
           float w1 = sin(s1);
           float crest1 = sign(w1) * pow(abs(w1), 1.45);
 
-          float foldAmp = (crest1 * 0.75 + sin(u * 2.2 + vp * 2.6) * 0.40 + crossRidge) * envelope;
+          float foldAmp = (crest1 * 0.75 + sin(u * 2.2 + vp * 2.6 - t * 0.80) * 0.40 + crossRidge) * envelope;
 
           cx += u_mouse.x * 0.24;
           cy += u_mouse.y * 0.14;
@@ -635,7 +648,7 @@
           curv = clamp(crest1 * 0.50 + crossRidge * 0.30 + 0.20, 0.0, 1.0);
           float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
           diff = clamp(NdotL * 0.65 + 0.20, 0.08, 1.0);
-          focalWeight = 0.52; // Ground swell foundation
+          focalWeight = 0.52;
         }
 
         // Text area readability protection
@@ -871,14 +884,20 @@
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, allIndices, gl.STATIC_DRAW);
 
       const stride = 20;
-      gl.enableVertexAttribArray(aBasePosLoc);
-      gl.vertexAttribPointer(aBasePosLoc, 2, gl.FLOAT, false, stride, 0);
+      if (aBasePosLoc >= 0) {
+        gl.enableVertexAttribArray(aBasePosLoc);
+        gl.vertexAttribPointer(aBasePosLoc, 2, gl.FLOAT, false, stride, 0);
+      }
 
-      gl.enableVertexAttribArray(aUvLoc);
-      gl.vertexAttribPointer(aUvLoc, 2, gl.FLOAT, false, stride, 8);
+      if (aUvLoc >= 0) {
+        gl.enableVertexAttribArray(aUvLoc);
+        gl.vertexAttribPointer(aUvLoc, 2, gl.FLOAT, false, stride, 8);
+      }
 
-      gl.enableVertexAttribArray(aRibbonLoc);
-      gl.vertexAttribPointer(aRibbonLoc, 1, gl.FLOAT, false, stride, 16);
+      if (aRibbonLoc >= 0) {
+        gl.enableVertexAttribArray(aRibbonLoc);
+        gl.vertexAttribPointer(aRibbonLoc, 1, gl.FLOAT, false, stride, 16);
+      }
     }
 
     // Viewport & Matrix state
