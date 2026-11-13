@@ -479,6 +479,9 @@
       varying vec2 v_uv;
       varying float v_ribbon;
       varying float v_worldX;
+      varying float v_curvature;
+      varying float v_diffuse;
+      varying float v_focal;
 
       void main() {
         v_uv = a_uv;
@@ -495,38 +498,34 @@
 
         vec3 pos = vec3(0.0);
         float elev = 0.0;
+        float curv = 0.0;
+        float diff = 1.0;
+        float focalWeight = 1.0;
+
+        // Directional key light vector (front-upper-right)
+        vec3 lightDir = normalize(vec3(0.55, 0.75, 0.40));
 
         if (a_ribbon < 0.5) {
           // =========================================================================
           // RIBBON 0: PRIMARY SCULPTURAL WAVE (Hero Organic Fluid Surface)
-          // Features deep curling folds, multi-ridge cross section, and organic S-flow.
           // =========================================================================
           float t = u_time * 0.24;
 
-          // 3D Space Curve Spine C(u)
-          // Enters from upper-right background, sweeps in a dynamic curve behind
-          // the portrait card, and curls gracefully forward into the foreground.
+          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.1);
+          float vp = v + pinch;
+
           float cx = 1.45 + 1.70 * cos(u * 2.6 - 0.45) + 0.35 * sin(u * 5.2);
           float cz = -1.90 + 3.60 * u - 0.45 * sin(u * 3.14159);
           float cy = 0.20 + 0.85 * sin(u * 3.0 - 0.50) + 0.30 * cos(u * 6.0);
 
-          // Dynamic 3D banking (reverses roll along spine to create sculptural twist)
           float roll = 0.90 * sin(u * 3.2 + 0.70) + 0.25;
           float ribbonWidth = 3.10 + 0.80 * sin(u * 3.14159);
 
-          // Moving frame: Binormal B and Normal N
           vec3 B = vec3(cos(roll), sin(roll), -0.50 * sin(roll));
           vec3 N = vec3(-sin(roll) * 0.80, cos(roll), 0.60 * cos(roll));
 
-          // Multi-ridge cross-sectional profile (two distinct wave crests + deep valley)
-          // Ridge 1 at v ~ +0.22, Ridge 2 at v ~ -0.22, deep canyon at v ~ 0.0
           float crossRidge = 0.65 * cos(v * 12.56) - 0.35 * cos(v * 6.28);
 
-          // Trochoidal / Gerstner lateral displacement (streamlines pinch at crests)
-          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.1);
-          float vp = v + pinch;
-
-          // Multi-octave organic traveling wave harmonics
           float s1 = u * 4.6 - vp * 3.8 - t * 1.20;
           float w1 = sin(s1);
           float crest1 = sign(w1) * pow(abs(w1), 1.60);
@@ -539,21 +538,29 @@
 
           float s4 = cos(length(vec2(cx - 1.2, cz + 0.3)) * 0.80 - t * 0.40) * 0.45;
 
-          // Total 3D fold amplitude
           float foldAmp = (crest1 * 1.10 + w2 * 0.50 + w3 + s4 + crossRidge * 0.75) * envelope;
 
-          // Pointer parallax
           cx += u_mouse.x * 0.22 * (1.0 - u * 0.35);
           cy += u_mouse.y * 0.15;
 
           pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
           elev = pos.y;
 
+          // Local curvature intensity
+          curv = clamp(crest1 * 0.65 + crossRidge * 0.45 + 0.30, 0.0, 1.0);
+
+          // Directional + grazing rim illumination
+          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
+          float rim = clamp(1.0 - abs(N.z), 0.0, 1.0);
+          diff = clamp(NdotL * 0.75 + rim * 0.35, 0.08, 1.0);
+
+          // Selective focal modulation (hero wave crest beside card is brightest)
+          float focalCurve = smoothstep(0.12, 0.42, u) * smoothstep(0.92, 0.60, u);
+          focalWeight = mix(0.55, 1.0, focalCurve);
+
         } else if (a_ribbon < 1.5) {
           // =========================================================================
           // RIBBON 1: SECONDARY TOWERING RIDGE (Distant Layer)
-          // Positioned deeper in space (z ~ -2.4 to 0.4), soaring higher in Y
-          // to create dramatic layered silhouettes behind the primary wave.
           // =========================================================================
           float t = u_time * 0.18;
 
@@ -587,11 +594,14 @@
           pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
           elev = pos.y + 0.25;
 
+          curv = clamp(crest1 * 0.60 + crossRidge * 0.40 + 0.25, 0.0, 1.0);
+          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
+          diff = clamp(NdotL * 0.70 + 0.15, 0.06, 1.0);
+          focalWeight = 0.68; // Softer, more recessed illumination
+
         } else {
           // =========================================================================
           // RIBBON 2: FOREGROUND FLUID FOUNDATION
-          // Sweeps through lower-right space (y ~ -0.5 to 0.5, x ~ 0.9 to 3.6)
-          // creating an expansive fluid base that anchors the 3D composition.
           // =========================================================================
           float t = u_time * 0.28;
 
@@ -621,14 +631,22 @@
 
           pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
           elev = pos.y - 0.15;
+
+          curv = clamp(crest1 * 0.50 + crossRidge * 0.30 + 0.20, 0.0, 1.0);
+          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
+          diff = clamp(NdotL * 0.65 + 0.20, 0.08, 1.0);
+          focalWeight = 0.52; // Ground swell foundation
         }
 
-        // Text area readability protection (softly dampens elevation if approaching hero copy)
+        // Text area readability protection
         float textProtection = smoothstep(-1.2, 0.15, pos.x);
         pos.y *= mix(0.50, 1.0, textProtection);
 
         v_elevation = elev;
         v_worldX = pos.x;
+        v_curvature = curv * envelope;
+        v_diffuse = diff;
+        v_focal = focalWeight;
 
         vec4 worldPos = vec4(pos, 1.0);
         vec4 clipPos = u_mvp * worldPos;
@@ -644,56 +662,94 @@
       varying vec2 v_uv;
       varying float v_ribbon;
       varying float v_worldX;
+      varying float v_curvature;
+      varying float v_diffuse;
+      varying float v_focal;
 
       uniform float u_lineType; // 0.0 = longitudinal flow, 1.0 = transverse rib
       uniform float u_theme;    // 0.0 = dark (#0B0B0C), 1.0 = light (#F5F5F5)
 
       void main() {
         // 1. Boundary & edge falloff
-        float edgeFade = smoothstep(0.0, 0.12, v_uv.x) * smoothstep(1.0, 0.88, v_uv.x) *
-                         smoothstep(0.0, 0.14, v_uv.y) * smoothstep(1.0, 0.86, v_uv.y);
+        float edgeFade = smoothstep(0.0, 0.10, v_uv.x) * smoothstep(1.0, 0.90, v_uv.x) *
+                         smoothstep(0.0, 0.12, v_uv.y) * smoothstep(1.0, 0.88, v_uv.y);
 
-        // 2. Depth attenuation
-        float depthFade = smoothstep(8.5, 2.2, v_depth);
+        // 2. Depth attenuation (gradual fading into background)
+        // Foreground (depth ~ 2.5 - 4.5): sharp, defined, crisp contrast
+        // Midground (depth ~ 4.5 - 6.5): smooth falloff
+        // Background (depth > 6.5): soft atmospheric fade into darkness
+        float depthFade = smoothstep(8.2, 2.6, v_depth);
+        float depthDamp = smoothstep(7.8, 3.2, v_depth);
 
-        // 3. Text area soft protection (left of center X < -0.2)
-        float textFade = smoothstep(-2.2, -0.2, v_worldX);
+        // 3. Text area soft protection (left of center X < -0.15)
+        float textFade = smoothstep(-2.2, -0.15, v_worldX);
 
-        // 4. Luminous Ridge Lighting:
-        // Elevation mapped across [-0.25, 1.10]
-        float ridgeFactor = clamp((v_elevation + 0.40) / 2.50, 0.0, 1.0);
+        // 4. Multi-Factor Luminous Ridge & Curvature Intensity
+        // Maps elevation and surface curvature into sculptural light response
+        float elevNorm = clamp((v_elevation + 0.35) / 2.30, 0.0, 1.0);
 
-        // Color Palette:
-        // Trough: Deep Obsidian Emerald (#091C11)
-        vec3 colTrough = vec3(0.035, 0.110, 0.067);
-        // Mid Slope: Rich Forest Emerald (#19542E)
-        vec3 colMid    = vec3(0.098, 0.329, 0.180);
+        // Sculptural light combines elevation, local surface curvature, and directional light
+        float ridgeFactor = clamp(elevNorm * 0.55 + v_curvature * 0.35 + v_diffuse * 0.15, 0.0, 1.0);
+        ridgeFactor *= v_focal; // Selective focal modulation (hero crest is noticeably brightest)
+
+        // 5. Color Hierarchy (Midnight Black to Luminous Lime Green):
+        // Trough: Deep Obsidian Emerald (#06160B)
+        vec3 colTrough = vec3(0.024, 0.086, 0.043);
+        // Mid Slope Shadow: Rich Forest Emerald (#103A1E)
+        vec3 colMidShadow = vec3(0.063, 0.227, 0.118);
+        // Mid Slope Lit: Vibrant Moss Emerald (#1F6B34)
+        vec3 colMidLit = vec3(0.122, 0.420, 0.204);
         // Crest Ridge: Luminous Lime Green (#C6F432)
-        vec3 colCrest  = vec3(0.776, 0.957, 0.196);
+        vec3 colCrest = vec3(0.776, 0.957, 0.196);
         // Apex Highlight: Pure Electric Lime (#D9FF4A)
-        vec3 colApex   = vec3(0.851, 1.000, 0.290);
+        vec3 colApex = vec3(0.851, 1.000, 0.290);
+        // Radiant Core Specular:
+        vec3 colCore = vec3(0.925, 1.000, 0.580);
 
+        // Smooth multi-stop gradient transition across folds
         vec3 color;
-        if (ridgeFactor < 0.48) {
-          color = mix(colTrough, colMid, ridgeFactor * 2.083);
+        if (ridgeFactor < 0.28) {
+          color = mix(colTrough, colMidShadow, ridgeFactor / 0.28);
+        } else if (ridgeFactor < 0.60) {
+          float t = (ridgeFactor - 0.28) / 0.32;
+          color = mix(colMidShadow, colMidLit, t);
+        } else if (ridgeFactor < 0.84) {
+          float t = (ridgeFactor - 0.60) / 0.24;
+          color = mix(colMidLit, colCrest, t);
         } else {
-          color = mix(colMid, colCrest, (ridgeFactor - 0.48) * 1.923);
+          float t = (ridgeFactor - 0.84) / 0.16;
+          color = mix(colCrest, colApex, t);
         }
 
-        float apexGlow = smoothstep(0.70, 1.0, ridgeFactor);
-        color = mix(color, colApex, apexGlow * 0.75);
+        // Restrained specular core on the sharpest focal crest points
+        float peakGlow = smoothstep(0.82, 0.98, ridgeFactor);
+        color = mix(color, colCore, peakGlow * 0.65 * v_focal);
 
-        // 5. Alpha calculation:
-        float baseAlpha = mix(0.035, 0.72, pow(ridgeFactor, 1.40));
-        float lineWeight = (u_lineType > 0.5) ? 0.75 : 1.0;
-        float ribbonAtten = (v_ribbon == 0.0) ? 1.0 : (v_ribbon == 1.0 ? 0.86 : 0.70);
+        // 6. Atmospheric Light Diffusion (Soft, localized, smooth falloff around bright ridges)
+        // Only active on high-curvature luminous ridges in the focal zone
+        float diffuseTerm = pow(smoothstep(0.68, 1.0, ridgeFactor), 2.2) * 0.28 * v_focal;
+        color += colApex * diffuseTerm;
+
+        // 7. Alpha & Material Response:
+        // Valleys: Low alpha (0.030 - 0.08) creates dark negative space between formations
+        // Crests: High alpha (0.75 - 0.84) creates brilliant luminous wireframe lines
+        float baseAlpha = mix(0.030, 0.80, pow(ridgeFactor, 1.60));
+
+        // Depth modulation: foreground lines are crisp and defined, distant lines soften
+        baseAlpha *= mix(0.60, 1.0, depthDamp);
+
+        // Longitudinal streamlines vs transverse cross-ribs
+        float lineWeight = (u_lineType > 0.5) ? 0.72 : 1.0;
+        float ribbonAtten = (v_ribbon == 0.0) ? 1.0 : (v_ribbon == 1.0 ? 0.85 : 0.68);
 
         float alpha = baseAlpha * edgeFade * depthFade * textFade * lineWeight * ribbonAtten;
 
-        // 6. Light Theme Adaptability
+        // 8. Light Theme Adaptability
         if (u_theme > 0.5) {
-          vec3 lightColor = mix(vec3(0.50, 0.55, 0.45), vec3(0.22, 0.32, 0.02), ridgeFactor);
-          gl_FragColor = vec4(lightColor, alpha * 0.25);
+          vec3 lightValleys = vec3(0.65, 0.70, 0.60);
+          vec3 lightRidges = vec3(0.18, 0.30, 0.04);
+          vec3 lightColor = mix(lightValleys, lightRidges, pow(ridgeFactor, 1.2));
+          gl_FragColor = vec4(lightColor, alpha * 0.24);
           return;
         }
 
@@ -701,7 +757,6 @@
         gl_FragColor = vec4(color, alpha);
       }
     `;
-
     function createShader(type, src) {
       const s = gl.createShader(type);
       gl.shaderSource(s, src);
