@@ -539,17 +539,67 @@
       // Controlled amplitude prevents self-intersection and visual tangling
       // =========================================================================
       vec2 domainWarp(vec2 uv, float t) {
-        vec2 p = uv * vec2(2.6, 2.0);
+        vec2 p = uv * vec2(2.4, 1.8);
 
-        // First-order directional flow warp
+        // First-order directional flow warp (organic fluid drift)
         float n1 = snoise(p + vec2(t * 0.04, t * 0.025));
         float n2 = snoise(p + vec2(5.2 - t * 0.03, 3.7 + t * 0.035));
-        vec2 q = p + 0.26 * vec2(n1, n2);
+        vec2 q = p + 0.38 * vec2(n1, n2);
 
         // Second-order gentle swirl warp
-        float n3 = snoise(q * 1.5 + vec2(t * 0.03, -t * 0.025));
-        float n4 = snoise(q * 1.5 + vec2(8.1 - t * 0.035, 1.9 + t * 0.03));
-        return uv + 0.10 * vec2(n3, n4);
+        float n3 = snoise(q * 1.4 + vec2(t * 0.03, -t * 0.025));
+        float n4 = snoise(q * 1.4 + vec2(8.1 - t * 0.035, 1.9 + t * 0.03));
+        return uv + 0.18 * vec2(n3, n4);
+      }
+
+      // =========================================================================
+      // MACRO OCEAN TOPOGRAPHY FUNCTION H_macro(u, v, t)
+      // Task 1B.1: Dominant Broad Flowing Ocean Wave
+      // Starts in the lower-middle region, sweeps in a long smooth diagonal S-curve
+      // rising toward the upper-right, forming a broad rounded crest with natural slope
+      // =========================================================================
+      float computeMacroTopography(vec2 uvW, float u, float v, float t) {
+        float uw = uvW.x;
+        float vw = uvW.y;
+
+        // Baseline gentle fluid carrier swell across the full viewport (maintains 100% coverage)
+        float baselineSwell = 0.20 * sin(uw * 2.2 - vw * 1.5 + t * 0.25) + 0.12 * cos(uw * 1.6 + vw * 2.0);
+        float fluidBreath = snoise(uvW * vec2(1.6, 1.2) + vec2(t * 0.03, 0.0)) * 0.06;
+
+        // --- DOMINANT MAIN OCEAN WAVE (الموجة الرئيسية) ---
+        // Localized S-curve trajectory:
+        // Starts precisely around the lower-middle region (uw ~ 0.45, vw ~ 0.72)
+        // and sweeps diagonally across the right half toward the upper-right (uw ~ 0.92, vw ~ 0.22)
+        float uNorm = clamp((uw - 0.45) / 0.47, 0.0, 1.0);
+        // Smoothstep Hermite S-curve progression
+        float sCurve = uNorm * uNorm * (3.0 - 2.0 * uNorm);
+        float vCrest = 0.72 - 0.50 * sCurve + 0.04 * sin(3.14159 * uNorm) + 0.02 * sin(uNorm * 6.28 - t * 0.35);
+
+        // Transverse distance from the crest centerline
+        float d = vw - vCrest;
+
+        // Broad rounded crest profile (generous half-width 0.38 for wide, flowing liquid silk)
+        float dNorm = clamp(d / 0.38, -1.0, 1.0);
+        float crestDome = cos(dNorm * 1.5707963);
+        crestDome = crestDome * crestDome;
+
+        // Natural descending slope after crest (back-slope toward top-rear)
+        float backSlope = -0.18 * smoothstep(0.0, -0.40, d);
+
+        // Smooth front trough leading up to the crest
+        float frontTrough = -0.32 * exp(-pow((d - 0.28) / 0.24, 2.0));
+
+        // Wave profile across transverse section (expansive rounded crest of 1.40 units)
+        float crossProfile = crestDome * 1.40 + frontTrough + backSlope;
+
+        // Longitudinal amplitude envelope: swells smoothly across right half, zero at lower-middle start
+        float longEnvelope = sin(3.14159 * uNorm);
+        longEnvelope = pow(longEnvelope, 0.90);
+
+        float H_mainWave = crossProfile * longEnvelope;
+
+        // Smoothly integrated into the continuous baseline surface
+        return baselineSwell + fluidBreath + H_mainWave;
       }
 
       void main() {
@@ -560,48 +610,60 @@
 
         // =========================================================================
         // BASE PARAMETRIC CARRIER SURFACE P0(u, v) = C_macro(u, v)
-        // One continuous curvilinear manifold spanning the hero 3D space
+        // One continuous curvilinear manifold spanning the entire hero viewport
+        // with geometric overscan on all 4 visual edges (left, right, top, bottom)
         // =========================================================================
-        // Spans camera view: X from -1.40 (left text buffer) to +3.60 (right hero expanse)
-        float x0 = -1.40 + 5.00 * u + 0.25 * sin(3.14159 * v);
-        // Elevation profile: gentle descent from rear to front with organic S-curvature
-        float y0 = 0.70 - 1.25 * v + 0.35 * sin(3.14159 * u) - 0.20 * cos(3.14159 * v);
-        // Depth profile: deep distance (Z ~ -1.90) to foreground (Z ~ +1.35)
-        float z0 = -1.90 + 3.25 * v - 0.40 * u;
+        // X: overscans past left edge (X ~ -5.8) and right edge (X ~ +6.2)
+        float x0 = -5.8 + 12.0 * u + 0.35 * sin(3.14159 * v);
+        // Y: overscans past top edge (Y ~ +3.6) down to past bottom edge (Y ~ -1.9)
+        float y0 = 3.6 - 5.5 * v + 0.35 * sin(3.14159 * u) - 0.25 * cos(3.14159 * v);
+        // Z: sweeps from deep background (Z ~ -3.4) forward to close foreground (Z ~ +1.8)
+        float z0 = -3.4 + 5.4 * v - 0.40 * u;
         vec3 basePos = vec3(x0, y0, z0);
 
         // Base surface normal N_base (predominantly pointing up and toward camera)
-        vec3 baseNormal = normalize(vec3(-0.14 * cos(3.14159 * u), 0.92, 0.36));
+        vec3 baseNormal = normalize(vec3(-0.10 * cos(3.14159 * u), 0.78, 0.62));
+        // Transverse banking vector
+        vec3 transBank = normalize(vec3(0.55, 0.20, -0.81));
 
         // =========================================================================
-        // DIAGNOSTIC PROCEDURAL DISPLACEMENT (Task 1A Validation Pipeline)
-        // Analytical Domain Warping + Simplex Noise
+        // MACRO TOPOGRAPHY EVALUATION (Task 1B)
+        // Broad rounded crests, deep carved valleys, and continuous fluid landscape
         // =========================================================================
         float t = u_time * 0.18;
         vec2 warpedUV = domainWarp(a_uv, t);
 
-        // Multi-frequency diagnostic noise evaluation
-        float nPrimary = snoise(warpedUV * vec2(3.0, 2.4) + vec2(t * 0.08, 0.0));
-        float nDetail  = snoise(warpedUV * vec2(6.2, 5.0) - vec2(t * 0.05, t * 0.04)) * 0.35;
-        float diagnosticNoise = nPrimary + nDetail;
+        // Left quadrant text protection: softens wave amplitude under typography
+        // while preserving full continuous surface presence
+        float textFactor = smoothstep(-3.2, 0.3, basePos.x);
+        float macroAmp = mix(0.18, 1.0, textFactor);
 
-        // Text area soft protection (left quadrant u < 0.28 remains calm for headline readability)
-        float textProtection = smoothstep(0.04, 0.30, u);
-        float displacement = diagnosticNoise * 0.24 * textProtection;
+        float H_macro = computeMacroTopography(warpedUV, u, v, t) * macroAmp;
+
+        // Finite difference for surface normal & curvature response
+        float delta = 0.02;
+        float H_u = computeMacroTopography(warpedUV + vec2(delta, 0.0), u + delta, v, t) * macroAmp;
+        float H_v = computeMacroTopography(warpedUV + vec2(0.0, delta), u, v + delta, t) * macroAmp;
+        float slopeU = (H_u - H_macro) / delta;
+        float slopeV = (H_v - H_macro) / delta;
+
+        // Displaced surface position strictly along base surface normal
+        vec3 displacedPos = basePos + baseNormal * H_macro;
+
+        // Smooth surface normal modulated by wave slope
+        vec3 surfNormal = normalize(baseNormal - vec3(slopeU * 0.12, 0.0, -slopeV * 0.15));
 
         // Subtle mouse responsiveness
-        vec3 mouseShift = vec3(u_mouse.x * 0.12 * textProtection, u_mouse.y * 0.08, 0.0);
+        vec3 mouseShift = vec3(u_mouse.x * 0.12 * textFactor, u_mouse.y * 0.08, 0.0);
+        vec3 pos = displacedPos + mouseShift;
 
-        // Final displaced surface position
-        vec3 pos = basePos + baseNormal * displacement + mouseShift;
-
-        // Directional light vector (front-upper-right)
+        // Directional key light vector (front-upper-right)
         vec3 lightDir = normalize(vec3(0.55, 0.75, 0.40));
-        float NdotL = clamp(dot(baseNormal, lightDir), 0.0, 1.0);
+        float NdotL = clamp(dot(surfNormal, lightDir), 0.0, 1.0);
 
         v_elevation = pos.y;
         v_worldX = pos.x;
-        v_curvature = clamp(0.5 + 0.5 * diagnosticNoise, 0.0, 1.0);
+        v_curvature = clamp(H_macro * 0.35 + 0.45, 0.0, 1.0);
         v_diffuse = clamp(NdotL * 0.75 + 0.25, 0.10, 1.0);
 
         vec4 worldPos = vec4(pos, 1.0);
@@ -624,20 +686,26 @@
       uniform float u_theme;    // 0.0 = dark (#0B0B0C), 1.0 = light (#F5F5F5)
 
       void main() {
-        // 1. Boundary & edge falloff: smooth gradual fade into darkness at all outer borders
-        float edgeFade = smoothstep(0.0, 0.08, v_uv.x) * smoothstep(1.0, 0.92, v_uv.x) *
-                         smoothstep(0.0, 0.08, v_uv.y) * smoothstep(1.0, 0.92, v_uv.y);
+        // 1. Boundary & edge falloff: geometry generously overscans viewport;
+        // subtle falloff at extreme parametric perimeter prevents any clipping artifacts
+        float edgeFade = smoothstep(0.0, 0.015, v_uv.x) * smoothstep(1.0, 0.985, v_uv.x) *
+                         smoothstep(0.0, 0.015, v_uv.y) * smoothstep(1.0, 0.985, v_uv.y);
 
-        // 2. Depth attenuation: crisp foreground, soft atmospheric fade in deep distance
-        float depthFade = smoothstep(9.5, 2.2, v_depth);
-        float depthDamp = smoothstep(8.5, 2.5, v_depth);
+        // 2. Depth attenuation: crisp foreground, soft atmospheric perspective in deep background
+        // Maintains a minimum 0.35 presence so distant canopy never vanishes into void
+        float depthFade = mix(0.35, 1.0, smoothstep(12.0, 3.0, v_depth));
+        float depthDamp = smoothstep(9.0, 2.5, v_depth);
 
-        // 3. Text area soft protection (left quadrant world X < -0.15)
-        float textFade = smoothstep(-2.2, -0.15, v_worldX);
+        // 3. Text zone spatial modulation (world X < 0.6)
+        // Keeps the surface 100% continuous behind headline and bio,
+        // using deep emerald tones and quiet alpha for perfect readability
+        float textZone = smoothstep(-2.8, 0.8, v_worldX);
 
         // 4. Luminous Ridge & Curvature Factor
-        float elevNorm = clamp((v_elevation + 0.55) / 1.35, 0.0, 1.0);
-        float ridgeFactor = clamp(elevNorm * 0.55 + v_curvature * 0.35 + v_diffuse * 0.10, 0.0, 1.0);
+        // Normalizes elevation across the full macro relief [-1.8, +3.0]
+        float elevNorm = clamp((v_elevation + 1.80) / 4.80, 0.0, 1.0);
+        float zoneSuppression = mix(0.38, 1.0, textZone);
+        float ridgeFactor = clamp((elevNorm * 0.45 + v_curvature * 0.45 + v_diffuse * 0.10) * zoneSuppression, 0.0, 1.0);
 
         // 5. Target Color Palette (from approved Fluid Ocean reference diagram)
         // Deep Shadow / Shadow: #010402
@@ -681,7 +749,9 @@
         // u_lineType 1.0 = transverse ribs (weight 0.38)
         float lineWeight = (u_lineType > 0.5) ? 0.38 : 1.0;
 
-        float alpha = baseAlpha * edgeFade * depthFade * textFade * lineWeight;
+        // Zone alpha: quiet and non-interfering in text zone (~0.24 factor), brilliant on right focal zone
+        float zoneAlpha = mix(0.24, 1.0, textZone);
+        float alpha = baseAlpha * edgeFade * depthFade * zoneAlpha * lineWeight;
 
         // 7. Light Theme Adaptability
         if (u_theme > 0.5) {
