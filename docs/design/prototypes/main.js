@@ -466,9 +466,7 @@
     // Shader sources
     const vsSource = `
       precision highp float;
-      attribute vec2 a_basePos;
       attribute vec2 a_uv;
-      attribute float a_ribbon;
 
       uniform mat4 u_mvp;
       uniform float u_time;
@@ -477,189 +475,134 @@
       varying float v_elevation;
       varying float v_depth;
       varying vec2 v_uv;
-      varying float v_ribbon;
       varying float v_worldX;
       varying float v_curvature;
       varying float v_diffuse;
-      varying float v_focal;
+
+      // =========================================================================
+      // ANALYTICAL 2D SIMPLEX NOISE (GLSL ES 1.0, Stefan Gustavson / Ian McEwan)
+      // Textureless, extensionless, numerically stable ALU evaluation
+      // =========================================================================
+      vec3 mod289(vec3 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+      }
+
+      vec2 mod289(vec2 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+      }
+
+      vec3 permute(vec3 x) {
+        return mod289(((x * 34.0) + 1.0) * x);
+      }
+
+      float snoise(vec2 v) {
+        const vec4 C = vec4(0.211324865405187,   // (3.0 - sqrt(3.0)) / 6.0
+                            0.366025403784439,   // 0.5 * (sqrt(3.0) - 1.0)
+                           -0.577350269189626,   // -1.0 + 2.0 * C.x
+                            0.024390243902439);  // 1.0 / 41.0
+        // First corner
+        vec2 i  = floor(v + dot(v, C.yy));
+        vec2 x0 = v -   i + dot(i, C.xx);
+
+        // Other corners
+        vec2 i1;
+        i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+
+        // Permutations
+        i = mod289(i);
+        vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0))
+              + i.x + vec3(0.0, i1.x, 1.0));
+
+        vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+        m = m * m;
+        m = m * m;
+
+        // Gradients
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+
+        m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+      }
+
+      // =========================================================================
+      // ANALYTICAL DOMAIN WARPING CORE
+      // Smoothly distorts regular UV space into fluid streamline coordinates
+      // Controlled amplitude prevents self-intersection and visual tangling
+      // =========================================================================
+      vec2 domainWarp(vec2 uv, float t) {
+        vec2 p = uv * vec2(2.6, 2.0);
+
+        // First-order directional flow warp
+        float n1 = snoise(p + vec2(t * 0.04, t * 0.025));
+        float n2 = snoise(p + vec2(5.2 - t * 0.03, 3.7 + t * 0.035));
+        vec2 q = p + 0.26 * vec2(n1, n2);
+
+        // Second-order gentle swirl warp
+        float n3 = snoise(q * 1.5 + vec2(t * 0.03, -t * 0.025));
+        float n4 = snoise(q * 1.5 + vec2(8.1 - t * 0.035, 1.9 + t * 0.03));
+        return uv + 0.10 * vec2(n3, n4);
+      }
 
       void main() {
         v_uv = a_uv;
-        v_ribbon = a_ribbon;
 
-        float u = a_uv.x;
-        float vNorm = a_uv.y;
-        float v = vNorm - 0.5; // [-0.5, 0.5]
+        float u = a_uv.x; // longitudinal flow (left to right)
+        float v = a_uv.y; // transverse span (rear to foreground)
 
-        // Boundary envelopes to fade mesh cleanly at all outer edges
-        float envU = smoothstep(0.0, 0.08, u) * smoothstep(1.0, 0.90, u);
-        float envV = smoothstep(0.0, 0.10, vNorm) * smoothstep(1.0, 0.90, vNorm);
-        float envelope = envU * envV;
+        // =========================================================================
+        // BASE PARAMETRIC CARRIER SURFACE P0(u, v) = C_macro(u, v)
+        // One continuous curvilinear manifold spanning the hero 3D space
+        // =========================================================================
+        // Spans camera view: X from -1.40 (left text buffer) to +3.60 (right hero expanse)
+        float x0 = -1.40 + 5.00 * u + 0.25 * sin(3.14159 * v);
+        // Elevation profile: gentle descent from rear to front with organic S-curvature
+        float y0 = 0.70 - 1.25 * v + 0.35 * sin(3.14159 * u) - 0.20 * cos(3.14159 * v);
+        // Depth profile: deep distance (Z ~ -1.90) to foreground (Z ~ +1.35)
+        float z0 = -1.90 + 3.25 * v - 0.40 * u;
+        vec3 basePos = vec3(x0, y0, z0);
 
-        vec3 pos = vec3(0.0);
-        float elev = 0.0;
-        float curv = 0.0;
-        float diff = 1.0;
-        float focalWeight = 1.0;
+        // Base surface normal N_base (predominantly pointing up and toward camera)
+        vec3 baseNormal = normalize(vec3(-0.14 * cos(3.14159 * u), 0.92, 0.36));
 
-        // Directional key light vector (front-upper-right)
+        // =========================================================================
+        // DIAGNOSTIC PROCEDURAL DISPLACEMENT (Task 1A Validation Pipeline)
+        // Analytical Domain Warping + Simplex Noise
+        // =========================================================================
+        float t = u_time * 0.18;
+        vec2 warpedUV = domainWarp(a_uv, t);
+
+        // Multi-frequency diagnostic noise evaluation
+        float nPrimary = snoise(warpedUV * vec2(3.0, 2.4) + vec2(t * 0.08, 0.0));
+        float nDetail  = snoise(warpedUV * vec2(6.2, 5.0) - vec2(t * 0.05, t * 0.04)) * 0.35;
+        float diagnosticNoise = nPrimary + nDetail;
+
+        // Text area soft protection (left quadrant u < 0.28 remains calm for headline readability)
+        float textProtection = smoothstep(0.04, 0.30, u);
+        float displacement = diagnosticNoise * 0.24 * textProtection;
+
+        // Subtle mouse responsiveness
+        vec3 mouseShift = vec3(u_mouse.x * 0.12 * textProtection, u_mouse.y * 0.08, 0.0);
+
+        // Final displaced surface position
+        vec3 pos = basePos + baseNormal * displacement + mouseShift;
+
+        // Directional light vector (front-upper-right)
         vec3 lightDir = normalize(vec3(0.55, 0.75, 0.40));
+        float NdotL = clamp(dot(baseNormal, lightDir), 0.0, 1.0);
 
-        if (a_ribbon < 0.5) {
-          // =========================================================================
-          // RIBBON 0: PRIMARY SCULPTURAL WAVE (Hero Organic Fluid Surface)
-          // Slow, continuous traveling wave flow with natural 3D breathing and flexing
-          // =========================================================================
-          float t = u_time * 0.22;
-
-          // Organic traveling streamline compression (pinch moves along wave)
-          float pinch = 0.16 * sin(v * 6.5 + u * 4.0 - t * 1.15 + 0.30 * sin(t * 0.45));
-          float vp = v + pinch;
-
-          // Subtle organic breathing of the 3D space spine
-          float spineBreath = 0.09 * sin(u * 2.2 - t * 0.85);
-          float rollBreath = 0.10 * cos(u * 1.8 - t * 0.70);
-
-          float cx = 1.45 + 1.70 * cos(u * 2.6 - 0.45) + 0.35 * sin(u * 5.2);
-          float cz = -1.90 + 3.60 * u - 0.45 * sin(u * 3.14159);
-          float cy = 0.20 + 0.85 * sin(u * 3.0 - 0.50) + 0.30 * cos(u * 6.0) + spineBreath;
-
-          float roll = 0.90 * sin(u * 3.2 + 0.70) + 0.25 + rollBreath;
-          float ribbonWidth = 3.10 + 0.80 * sin(u * 3.14159);
-
-          vec3 B = vec3(cos(roll), sin(roll), -0.50 * sin(roll));
-          vec3 N = vec3(-sin(roll) * 0.80, cos(roll), 0.60 * cos(roll));
-
-          // Evolving cross-ridge folds (ridge peaks gently breathe and travel)
-          float ridgePhase = t * 0.65;
-          float crossRidge = (0.65 + 0.10 * sin(t * 0.40 + u * 1.5)) * cos(v * 12.56 - ridgePhase)
-                           - 0.35 * cos(v * 6.28 + ridgePhase * 0.70);
-
-          // Multi-harmonic traveling waves with non-linear phase modulation
-          float s1 = u * 4.6 - vp * 3.8 - t * 1.25 + 0.30 * sin(u * 2.0 - t * 0.55);
-          float w1 = sin(s1);
-          float crest1 = sign(w1) * pow(abs(w1), 1.60);
-
-          float s2 = u * 2.8 + vp * 4.6 + t * 0.85 + 0.90;
-          float w2 = cos(s2);
-
-          float s3 = u * 8.2 - vp * 5.4 - t * 1.65;
-          float w3 = sin(s3) * 0.30;
-
-          float s4 = cos(length(vec2(cx - 1.2, cz + 0.3)) * 0.80 - t * 0.45) * 0.45;
-
-          float foldAmp = (crest1 * 1.10 + w2 * 0.50 + w3 + s4 + crossRidge * 0.75) * envelope;
-
-          cx += u_mouse.x * 0.22 * (1.0 - u * 0.35);
-          cy += u_mouse.y * 0.15;
-
-          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
-          elev = pos.y;
-
-          curv = clamp(crest1 * 0.65 + crossRidge * 0.45 + 0.30, 0.0, 1.0);
-
-          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
-          float rim = clamp(1.0 - abs(N.z), 0.0, 1.0);
-          diff = clamp(NdotL * 0.75 + rim * 0.35, 0.08, 1.0);
-
-          float focalCurve = smoothstep(0.12, 0.42, u) * smoothstep(0.92, 0.60, u);
-          focalWeight = mix(0.55, 1.0, focalCurve);
-
-        } else if (a_ribbon < 1.5) {
-          // =========================================================================
-          // RIBBON 1: SECONDARY TOWERING RIDGE (Distant Layer)
-          // Slower, majestic background pace with independent harmonic evolution
-          // =========================================================================
-          float t = u_time * 0.16 + 1.75;
-
-          float pinch = 0.12 * sin(v * 5.8 + u * 3.4 - t * 0.95);
-          float vp = v + pinch;
-
-          float spineBreath = 0.08 * sin(u * 2.0 - t * 0.75);
-
-          float cx = 1.70 + 2.00 * cos(u * 2.2 + 0.50);
-          float cz = -2.50 + 2.90 * u;
-          float cy = 0.80 + 1.15 * sin(u * 2.5 + 0.40) + 0.45 * cos(u * 4.8) + spineBreath;
-
-          float roll = 0.60 * cos(u * 2.4 - 0.35) + 0.35 + 0.08 * sin(t * 0.60);
-          float ribbonWidth = 2.70 + 0.70 * sin(u * 3.14159);
-
-          vec3 B = vec3(cos(roll), sin(roll), -0.40 * sin(roll));
-          vec3 N = vec3(-sin(roll) * 0.65, cos(roll), 0.70 * cos(roll));
-
-          float crossRidge = (0.50 + 0.08 * cos(t * 0.45)) * cos(v * 10.0 - t * 0.50);
-
-          float s1 = u * 3.6 - vp * 2.8 - t * 1.10 + 0.25 * sin(u * 1.8 - t * 0.50);
-          float w1 = sin(s1);
-          float crest1 = sign(w1) * pow(abs(w1), 1.50);
-
-          float s2 = u * 2.0 + vp * 3.4 + t * 0.70;
-          float w2 = cos(s2) * 0.60;
-
-          float foldAmp = (crest1 * 0.90 + w2 + crossRidge) * envelope;
-
-          cx += u_mouse.x * 0.16;
-          cy += u_mouse.y * 0.10;
-
-          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
-          elev = pos.y + 0.25;
-
-          curv = clamp(crest1 * 0.60 + crossRidge * 0.40 + 0.25, 0.0, 1.0);
-          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
-          diff = clamp(NdotL * 0.70 + 0.15, 0.06, 1.0);
-          focalWeight = 0.68;
-
-        } else {
-          // =========================================================================
-          // RIBBON 2: FOREGROUND FLUID FOUNDATION
-          // Fluid foundation swell with rolling organic undulations
-          // =========================================================================
-          float t = u_time * 0.25 + 3.40;
-
-          float pinch = 0.14 * sin(v * 5.4 + u * 3.8 - t * 1.20);
-          float vp = v + pinch;
-
-          float spineBreath = 0.07 * cos(u * 2.4 - t * 0.90);
-
-          float cx = 1.50 + 1.85 * sin(u * 2.2 - 0.20) + 0.30 * cos(u * 4.4);
-          float cz = -0.60 + 2.90 * u;
-          float cy = -0.45 + 0.75 * sin(u * 2.7 + 0.85) - 0.25 * cos(u * 5.2) + spineBreath;
-
-          float roll = -0.30 * sin(u * 2.4) - 0.10 + 0.07 * sin(t * 0.65);
-          float ribbonWidth = 3.20 + 0.80 * sin(u * 3.14159);
-
-          vec3 B = vec3(cos(roll), sin(roll), -0.30 * sin(roll));
-          vec3 N = vec3(-sin(roll) * 0.50, cos(roll), 0.85);
-
-          float crossRidge = (0.40 + 0.08 * sin(t * 0.50)) * cos(v * 8.0 - t * 0.40);
-
-          float s1 = u * 4.4 - vp * 3.4 - t * 1.35 + 0.28 * sin(u * 2.2 - t * 0.60);
-          float w1 = sin(s1);
-          float crest1 = sign(w1) * pow(abs(w1), 1.45);
-
-          float foldAmp = (crest1 * 0.75 + sin(u * 2.2 + vp * 2.6 - t * 0.80) * 0.40 + crossRidge) * envelope;
-
-          cx += u_mouse.x * 0.24;
-          cy += u_mouse.y * 0.14;
-
-          pos = vec3(cx, cy, cz) + (vp * ribbonWidth) * B + foldAmp * N;
-          elev = pos.y - 0.15;
-
-          curv = clamp(crest1 * 0.50 + crossRidge * 0.30 + 0.20, 0.0, 1.0);
-          float NdotL = clamp(dot(N, lightDir), 0.0, 1.0);
-          diff = clamp(NdotL * 0.65 + 0.20, 0.08, 1.0);
-          focalWeight = 0.52;
-        }
-
-        // Text area readability protection
-        float textProtection = smoothstep(-1.2, 0.15, pos.x);
-        pos.y *= mix(0.50, 1.0, textProtection);
-
-        v_elevation = elev;
+        v_elevation = pos.y;
         v_worldX = pos.x;
-        v_curvature = curv * envelope;
-        v_diffuse = diff;
-        v_focal = focalWeight;
+        v_curvature = clamp(0.5 + 0.5 * diagnosticNoise, 0.0, 1.0);
+        v_diffuse = clamp(NdotL * 0.75 + 0.25, 0.10, 1.0);
 
         vec4 worldPos = vec4(pos, 1.0);
         vec4 clipPos = u_mvp * worldPos;
@@ -673,91 +616,74 @@
       varying float v_elevation;
       varying float v_depth;
       varying vec2 v_uv;
-      varying float v_ribbon;
       varying float v_worldX;
       varying float v_curvature;
       varying float v_diffuse;
-      varying float v_focal;
 
-      uniform float u_lineType; // 0.0 = longitudinal flow, 1.0 = transverse rib
+      uniform float u_lineType; // 0.0 = longitudinal streamlines, 1.0 = transverse ribs
       uniform float u_theme;    // 0.0 = dark (#0B0B0C), 1.0 = light (#F5F5F5)
 
       void main() {
-        // 1. Boundary & edge falloff
-        float edgeFade = smoothstep(0.0, 0.10, v_uv.x) * smoothstep(1.0, 0.90, v_uv.x) *
-                         smoothstep(0.0, 0.12, v_uv.y) * smoothstep(1.0, 0.88, v_uv.y);
+        // 1. Boundary & edge falloff: smooth gradual fade into darkness at all outer borders
+        float edgeFade = smoothstep(0.0, 0.08, v_uv.x) * smoothstep(1.0, 0.92, v_uv.x) *
+                         smoothstep(0.0, 0.08, v_uv.y) * smoothstep(1.0, 0.92, v_uv.y);
 
-        // 2. Depth attenuation (gradual fading into background)
-        // Foreground (depth ~ 2.5 - 4.5): sharp, defined, crisp contrast
-        // Midground (depth ~ 4.5 - 6.5): smooth falloff
-        // Background (depth > 6.5): soft atmospheric fade into darkness
-        float depthFade = smoothstep(8.2, 2.6, v_depth);
-        float depthDamp = smoothstep(7.8, 3.2, v_depth);
+        // 2. Depth attenuation: crisp foreground, soft atmospheric fade in deep distance
+        float depthFade = smoothstep(9.5, 2.2, v_depth);
+        float depthDamp = smoothstep(8.5, 2.5, v_depth);
 
-        // 3. Text area soft protection (left of center X < -0.15)
+        // 3. Text area soft protection (left quadrant world X < -0.15)
         float textFade = smoothstep(-2.2, -0.15, v_worldX);
 
-        // 4. Multi-Factor Luminous Ridge & Curvature Intensity
-        // Maps elevation and surface curvature into sculptural light response
-        float elevNorm = clamp((v_elevation + 0.35) / 2.30, 0.0, 1.0);
+        // 4. Luminous Ridge & Curvature Factor
+        float elevNorm = clamp((v_elevation + 0.55) / 1.35, 0.0, 1.0);
+        float ridgeFactor = clamp(elevNorm * 0.55 + v_curvature * 0.35 + v_diffuse * 0.10, 0.0, 1.0);
 
-        // Sculptural light combines elevation, local surface curvature, and directional light
-        float ridgeFactor = clamp(elevNorm * 0.55 + v_curvature * 0.35 + v_diffuse * 0.15, 0.0, 1.0);
-        ridgeFactor *= v_focal; // Selective focal modulation (hero crest is noticeably brightest)
+        // 5. Target Color Palette (from approved Fluid Ocean reference diagram)
+        // Deep Shadow / Shadow: #010402
+        vec3 colDeepShadow = vec3(0.004, 0.016, 0.008);
+        // Dark Emerald: #0B3B1E
+        vec3 colDarkEmerald = vec3(0.043, 0.231, 0.118);
+        // Bright Green: #22C55E
+        vec3 colBrightGreen = vec3(0.133, 0.773, 0.369);
+        // Illuminated Edge: #34D399
+        vec3 colIllumEdge = vec3(0.204, 0.827, 0.600);
+        // Apex Highlight Glow: #D1FAE5
+        vec3 colApexGlow = vec3(0.820, 0.980, 0.898);
 
-        // 5. Color Hierarchy (Midnight Black to Luminous Lime Green):
-        // Trough: Deep Obsidian Emerald (#06160B)
-        vec3 colTrough = vec3(0.024, 0.086, 0.043);
-        // Mid Slope Shadow: Rich Forest Emerald (#103A1E)
-        vec3 colMidShadow = vec3(0.063, 0.227, 0.118);
-        // Mid Slope Lit: Vibrant Moss Emerald (#1F6B34)
-        vec3 colMidLit = vec3(0.122, 0.420, 0.204);
-        // Crest Ridge: Luminous Lime Green (#C6F432)
-        vec3 colCrest = vec3(0.776, 0.957, 0.196);
-        // Apex Highlight: Pure Electric Lime (#D9FF4A)
-        vec3 colApex = vec3(0.851, 1.000, 0.290);
-        // Radiant Core Specular:
-        vec3 colCore = vec3(0.925, 1.000, 0.580);
-
-        // Smooth multi-stop gradient transition across folds
+        // Multi-stop color blending across surface curvature and elevation
         vec3 color;
-        if (ridgeFactor < 0.28) {
-          color = mix(colTrough, colMidShadow, ridgeFactor / 0.28);
-        } else if (ridgeFactor < 0.60) {
-          float t = (ridgeFactor - 0.28) / 0.32;
-          color = mix(colMidShadow, colMidLit, t);
+        if (ridgeFactor < 0.26) {
+          color = mix(colDeepShadow, colDarkEmerald, ridgeFactor / 0.26);
+        } else if (ridgeFactor < 0.58) {
+          float t = (ridgeFactor - 0.26) / 0.32;
+          color = mix(colDarkEmerald, colBrightGreen, t);
         } else if (ridgeFactor < 0.84) {
-          float t = (ridgeFactor - 0.60) / 0.24;
-          color = mix(colMidLit, colCrest, t);
+          float t = (ridgeFactor - 0.58) / 0.26;
+          color = mix(colBrightGreen, colIllumEdge, t);
         } else {
           float t = (ridgeFactor - 0.84) / 0.16;
-          color = mix(colCrest, colApex, t);
+          color = mix(colIllumEdge, colApexGlow, t);
         }
 
-        // Restrained specular core on the sharpest focal crest points
-        float peakGlow = smoothstep(0.82, 0.98, ridgeFactor);
-        color = mix(color, colCore, peakGlow * 0.65 * v_focal);
+        // Luminous apex accent on highest ridges
+        float apexSparkle = smoothstep(0.86, 0.98, ridgeFactor);
+        color = mix(color, colApexGlow, apexSparkle * 0.50);
 
-        // 6. Atmospheric Light Diffusion (Soft, localized, smooth falloff around bright ridges)
-        // Only active on high-curvature luminous ridges in the focal zone
-        float diffuseTerm = pow(smoothstep(0.68, 1.0, ridgeFactor), 2.2) * 0.28 * v_focal;
-        color += colApex * diffuseTerm;
+        // 6. Alpha & Material Response:
+        // Deep valleys remain softly visible (alpha ~ 0.14) to show continuous mesh topology
+        // High ridges shine crisply (alpha ~ 0.82)
+        float baseAlpha = mix(0.14, 0.82, pow(ridgeFactor, 1.25));
+        baseAlpha *= mix(0.65, 1.0, depthDamp);
 
-        // 7. Alpha & Material Response:
-        // Valleys: Low alpha (0.030 - 0.08) creates dark negative space between formations
-        // Crests: High alpha (0.75 - 0.84) creates brilliant luminous wireframe lines
-        float baseAlpha = mix(0.030, 0.80, pow(ridgeFactor, 1.60));
+        // Diagnostic topology display:
+        // u_lineType 0.0 = longitudinal streamlines (weight 1.0)
+        // u_lineType 1.0 = transverse ribs (weight 0.38)
+        float lineWeight = (u_lineType > 0.5) ? 0.38 : 1.0;
 
-        // Depth modulation: foreground lines are crisp and defined, distant lines soften
-        baseAlpha *= mix(0.60, 1.0, depthDamp);
+        float alpha = baseAlpha * edgeFade * depthFade * textFade * lineWeight;
 
-        // Longitudinal streamlines vs transverse cross-ribs
-        float lineWeight = (u_lineType > 0.5) ? 0.72 : 1.0;
-        float ribbonAtten = (v_ribbon == 0.0) ? 1.0 : (v_ribbon == 1.0 ? 0.85 : 0.68);
-
-        float alpha = baseAlpha * edgeFade * depthFade * textFade * lineWeight * ribbonAtten;
-
-        // 8. Light Theme Adaptability
+        // 7. Light Theme Adaptability
         if (u_theme > 0.5) {
           vec3 lightValleys = vec3(0.65, 0.70, 0.60);
           vec3 lightRidges = vec3(0.18, 0.30, 0.04);
@@ -805,71 +731,49 @@
     const uThemeLoc = gl.getUniformLocation(prog, "u_theme");
 
     // Attribute locations
-    const aBasePosLoc = gl.getAttribLocation(prog, "a_basePos");
     const aUvLoc = gl.getAttribLocation(prog, "a_uv");
-    const aRibbonLoc = gl.getAttribLocation(prog, "a_ribbon");
 
-    // Ribbon mesh generation
+    // Unified Procedural Mesh Buffers
     let vertexBuffer = gl.createBuffer();
     let indexBuffer = gl.createBuffer();
     let totalLongIndices = 0;
     let totalTransIndices = 0;
 
     function buildMesh(isMobile) {
-      const ribbons = [
-        {
-          id: 0.0,
-          uCount: isMobile ? 95 : 160,
-          vCount: isMobile ? 60 : 100,
-        },
-        {
-          id: 1.0,
-          uCount: isMobile ? 80 : 135,
-          vCount: isMobile ? 50 : 80,
-        },
-        {
-          id: 2.0,
-          uCount: isMobile ? 70 : 120,
-          vCount: isMobile ? 44 : 70,
-        },
-      ];
+      // Continuous UV-Parametric Mesh Resolution:
+      // Desktop: 160 x 120 = 19,200 vertices (fits within 16-bit uint 65,535 index limit)
+      // Mobile: 100 x 75 = 7,500 vertices
+      const uCount = isMobile ? 100 : 160;
+      const vCount = isMobile ? 75 : 120;
 
       const vertexList = [];
+      for (let j = 0; j < vCount; j++) {
+        const v = j / (vCount - 1);
+        for (let i = 0; i < uCount; i++) {
+          const u = i / (uCount - 1);
+          vertexList.push(u, v);
+        }
+      }
+
+      // Longitudinal lines along u: connect (i, j) to (i+1, j)
       const longIndicesList = [];
+      for (let j = 0; j < vCount; j++) {
+        for (let i = 0; i < uCount - 1; i++) {
+          const idx0 = j * uCount + i;
+          const idx1 = idx0 + 1;
+          longIndicesList.push(idx0, idx1);
+        }
+      }
+
+      // Transverse lines along v: connect (i, j) to (i, j+1)
       const transIndicesList = [];
-      let vertexOffset = 0;
-
-      ribbons.forEach((rib) => {
-        const { id, uCount, vCount } = rib;
-
-        for (let j = 0; j < vCount; j++) {
-          const v = j / (vCount - 1);
-          for (let i = 0; i < uCount; i++) {
-            const u = i / (uCount - 1);
-            vertexList.push(u, v, u, v, id);
-          }
+      for (let j = 0; j < vCount - 1; j++) {
+        for (let i = 0; i < uCount; i++) {
+          const idx0 = j * uCount + i;
+          const idx1 = idx0 + uCount;
+          transIndicesList.push(idx0, idx1);
         }
-
-        // Longitudinal line segments (connect along u: (i, j) -> (i+1, j))
-        for (let j = 0; j < vCount; j++) {
-          for (let i = 0; i < uCount - 1; i++) {
-            const idx0 = vertexOffset + j * uCount + i;
-            const idx1 = idx0 + 1;
-            longIndicesList.push(idx0, idx1);
-          }
-        }
-
-        // Transverse line segments (connect along v: (i, j) -> (i, j+1))
-        for (let j = 0; j < vCount - 1; j++) {
-          for (let i = 0; i < uCount; i++) {
-            const idx0 = vertexOffset + j * uCount + i;
-            const idx1 = idx0 + uCount;
-            transIndicesList.push(idx0, idx1);
-          }
-        }
-
-        vertexOffset += uCount * vCount;
-      });
+      }
 
       totalLongIndices = longIndicesList.length;
       totalTransIndices = transIndicesList.length;
@@ -883,20 +787,10 @@
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, allIndices, gl.STATIC_DRAW);
 
-      const stride = 20;
-      if (aBasePosLoc >= 0) {
-        gl.enableVertexAttribArray(aBasePosLoc);
-        gl.vertexAttribPointer(aBasePosLoc, 2, gl.FLOAT, false, stride, 0);
-      }
-
+      const stride = 8; // 2 floats * 4 bytes
       if (aUvLoc >= 0) {
         gl.enableVertexAttribArray(aUvLoc);
-        gl.vertexAttribPointer(aUvLoc, 2, gl.FLOAT, false, stride, 8);
-      }
-
-      if (aRibbonLoc >= 0) {
-        gl.enableVertexAttribArray(aRibbonLoc);
-        gl.vertexAttribPointer(aRibbonLoc, 1, gl.FLOAT, false, stride, 16);
+        gl.vertexAttribPointer(aUvLoc, 2, gl.FLOAT, false, stride, 0);
       }
     }
 
