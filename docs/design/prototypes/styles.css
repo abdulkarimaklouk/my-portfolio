@@ -506,13 +506,25 @@ html.light-theme .particle-canvas {
   width: 100%;
   height: var(--header-height);
   z-index: var(--z-fixed);
-  border-bottom: 1px solid transparent;
-  transition: background-color var(--motion-duration-base) var(--motion-ease-in-out),
-              border-color var(--motion-duration-base) var(--motion-ease-in-out),
-              box-shadow var(--motion-duration-base) var(--motion-ease-in-out);
+  transition: box-shadow var(--motion-duration-base) var(--motion-ease-in-out);
 }
 
-.header.scroll-header {
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  pointer-events: none;
+  z-index: -1;
+  transition: background-color var(--motion-duration-base) var(--motion-ease-in-out),
+              border-color var(--motion-duration-base) var(--motion-ease-in-out),
+              box-shadow var(--motion-duration-base) var(--motion-ease-in-out),
+              backdrop-filter var(--motion-duration-base) var(--motion-ease-in-out),
+              -webkit-backdrop-filter var(--motion-duration-base) var(--motion-ease-in-out);
+}
+
+.header.scroll-header::before {
   background-color: var(--color-surface-translucent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -592,10 +604,9 @@ html.light-theme .particle-canvas {
 html.light-theme .theme-toggle__icon--moon { display: none; }
 html.light-theme .theme-toggle__icon--sun { display: block; }
 
-/* Floating Bottom Navigation Dock */
+/* Floating Navigation Dock (Dual-State: Hero Bottom Dock <-> Scrolled Top Header) */
 .nav__menu {
   position: fixed;
-  bottom: var(--space-5);
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 24px);
@@ -608,6 +619,26 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   border: 1px solid var(--color-border-strong);
   box-shadow: var(--shadow-elevation-3);
   z-index: var(--z-fixed);
+
+  /* Initial Position: bottom-centered floating dock */
+  top: calc(100vh - 4.75rem);
+  top: calc(100svh - 4.75rem);
+
+  /* Smooth, stable transition between bottom and top positions */
+  transition: top var(--motion-duration-slow) var(--motion-ease-out),
+              padding var(--motion-duration-fast) var(--motion-ease-out),
+              max-width var(--motion-duration-fast) var(--motion-ease-out),
+              background-color var(--motion-duration-base) var(--motion-ease-in-out),
+              border-color var(--motion-duration-base) var(--motion-ease-in-out),
+              box-shadow var(--motion-duration-base) var(--motion-ease-in-out);
+}
+
+/* Scrolled Position (Desktop >= 768px): Dock transitions smoothly into the Header */
+.header.scroll-header .nav__menu,
+.nav__menu.nav__menu--scrolled {
+  top: 0.5rem; /* 8px from top of viewport; centered inside 64px header, 0px clipped */
+  padding: 0.25rem 0.5rem;
+  max-width: 380px;
 }
 
 .nav__list {
@@ -672,6 +703,21 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* Scrolled State: Tooltip flips cleanly beneath the top navigation dock */
+  .header.scroll-header .nav__link::after,
+  .nav__menu--scrolled .nav__link::after {
+    bottom: auto;
+    top: calc(100% + 10px);
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  .header.scroll-header .nav__link:hover::after,
+  .header.scroll-header .nav__link:focus-visible::after,
+  .nav__menu--scrolled .nav__link:hover::after,
+  .nav__menu--scrolled .nav__link:focus-visible::after {
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ==========================================================================
@@ -682,7 +728,7 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   display: flex;
   align-items: center;
   padding-top: calc(var(--header-height) + var(--space-8));
-  padding-bottom: var(--space-16);
+  padding-bottom: 7.5rem;
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -1839,12 +1885,32 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
 
   .hero {
     min-height: auto;
-    padding-top: calc(var(--header-height) + var(--space-6));
-    padding-bottom: var(--space-12);
+    padding-top: calc(var(--header-height) + var(--space-3));
+    padding-bottom: 7.5rem;
+  }
+
+  .hero__grid {
+    gap: var(--space-5);
   }
 
   .hero__portrait-frame {
-    max-width: 220px;
+    max-width: 175px;
+    padding: var(--space-3);
+  }
+
+  .nav__menu {
+    top: calc(100vh - 4.25rem);
+    top: calc(100svh - 4.25rem);
+    width: calc(100% - 16px);
+    max-width: 360px;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .header.scroll-header .nav__menu,
+  .nav__menu.nav__menu--scrolled {
+    top: calc(var(--header-height) + 0.5rem);
+    width: calc(100% - 16px);
+    max-width: 360px;
   }
 
   .work__container {
@@ -1872,7 +1938,7 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   }
 
   .hero__portrait-frame {
-    max-width: 200px;
+    max-width: 155px;
   }
 
   .hero__cta-group {
@@ -1904,9 +1970,7 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   }
 
   .nav__menu {
-    bottom: var(--space-3);
-    width: calc(100% - 16px);
-    padding: 0.25rem 0.5rem;
+    max-width: 340px;
   }
 
   .nav__list {
@@ -1914,8 +1978,8 @@ html.light-theme .theme-toggle__icon--sun { display: block; }
   }
 
   .nav__link {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 }
 

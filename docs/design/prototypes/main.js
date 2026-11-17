@@ -43,6 +43,7 @@
 
   /* =============== SCROLL HEADER & THROTTLED SCROLL-SPY =============== */
   const header = document.getElementById("header");
+  const navMenu = document.getElementById("nav-menu");
   const sections = Array.from(document.querySelectorAll("main section[id]"));
   const navLinks = Array.from(document.querySelectorAll(".nav__menu a[href^='#']"));
 
@@ -57,8 +58,12 @@
   function updateScrollState() {
     scrollTicking = false;
 
+    const isScrolled = window.scrollY > 32;
     if (header) {
-      header.classList.toggle("scroll-header", window.scrollY > 32);
+      header.classList.toggle("scroll-header", isScrolled);
+    }
+    if (navMenu) {
+      navMenu.classList.toggle("nav__menu--scrolled", isScrolled);
     }
 
     const scrollProbe = window.scrollY + window.innerHeight * 0.35;
