@@ -1,26 +1,58 @@
 /**
  * Fluid Mesh Waves — Hero Section Background
- * Milestone 2 — Iteration 4: Motion & Polish
+ * Milestone 2 — Iteration 4.1.1: Final Module Loading Verification
  * 
  * Recreates the approved Fluid Mesh Waves visual reference with slow, organic silk motion:
- * - Slow, continuous silk-like traveling wave deformation across existing folds
- * - Subtle breathing amplitude modulation (gentle swell and subside of billows)
+ * - Dynamic ESM import via import('https://unpkg.com/three@0.160.0/build/three.module.js') with try/catch
+ * - Graceful fallback to window.THREE if CDN is unreachable or offline
+ * - Graceful non-blocking degradation if both fail (logs clear warning, prevents site failure)
+ * - Strict duplicate initialization protection (canvas.__heroWavesInitialized & module guard)
+ * - High-precision monotonic accumulated time tracking (zero phase reset on scroll, tab change, reduced motion)
  * - Incommensurate wave frequencies guaranteeing aperiodic, non-repeating organic flow
  * - Strands dynamically flow and drape with underlying 3D cloth deformation
  * - 100% mathematically continuous, open streamlines with ZERO closed loops or concentric ovals
  * - Complete design preservation: identical macro geometry, lighting, colors, density, and negative space
  * - Strict motion constraints: zero mouse tracking, zero scroll parallax, zero particles
- * - Performance: zero allocations in RAF loop, smooth 60fps/120fps GPU shader animation
+ * - High performance: zero allocations in RAF loop, steady 60fps/120fps GPU shader animation
  * - Lifecycle: pauses offscreen (IntersectionObserver), pauses on hidden tab (visibilitychange), static frame for reduced-motion
  */
 
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+let isInitialized = false;
 
-(function initHeroFluidWaves() {
-  // 1. Guard against environments without WebGL or missing DOM elements
+async function resolveThree() {
+  // 1. Attempt dynamic ESM import from pinned CDN
+  try {
+    const mod = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    if (mod && mod.Scene) {
+      return mod;
+    }
+  } catch (err) {
+    console.warn('Three.js CDN dynamic import failed, falling back to window.THREE:', err);
+  }
+
+  // 2. Fallback to global window.THREE
+  if (typeof window !== 'undefined' && window.THREE && window.THREE.Scene) {
+    return window.THREE;
+  }
+
+  return null;
+}
+
+(async function initHeroFluidWaves() {
+  // 1. Guard against duplicate initialization
+  if (isInitialized) return;
+
   const canvas = document.getElementById('hero-waves-canvas');
   const heroSection = document.getElementById('home') || document.querySelector('.hero');
   if (!canvas || !heroSection) return;
+  if (canvas.__heroWavesInitialized) return;
+
+  // 2. Dynamically load Three.js with fallback
+  const THREE = await resolveThree();
+  if (!THREE || !THREE.Scene) {
+    console.warn('Three.js could not be loaded from CDN or global fallback. Hero background disabled.');
+    return;
+  }
 
   // Verify WebGL availability on an off-DOM probe canvas
   try {
@@ -35,7 +67,11 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     return;
   }
 
-  // 2. Configuration & State
+  // Mark initialized to prevent duplicate runs
+  isInitialized = true;
+  canvas.__heroWavesInitialized = true;
+
+  // 3. Configuration & State
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let renderer = null;
@@ -51,9 +87,12 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   let width = 0;
   let height = 0;
 
-  const clock = new THREE.Clock(false);
+  // High-precision accumulated time tracker:
+  // Preserves exact animation phase across scroll-out, tab-switch, and reduced-motion changes.
+  let lastTimestamp = 0;
+  let accumulatedTime = 0.0;
 
-  // 3. GLSL Shaders
+  // 4. GLSL Shaders
   const vertexShader = /* glsl */ `
     precision highp float;
 
@@ -355,7 +394,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     }
   `;
 
-  // 4. Initialization
+  // 5. Initialization
   function initThreeScene() {
     scene = new THREE.Scene();
 
@@ -401,7 +440,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
         derivatives: true
       },
       uniforms: {
-        uTime: { value: 0.0 },
+        uTime: { value: accumulatedTime },
         uStrandDensity: { value: isMobile ? 120.0 : 175.0 },
         uTheme: { value: isLight ? 1.0 : 0.0 }
       },
@@ -415,7 +454,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     scene.add(mesh);
   }
 
-  // 5. Responsive Resize Handling
+  // 6. Responsive Resize Handling
   function onResize() {
     const rect = heroSection.getBoundingClientRect();
     width = Math.floor(rect.width || window.innerWidth);
@@ -451,23 +490,33 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     }
   }
 
-  // 6. Animation Loop & Lifecycle
+  // 7. Animation Loop & Lifecycle
   function renderSingleFrame() {
     if (!renderer || !scene || !camera) return;
     const isLight = document.documentElement.classList.contains('light-theme');
     material.uniforms.uTheme.value = isLight ? 1.0 : 0.0;
-    material.uniforms.uTime.value = 1.0;
+    material.uniforms.uTime.value = accumulatedTime > 0.0 ? accumulatedTime : 1.0;
     renderer.render(scene, camera);
   }
 
-  function loop() {
+  function loop(timestamp) {
     if (!isVisible || motionQuery.matches) {
       animId = null;
+      lastTimestamp = 0;
       return;
     }
 
-    const elapsed = clock.getElapsedTime();
-    material.uniforms.uTime.value = elapsed;
+    if (!lastTimestamp) {
+      lastTimestamp = timestamp;
+    }
+
+    // High-precision delta calculation clamped to 0.1s max to prevent jumps
+    const deltaMs = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+    const deltaSec = Math.min(Math.max(deltaMs, 0.0) / 1000.0, 0.1);
+
+    accumulatedTime += deltaSec;
+    material.uniforms.uTime.value = accumulatedTime;
 
     const isLight = document.documentElement.classList.contains('light-theme');
     material.uniforms.uTheme.value = isLight ? 1.0 : 0.0;
@@ -479,7 +528,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
   function startLoop() {
     if (!animId && !motionQuery.matches && isVisible && !document.hidden) {
-      clock.start();
+      lastTimestamp = 0; // Anchor timestamp to avoid delta jump on resume
       animId = requestAnimationFrame(loop);
     }
   }
@@ -488,11 +537,11 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     if (animId) {
       cancelAnimationFrame(animId);
       animId = null;
-      clock.stop();
     }
+    lastTimestamp = 0;
   }
 
-  // 7. Event Listeners & Observers
+  // 8. Event Listeners & Observers
   // ResizeObserver for reliable container tracking
   if (typeof ResizeObserver !== 'undefined') {
     const ro = new ResizeObserver(() => {
@@ -549,7 +598,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-  // 8. Bootstrap
+  // 9. Bootstrap
   initThreeScene();
   onResize();
   if (motionQuery.matches) {
