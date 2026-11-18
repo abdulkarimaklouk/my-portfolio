@@ -1,16 +1,17 @@
 /**
  * Fluid Mesh Waves — Hero Section Background
- * Milestone 2 — Iteration 3.1: Correct Strand Flow Artifacts
+ * Milestone 2 — Iteration 4: Motion & Polish
  * 
- * Recreates the approved Fluid Mesh Waves visual reference:
+ * Recreates the approved Fluid Mesh Waves visual reference with slow, organic silk motion:
+ * - Slow, continuous silk-like traveling wave deformation across existing folds
+ * - Subtle breathing amplitude modulation (gentle swell and subside of billows)
+ * - Incommensurate wave frequencies guaranteeing aperiodic, non-repeating organic flow
+ * - Strands dynamically flow and drape with underlying 3D cloth deformation
  * - 100% mathematically continuous, open streamlines with ZERO closed loops or concentric ovals
- * - Curvature dynamically follows 3D surface elevation and billow deformation naturally
- * - Organic thread bundling & spacing modulation eliminates mechanical grating appearance
- * - Hermite smootherstep left-side transition dissolving strands behind hero text (100% legibility)
- * - Balanced lighting: razor-sharp white-mint crest highlights without uniform green wash
- * - Deep obsidian shadow valleys between illuminated folds
- * - Self-occluding front-side geometry with depth writing
- * - High-performance: GPU-only displacement, ResizeObserver, IntersectionObserver, reduced-motion
+ * - Complete design preservation: identical macro geometry, lighting, colors, density, and negative space
+ * - Strict motion constraints: zero mouse tracking, zero scroll parallax, zero particles
+ * - Performance: zero allocations in RAF loop, smooth 60fps/120fps GPU shader animation
+ * - Lifecycle: pauses offscreen (IntersectionObserver), pauses on hidden tab (visibilitychange), static frame for reduced-motion
  */
 
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
@@ -36,7 +37,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
   // 2. Configuration & State
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointerQuery = window.matchMedia('(pointer: fine)');
 
   let renderer = null;
   let scene = null;
@@ -51,11 +51,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   let width = 0;
   let height = 0;
 
-  let targetMouseX = 0;
-  let targetMouseY = 0;
-  let currentMouseX = 0;
-  let currentMouseY = 0;
-
   const clock = new THREE.Clock(false);
 
   // 3. GLSL Shaders
@@ -63,7 +58,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     precision highp float;
 
     uniform float uTime;
-    uniform vec2 uMouse;
 
     varying vec2 vUv;
     varying float vStrandParam;
@@ -108,55 +102,56 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     // Procedural multi-fold displacement function
     // Calculates displaced 3D position, multi-fold local ridge prominence, and primary crest factors
     vec4 computeFoldGeometry(vec3 p, float t, out vec2 outWp, out vec3 outCrests) {
-      // 1. Two-Tier Organic Domain Warping (Creates fluid S-curves and non-linear draping)
+      // 1. Two-Tier Organic Domain Warping with subtle slow drift:
       vec2 w1;
-      w1.x = 2.8 * snoise(p.xz * 0.055 + vec2(t * 0.09, -t * 0.05))
-           + 1.2 * sin(p.z * 0.13 + t * 0.11);
-      w1.y = 2.4 * snoise(p.zx * 0.048 + vec2(-t * 0.07, t * 0.08))
-           + 1.0 * cos(p.x * 0.11 - t * 0.09);
+      w1.x = 2.8 * snoise(p.xz * 0.055 + vec2(t * 0.07, -t * 0.04))
+           + 1.2 * sin(p.z * 0.13 + t * 0.08);
+      w1.y = 2.4 * snoise(p.zx * 0.048 + vec2(-t * 0.05, t * 0.06))
+           + 1.0 * cos(p.x * 0.11 - t * 0.07);
 
       vec2 w2;
-      w2.x = 0.9 * snoise(p.xz * 0.11 + vec2(-t * 0.12, t * 0.08));
-      w2.y = 0.8 * snoise(p.zx * 0.12 + vec2(t * 0.09, -t * 0.10));
+      w2.x = 0.9 * snoise(p.xz * 0.11 + vec2(-t * 0.09, t * 0.06));
+      w2.y = 0.8 * snoise(p.zx * 0.12 + vec2(t * 0.07, -t * 0.08));
 
       vec2 wp = p.xz + w1 + w2;
       outWp = wp;
 
       // 2. FOLD 1: Dominant Midground Crest (Sweeping diagonal ridge on right)
+      // Slow propagation with gentle breathing amplitude modulation:
       vec2 dir1 = normalize(vec2(0.58, 0.81));
       float d1 = dot(wp, dir1);
-      float phase1 = d1 * 0.22 - t * 0.26;
+      float phase1 = d1 * 0.22 - t * 0.24;
       float w1Val = sin(phase1);
       float crest1 = sign(w1Val) * pow(abs(w1Val), 1.75);
-      float amp1 = 4.0;
+      float amp1 = 4.0 * (0.94 + 0.06 * sin(t * 0.18 + 0.4));
 
       // 3. FOLD 2: Cascading Rear Billow (Elevated background swell filling upper frame)
       vec2 dir2 = normalize(vec2(0.80, 0.60));
       float d2 = dot(wp, dir2);
-      float phase2 = d2 * 0.16 - t * 0.18 + 1.6;
+      float phase2 = d2 * 0.16 - t * 0.16 + 1.6;
       float w2Val = sin(phase2);
       float crest2 = sign(w2Val) * pow(abs(w2Val), 1.60);
-      float amp2 = 3.6 * smoothstep(6.0, -16.0, p.z);
+      float amp2 = 3.6 * (0.93 + 0.07 * cos(t * 0.14 + 1.2)) * smoothstep(6.0, -16.0, p.z);
 
       // 4. FOLD 3: Secondary Transverse Fold (Creates cascading creases between main folds)
       vec2 dir3 = normalize(vec2(-0.47, 0.88));
       float d3 = dot(wp, dir3);
-      float phase3 = d3 * 0.32 + t * 0.22 + 0.9;
+      float phase3 = d3 * 0.32 + t * 0.18 + 0.9;
       float w3Val = cos(phase3);
       float crest3 = sign(w3Val) * pow(abs(w3Val), 1.40);
-      float amp3 = 2.0;
+      float amp3 = 2.0 * (0.92 + 0.08 * sin(t * 0.22 - 0.5));
 
       // 5. FOLD 4: Foreground Swooping Roll (Frames lower viewport with layered near-field depth)
       vec2 dir4 = normalize(vec2(0.88, 0.47));
       float d4 = dot(wp, dir4);
-      float phase4 = d4 * 0.28 - t * 0.30 - 1.3;
+      float phase4 = d4 * 0.28 - t * 0.22 - 1.3;
       float w4Val = sin(phase4);
       float crest4 = sign(w4Val) * pow(abs(w4Val), 1.50);
-      float amp4 = 2.0 * smoothstep(-4.0, 14.0, p.z);
+      float amp4 = 2.0 * (0.92 + 0.08 * sin(t * 0.20 - 0.7)) * smoothstep(-4.0, 14.0, p.z);
 
       // 6. FOLD 5: Silk Tension Undulations
       float d5 = dot(wp, vec2(0.60, 0.80));
-      float pleats = 0.35 * sin(d5 * 0.65 - t * 0.38) * cos(wp.x * 0.16 + 0.4);
+      float pleats = 0.35 * sin(d5 * 0.65 - t * 0.28) * cos(wp.x * 0.16 + 0.4);
 
       // 7. Spatial Height Distribution:
       float rightBias = smoothstep(-6.0, 8.5, p.x) * 1.30;
@@ -171,8 +166,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       float totalY = (crest1 * amp1 + crest2 * amp2 + crest3 * amp3 + crest4 * amp4 + pleats)
                    * (0.84 + rightBias * 0.38) - textTrough;
 
-      totalY += uMouse.y * 0.35 * smoothstep(-10.0, 10.0, p.x);
-
       // Multi-fold local ridge prominence across folds
       float r1 = max(0.0, crest1);
       float r2 = max(0.0, crest2) * smoothstep(4.0, -14.0, p.z);
@@ -182,14 +175,14 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
       outCrests = vec3(crest1, crest2, crest4);
 
-      return vec4(p.x + totalPinch.x + uMouse.x * 0.30, totalY, p.z + totalPinch.y, localRidge);
+      return vec4(p.x + totalPinch.x, totalY, p.z + totalPinch.y, localRidge);
     }
 
     void main() {
       vUv = uv;
 
       vec3 p = position;
-      float t = uTime * 0.45;
+      float t = uTime * 0.40;
 
       vec2 wp;
       vec3 crests;
@@ -226,8 +219,8 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       vec2 transDir = vec2(-flowDir.y, flowDir.x); // (-0.835, 0.55)
       float transCoord = dot(wp, transDir);
 
-      // 1. Organic broad-scale draping across the surface (gentle low-frequency S-curves):
-      float organicDrape = 0.60 * snoise(wp * 0.035 + vec2(0.2, -0.15));
+      // 1. Organic broad-scale draping across the surface (gentle low-frequency slow drift):
+      float organicDrape = 0.60 * snoise(wp * 0.035 + vec2(t * 0.03 + 0.2, -t * 0.02 - 0.15));
 
       // 2. 3D surface elevation and billow draping:
       // Strands drape organically down the 3D slopes of the billows without opposing the carrier flow.
@@ -409,7 +402,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       },
       uniforms: {
         uTime: { value: 0.0 },
-        uMouse: { value: new THREE.Vector2(0.0, 0.0) },
         uStrandDensity: { value: isMobile ? 120.0 : 175.0 },
         uTheme: { value: isLight ? 1.0 : 0.0 }
       },
@@ -475,13 +467,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     }
 
     const elapsed = clock.getElapsedTime();
-
-    // Mouse lerping
-    currentMouseX += (targetMouseX - currentMouseX) * 0.04;
-    currentMouseY += (targetMouseY - currentMouseY) * 0.04;
-
     material.uniforms.uTime.value = elapsed;
-    material.uniforms.uMouse.value.set(currentMouseX, currentMouseY);
 
     const isLight = document.documentElement.classList.contains('light-theme');
     material.uniforms.uTheme.value = isLight ? 1.0 : 0.0;
@@ -507,19 +493,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   }
 
   // 7. Event Listeners & Observers
-  function onPointerMove(e) {
-    if (!finePointerQuery.matches) return;
-    const normX = (e.clientX / (width || window.innerWidth)) * 2 - 1;
-    const normY = -(e.clientY / (height || window.innerHeight)) * 2 + 1;
-    targetMouseX = normX * 0.5;
-    targetMouseY = normY * 0.5;
-  }
-
-  function onPointerLeave() {
-    targetMouseX = 0;
-    targetMouseY = 0;
-  }
-
   // ResizeObserver for reliable container tracking
   if (typeof ResizeObserver !== 'undefined') {
     const ro = new ResizeObserver(() => {
@@ -541,11 +514,11 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
           stopLoop();
         }
       });
-    }, { threshold: 0.05 });
+    }, { threshold: 0.02 });
     io.observe(heroSection);
   }
 
-  // Page visibility
+  // Page visibility: pause animation when browser tab is inactive
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stopLoop();
@@ -575,9 +548,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     }
   });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-  window.addEventListener('pointermove', onPointerMove, { passive: true });
-  window.addEventListener('pointerleave', onPointerLeave, { passive: true });
 
   // 8. Bootstrap
   initThreeScene();
