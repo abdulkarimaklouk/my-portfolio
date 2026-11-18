@@ -1,12 +1,15 @@
 /**
  * Fluid Mesh Waves — Hero Section Background
- * Implementation: Three.js with custom GLSL ShaderMaterial on displaced 3D plane
+ * Milestone 2 — Iteration 2: Improved Macro Geometry
+ * 
  * Recreates the approved Fluid Mesh Waves visual reference:
- * - Continuous 3D surface in XZ plane with Gerstner wave displacement + organic domain warping
- * - Balanced telephoto perspective view preventing foreground line ballooning
- * - Ultra-fine, dense parallel strands rendered analytically in fragment shader (silky, hair-thin lines)
- * - Cool emerald/mint 5-stop color ramp with razor-sharp white-mint apex rim highlights
- * - Self-occluding front-side geometry with depth writing (eliminates transparent double-vision)
+ * - Multi-layered sculptural surface with multiple organically overlapping folds & billows
+ * - Varied amplitudes, wavelengths, and asymmetric curvature (sharp crests, deep hollows)
+ * - Local-ridge lighting so every fold (foreground, midground, background) has an illuminated crest
+ * - Deep obsidian-black valleys between folds creating distinct layered depth
+ * - Pixel-perfect screen-space anti-aliasing via derivative line mapping
+ * - Concentrated apex white-mint rim highlights on high-curvature crests
+ * - Self-occluding front-side geometry with depth writing
  * - High-performance: GPU-only displacement, ResizeObserver, IntersectionObserver, reduced-motion
  */
 
@@ -68,6 +71,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     varying vec3 vNormal;
     varying vec3 vViewDir;
     varying float vElevation;
+    varying float vLocalRidge;
     varying float vCurvature;
     varying float vFocalWeight;
 
@@ -101,73 +105,98 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       return 130.0 * dot(m, g);
     }
 
-    // Procedural wave displacement function
-    vec3 computeDisplacement(vec3 p, float t) {
-      // 1. Domain Warping: Low-frequency organic turbulence
-      vec2 warp;
-      warp.x = 2.80 * snoise(p.xz * 0.055 + vec2(t * 0.09, -t * 0.06))
-             + 1.10 * sin(p.z * 0.14 + t * 0.12);
-      warp.y = 2.40 * snoise(p.zx * 0.045 + vec2(-t * 0.07, t * 0.08))
-             + 0.95 * cos(p.x * 0.12 - t * 0.10);
+    // Procedural multi-fold displacement function
+    // Calculates displaced position and outputs local ridge prominence
+    vec4 computeFoldGeometry(vec3 p, float t) {
+      // 1. Two-Tier Organic Domain Warping
+      vec2 w1;
+      w1.x = 2.8 * snoise(p.xz * 0.055 + vec2(t * 0.09, -t * 0.05))
+           + 1.2 * sin(p.z * 0.13 + t * 0.11);
+      w1.y = 2.4 * snoise(p.zx * 0.048 + vec2(-t * 0.07, t * 0.08))
+           + 1.0 * cos(p.x * 0.11 - t * 0.09);
 
-      vec2 wp = p.xz + warp;
+      vec2 w2;
+      w2.x = 0.9 * snoise(p.xz * 0.11 + vec2(-t * 0.12, t * 0.08));
+      w2.y = 0.8 * snoise(p.zx * 0.12 + vec2(t * 0.09, -t * 0.10));
 
-      // Common flow axis: dominant diagonal direction (~36 degrees)
-      vec2 flowDir = normalize(vec2(0.60, 0.80));
-      float flowCoord = dot(wp, flowDir);
-      float crossCoord = dot(wp, vec2(-flowDir.y, flowDir.x));
+      vec2 wp = p.xz + w1 + w2;
 
-      // 2. Wave Harmonic 1: Dominant Diagonal Swell
-      float k1 = 0.24;
-      float phase1 = flowCoord * k1 - t * 0.28;
-      float w1 = sin(phase1);
-      float crest1 = sign(w1) * pow(abs(w1), 1.85);
-      float amp1 = 4.60;
+      // 2. FOLD 1: Dominant Midground Crest (Sweeping diagonal ridge on right)
+      vec2 dir1 = normalize(vec2(0.58, 0.81));
+      float d1 = dot(wp, dir1);
+      float phase1 = d1 * 0.22 - t * 0.26;
+      float w1Val = sin(phase1);
+      float crest1 = sign(w1Val) * pow(abs(w1Val), 1.75);
+      float amp1 = 4.0;
 
-      // 3. Wave Harmonic 2: Organic Mid-Frequency Modulator
-      float k2 = 0.46;
-      float phase2 = flowCoord * k2 + crossCoord * 0.22 - t * 0.38 + 1.20;
-      float w2 = cos(phase2);
-      float crest2 = sign(w2) * pow(abs(w2), 1.50);
-      float amp2 = 1.75;
+      // 3. FOLD 2: Cascading Rear Billow (Elevated background swell filling upper frame)
+      vec2 dir2 = normalize(vec2(0.80, 0.60));
+      float d2 = dot(wp, dir2);
+      float phase2 = d2 * 0.16 - t * 0.18 + 1.6;
+      float w2Val = sin(phase2);
+      float crest2 = sign(w2Val) * pow(abs(w2Val), 1.60);
+      float amp2 = 3.6 * smoothstep(6.0, -16.0, p.z);
 
-      // 4. Wave Harmonic 3: Elevated Background Swell
-      float k3 = 0.16;
-      float phase3 = flowCoord * k3 - crossCoord * 0.18 - t * 0.16 + 0.35;
-      float w3 = sin(phase3);
-      float amp3 = 3.60 * smoothstep(8.0, -18.0, p.z);
+      // 4. FOLD 3: Secondary Transverse Fold (Creates cascading creases between main folds)
+      vec2 dir3 = normalize(vec2(-0.47, 0.88));
+      float d3 = dot(wp, dir3);
+      float phase3 = d3 * 0.32 + t * 0.22 + 0.9;
+      float w3Val = cos(phase3);
+      float crest3 = sign(w3Val) * pow(abs(w3Val), 1.40);
+      float amp3 = 2.0;
 
-      // 5. Asymmetric Elevation Modulation:
-      float rightBias = smoothstep(-7.0, 9.0, p.x) * 1.45;
-      float textTrough = smoothstep(1.5, -11.0, p.x) * 1.60;
+      // 5. FOLD 4: Foreground Swooping Roll (Frames lower viewport with layered near-field depth)
+      vec2 dir4 = normalize(vec2(0.88, 0.47));
+      float d4 = dot(wp, dir4);
+      float phase4 = d4 * 0.28 - t * 0.30 - 1.3;
+      float w4Val = sin(phase4);
+      float crest4 = sign(w4Val) * pow(abs(w4Val), 1.50);
+      float amp4 = 2.0 * smoothstep(-4.0, 14.0, p.z);
 
-      // Controlled Gerstner horizontal contraction:
-      float pinch = -0.42 * (crest1 * amp1 * 0.12 + crest2 * amp2 * 0.06);
-      vec2 pinchVec = flowDir * pinch;
+      // 6. FOLD 5: Silk Tension Undulations
+      float d5 = dot(wp, vec2(0.60, 0.80));
+      float pleats = 0.35 * sin(d5 * 0.65 - t * 0.38) * cos(wp.x * 0.16 + 0.4);
 
-      float y = (crest1 * amp1 + crest2 * amp2 + w3 * amp3) * (0.85 + rightBias * 0.40) - textTrough;
+      // 7. Spatial Height Distribution:
+      float rightBias = smoothstep(-6.0, 8.5, p.x) * 1.30;
+      float textTrough = smoothstep(1.5, -9.0, p.x) * 1.35;
 
-      // Subtle mouse interaction
-      y += uMouse.y * 0.30 * smoothstep(-10.0, 10.0, p.x);
+      // Controlled Gerstner horizontal contraction
+      vec2 pinch1 = dir1 * (-0.36 * crest1 * amp1 * 0.10);
+      vec2 pinch2 = dir2 * (-0.26 * crest2 * amp2 * 0.08);
+      vec2 pinch3 = dir3 * (-0.22 * crest3 * amp3 * 0.07);
+      vec2 totalPinch = pinch1 + pinch2 + pinch3;
 
-      return vec3(p.x + pinchVec.x + uMouse.x * 0.30, y, p.z + pinchVec.y);
+      float totalY = (crest1 * amp1 + crest2 * amp2 + crest3 * amp3 + crest4 * amp4 + pleats)
+                   * (0.84 + rightBias * 0.38) - textTrough;
+
+      totalY += uMouse.y * 0.35 * smoothstep(-10.0, 10.0, p.x);
+
+      // Multi-fold local ridge prominence:
+      // Computes the local crest peak across all active folds
+      float r1 = max(0.0, crest1);
+      float r2 = max(0.0, crest2) * smoothstep(4.0, -14.0, p.z);
+      float r3 = max(0.0, crest3);
+      float r4 = max(0.0, crest4) * smoothstep(-3.0, 14.0, p.z);
+      float localRidge = max(max(r1, r2 * 0.95), max(r3 * 0.80, r4 * 0.90));
+
+      return vec4(p.x + totalPinch.x + uMouse.x * 0.30, totalY, p.z + totalPinch.y, localRidge);
     }
 
     void main() {
       vUv = uv;
 
-      // Parametric strand coordinate: strictly 1D transverse flow
-      vStrandParam = uv.x * 0.42 + uv.y * 0.91;
-
       vec3 p = position;
       float t = uTime * 0.45;
 
-      vec3 dispP = computeDisplacement(p, t);
+      vec4 foldGeom = computeFoldGeometry(p, t);
+      vec3 dispP = foldGeom.xyz;
+      vLocalRidge = foldGeom.w;
 
       // Finite difference to compute accurate surface normals
       float eps = 0.08;
-      vec3 pDx = computeDisplacement(p + vec3(eps, 0.0, 0.0), t);
-      vec3 pDz = computeDisplacement(p + vec3(0.0, 0.0, eps), t);
+      vec3 pDx = computeFoldGeometry(p + vec3(eps, 0.0, 0.0), t).xyz;
+      vec3 pDz = computeFoldGeometry(p + vec3(0.0, 0.0, eps), t).xyz;
 
       vec3 tangentX = pDx - dispP;
       vec3 tangentZ = pDz - dispP;
@@ -177,11 +206,15 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       vWorldPos = (modelMatrix * vec4(dispP, 1.0)).xyz;
       vElevation = dispP.y;
 
-      // Curvature estimate: measure departure from horizontal normal
+      // Curvature estimate
       vCurvature = clamp(1.0 - abs(norm.y), 0.0, 1.0);
 
       // Focal zone weight: text is on the left (x < 0), wave spectacle is on the right (x > 0)
       vFocalWeight = smoothstep(-9.0, 5.0, dispP.x);
+
+      // World-space strand flow parametrization:
+      // Combines lateral world coordinates with surface elevation
+      vStrandParam = (dispP.x * 0.36 + dispP.z * 0.88 + dispP.y * 0.12) * 0.055;
 
       vec4 mvPos = modelViewMatrix * vec4(dispP, 1.0);
       vViewDir = normalize(-mvPos.xyz);
@@ -198,7 +231,6 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
     uniform float uTime;
     uniform float uStrandDensity;
-    uniform float uStrandWidth;
     uniform float uTheme; // 0.0 = dark, 1.0 = light
 
     varying vec2 vUv;
@@ -207,6 +239,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     varying vec3 vNormal;
     varying vec3 vViewDir;
     varying float vElevation;
+    varying float vLocalRidge;
     varying float vCurvature;
     varying float vFocalWeight;
 
@@ -216,22 +249,17 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       float envY = smoothstep(0.0, 0.05, vUv.y) * smoothstep(1.0, 0.95, vUv.y);
       float edgeEnvelope = envX * envY;
 
-      // 2. PROCEDURAL STRAND GENERATION:
-      // Dense, fine, hair-thin parallel flow strands (strictly 1D, zero cross-hatching)
+      // 2. PROCEDURAL STRAND GENERATION (Screen-space anti-aliased line rendering):
       float strandCoord = vStrandParam * uStrandDensity;
-      float strandFract = fract(strandCoord);
-      float strandDist = abs(strandFract - 0.5);
+      float dist = abs(fract(strandCoord) - 0.5);
+      float fDelta = max(fwidth(strandCoord), 0.0001);
+      float pixelDist = dist / fDelta;
 
-      // Screen-space derivative anti-aliasing (fwidth)
-      float delta = fwidth(strandCoord);
-      float halfWidth = uStrandWidth * 0.5;
+      // Target screen-space strand width: ~1.25 pixels
+      float halfWidthPx = 0.62;
+      halfWidthPx *= mix(0.85, 1.25, vLocalRidge);
 
-      // Modulate strand width slightly: razor-fine on crests, softly diffused in valleys
-      float crestBoost = smoothstep(-1.2, 4.0, vElevation);
-      halfWidth *= mix(0.70, 1.30, crestBoost);
-
-      // Smoothstep strand line profile with AA
-      float strandLine = 1.0 - smoothstep(halfWidth - delta, halfWidth + delta, strandDist);
+      float strandLine = clamp(halfWidthPx - pixelDist + 0.5, 0.0, 1.0);
 
       // 3. ADVANCED LIGHTING & FRESNEL:
       vec3 keyLightDir = normalize(vec3(0.55, 0.78, 0.30));
@@ -239,65 +267,61 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
       // Fresnel grazing angle term for glowing rim highlights along sharp curvature
       float NdotV = max(0.0, dot(vNormal, vViewDir));
-      float fresnel = pow(1.0 - NdotV, 2.8);
+      float fresnel = pow(1.0 - NdotV, 2.6);
 
-      // Ridge factor combining elevation, curvature, directional lighting, and Fresnel
+      // Multi-Fold Ridge Factor:
+      // Uses vLocalRidge so EVERY fold crest (background, midground, foreground)
+      // receives crisp emerald and mint highlights, while the troughs drop into black
       float ridgeFactor = clamp(
-        crestBoost * 0.52 +
-        fresnel * 0.38 * (0.55 + 0.45 * vCurvature) +
-        NdotL * 0.26 +
-        vCurvature * 0.18,
+        vLocalRidge * 0.58 +
+        fresnel * 0.28 * (0.40 + 0.60 * vCurvature) +
+        NdotL * 0.16 * vLocalRidge,
         0.0, 1.0
       );
 
       // 4. COOL EMERALD / MINT COLOR RAMP (Exact tone match for approved reference):
       // Stop 0: Deep Obsidian Shadow (#010604)
-      vec3 colDeepShadow = vec3(0.004, 0.024, 0.016);
+      vec3 colDeepShadow = vec3(0.004, 0.024, 0.015);
       // Stop 1: Rich Forest Emerald (#0B3B1E)
       vec3 colDarkEmerald = vec3(0.035, 0.200, 0.115);
-      // Stop 2: Cool Jade Green (#10B981 / #0E9F6E)
-      vec3 colVibrantGreen = vec3(0.055, 0.620, 0.430);
+      // Stop 2: Cool Jade Green (#10B981)
+      vec3 colVibrantGreen = vec3(0.065, 0.680, 0.450);
       // Stop 3: Luminous Electric Mint (#34D399)
       vec3 colMintEdge = vec3(0.204, 0.827, 0.600);
       // Stop 4: Radiant White-Mint Glow (#D1FAE5)
-      vec3 colApex = vec3(0.820, 0.980, 0.898);
+      vec3 colApex = vec3(0.850, 0.985, 0.920);
 
       vec3 strandColor;
-      if (ridgeFactor < 0.20) {
-        strandColor = mix(colDeepShadow, colDarkEmerald, ridgeFactor / 0.20);
-      } else if (ridgeFactor < 0.50) {
-        float t = (ridgeFactor - 0.20) / 0.30;
+      if (ridgeFactor < 0.22) {
+        strandColor = mix(colDeepShadow, colDarkEmerald, ridgeFactor / 0.22);
+      } else if (ridgeFactor < 0.54) {
+        float t = (ridgeFactor - 0.22) / 0.32;
         strandColor = mix(colDarkEmerald, colVibrantGreen, t);
-      } else if (ridgeFactor < 0.78) {
-        float t = (ridgeFactor - 0.50) / 0.28;
+      } else if (ridgeFactor < 0.80) {
+        float t = (ridgeFactor - 0.54) / 0.26;
         strandColor = mix(colVibrantGreen, colMintEdge, t);
       } else {
-        float t = (ridgeFactor - 0.78) / 0.22;
+        float t = (ridgeFactor - 0.80) / 0.20;
         strandColor = mix(colMintEdge, colApex, t);
       }
 
       // Razor-sharp apex highlight on the sharpest crest ridge (the signature glowing edge)
-      float apexPeak = pow(smoothstep(0.68, 0.98, ridgeFactor), 2.5);
-      strandColor = mix(strandColor, vec3(0.95, 1.0, 0.98), apexPeak * 0.96);
+      float apexPeak = pow(smoothstep(0.72, 0.98, ridgeFactor), 2.2);
+      strandColor = mix(strandColor, vec3(0.96, 1.0, 0.98), apexPeak * 0.95);
 
       // 5. SOLID DARK BODY WITH LUMINOUS STRANDS:
-      vec3 valleyBodyColor = mix(vec3(0.005, 0.016, 0.010), colDarkEmerald * 0.30, crestBoost);
+      vec3 valleyBodyColor = mix(vec3(0.005, 0.018, 0.010), colDarkEmerald * 0.35, vLocalRidge);
       vec3 finalColor = mix(valleyBodyColor, strandColor, strandLine);
 
-      // In the focal zone (right side / crests), strands are radiant
-      // In the content zone (left side / under text), strands are attenuated so text is crystal clear
-      float contentDamp = mix(0.22, 1.0, vFocalWeight);
-      finalColor *= mix(0.35, 1.0, vFocalWeight);
+      // Focal zone vs content zone contrast:
+      // Left side under hero text is kept deep and dark for crystal-clear readability
+      float contentDamp = mix(0.28, 1.0, vFocalWeight);
+      finalColor *= mix(0.40, 1.0, vFocalWeight);
 
       // Alpha: In the core of the mesh, surface is opaque so it cleanly occludes what's behind
-      float strandAlpha = mix(0.08, 0.95, strandLine);
-      float baseAlpha = mix(0.65, 1.0, crestBoost * 0.5 + strandLine * 0.5);
+      float baseAlpha = mix(0.70, 1.0, vLocalRidge * 0.5 + strandLine * 0.5);
 
-      // Depth attenuation
-      float depthDist = length(vWorldPos - vec3(0.0, 7.2, 23.0));
-      float depthFade = smoothstep(44.0, 10.0, depthDist);
-
-      float finalAlpha = baseAlpha * edgeEnvelope * depthFade * contentDamp;
+      float finalAlpha = baseAlpha * edgeEnvelope * contentDamp;
 
       // Apex highlight boosts line presence
       finalAlpha = mix(finalAlpha, min(1.0, finalAlpha * 1.5), apexPeak);
@@ -307,7 +331,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
         vec3 lightValley = vec3(0.93, 0.95, 0.92);
         vec3 lightCrest = vec3(0.08, 0.32, 0.14);
         vec3 lightCol = mix(lightValley, lightCrest, pow(ridgeFactor, 1.2) * strandLine);
-        gl_FragColor = vec4(lightCol, edgeEnvelope * depthFade * 0.28);
+        gl_FragColor = vec4(lightCol, edgeEnvelope * 0.30);
         return;
       }
 
@@ -321,9 +345,9 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   function initThreeScene() {
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-    camera.position.set(0.0, 7.2, 23.0);
-    camera.lookAt(1.0, 2.0, -1.0);
+    camera = new THREE.PerspectiveCamera(34, 1, 0.1, 120);
+    camera.position.set(0.0, 8.2, 22.5);
+    camera.lookAt(1.0, 1.8, -1.0);
 
     renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -346,10 +370,10 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     isMobile = window.innerWidth < 768;
 
     // Sized to overscan Hero boundaries across aspect ratios
-    const planeWidth = 46;
-    const planeDepth = 36;
-    const segX = isMobile ? 180 : 300;
-    const segY = isMobile ? 180 : 300;
+    const planeWidth = 48;
+    const planeDepth = 38;
+    const segX = isMobile ? 200 : 320;
+    const segY = isMobile ? 200 : 320;
 
     geometry = new THREE.PlaneGeometry(planeWidth, planeDepth, segX, segY);
     geometry.rotateX(-Math.PI / 2);
@@ -365,8 +389,7 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
       uniforms: {
         uTime: { value: 0.0 },
         uMouse: { value: new THREE.Vector2(0.0, 0.0) },
-        uStrandDensity: { value: isMobile ? 420.0 : 660.0 },
-        uStrandWidth: { value: 0.085 },
+        uStrandDensity: { value: isMobile ? 120.0 : 180.0 },
         uTheme: { value: isLight ? 1.0 : 0.0 }
       },
       transparent: true,
@@ -395,13 +418,13 @@ import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
     camera.aspect = width / height;
     if (width < 768) {
-      camera.fov = 40;
-      camera.position.set(0.2, 8.5, 25.0);
+      camera.fov = 44;
+      camera.position.set(0.2, 9.5, 25.0);
       camera.lookAt(0.3, 1.2, -1.0);
     } else {
-      camera.fov = 30;
-      camera.position.set(0.0, 7.2, 23.0);
-      camera.lookAt(1.0, 2.0, -1.0);
+      camera.fov = 34;
+      camera.position.set(0.0, 8.2, 22.5);
+      camera.lookAt(1.0, 1.8, -1.0);
     }
     camera.updateProjectionMatrix();
 
