@@ -330,3 +330,54 @@ By varying the cross-section along the spine, different regions of the same surf
 - **Scope Limit:** Exactly one isolated, independent primary crest surface patch (Structure B).
 - **Exclusions:** No secondary layers, no background composition, no foreground layer, no strands, no animation, and no website integration.
 - **Proof Goal:** Demonstrate conclusively that a procedurally lofted, subdivided quad patch achieves the sculptural, flowing organic crest of the reference without resembling a flat ribbon, tape, pipe, curtain, terrain, or mountain.
+
+---
+
+## 10. Architectural Evolution: Multi-Patch Methodology Selection (November 19, 2026)
+
+### 10.1. Rejection of the C+A Swept-Spine Direction
+Following empirical implementation in Blender Python (Primary Crest v01 and v01.1) and Three.js (`CurveModifier Technology Proof 01`), the swept-spine methodology was formally rejected for the following structural reasons:
+1. **Developable Manifold Constraint ($K \approx 0$):** Sweeping or deforming a 2D cross-section along a 1D spatial curve produces a ruled, generalized cylinder topology. The transverse profiles remain planar or semi-rigid slices along the curve parameter, preventing the compound double curvature ($K = \kappa_1 \kappa_2 \neq 0$) essential to fluid forms.
+2. **Persistent "Extruded Ribbon / Airfoil" Aesthetic:** Regardless of cross-sectional complexity (even with a 5-zone asymmetric profile with S-curved apron, flank, apex, and undercut), a 1D sweep moves all points along uniform longitudinal tracks, creating an artificial bent-ribbon, leaf, or airplane wing appearance rather than organic fluid billows.
+3. **Frenet Frame Discontinuities:** In WebGL (`CurveModifier.Flow`), reliance on native Frenet frames locks surface orientation to curvature centers and lacks independent banking/twist control.
+
+### 10.2. Selection of Multi-Patch Architecture for Further Investigation
+Based on comprehensive architecture research (documented in `multi-patch-architecture-research.md`), **Candidate D (Hybrid Multi-Patch Architecture: Bivariate Quad Control Net $\to$ Catmull-Clark Subdivision)** was selected for experimental validation.
+
+**Core Rationale:**
+- **True 2D Parametric Degrees of Freedom:** Instead of extruding a 1D curve, each surface patch is defined as an open, bivariate quadrilateral control cage $\mathbf{P}(i, j) \in \mathbb{R}^3$. This grants independent spatial freedom across both dimensions, allowing non-linear apron flaring, compound saddle/dome curvature, and differential longitudinal shear.
+- **Organic Smoothness via Subdivision:** Catmull-Clark subdivision yields a fair, organic limit surface ($C^2$ continuous in regular quad regions, $C^1$ at extraordinary vertices) with preserved crest sharpness via localized support loops.
+- **Natural Depth Layering:** Decomposes the reference into three distinct depth layers (Foreground Swell C, Midground Sculptural Wave B, and Background Receding Flow A/D).
+- **Inter-Surface Negative Space:** The central obsidian valley is not a forced geometric trough; it is an inter-surface chasm formed by the physical spatial separation and camera-angle occlusion between separate patches.
+
+### 10.3. Proven Technical Capabilities vs. Unverified Visual Hypotheses
+
+> [!WARNING]
+> Candidate D is an experimental candidate and has **NOT** yet achieved visual success. The distinction between verified engineering facts and open visual hypotheses must be strictly maintained:
+
+| Category | Item | Engineering Status |
+| :--- | :--- | :--- |
+| **Proven Capability** | 1D spine sweeps produce extruded ribbon/airfoil artifacts. | **Verified** empirically in v01, v01.1, and CurveModifier proof. |
+| **Proven Capability** | Heightfields ($z = f(x, y)$) cannot represent overhangs, undercuts, or vertical folds. | **Verified** mathematically and visually in earlier experiments. |
+| **Proven Capability** | Catmull-Clark yields $C^2$ continuity in regular quad regions ($C^1$ at extraordinary vertices). | **Verified** by subdivision surface theory (Stam's limit evaluation). |
+| **Proven Capability** | Three.js r160 WebGLRenderer handles multiple BufferGeometries at 60 FPS. | **Verified** in standalone browser technology proofs. |
+| **Unverified Hypothesis** | An analytical bivariate equation $\mathbf{P}(u, v)$ can proceduralize compound fluid curvature without manual artist sculpting. | **Hypothesis to be tested** in Pilot Proof 02 Stage 1. |
+| **Unverified Hypothesis** | Two physically disconnected surface patches will visually read as a unified fluid chasm without looking like detached floating ribbons. | **Hypothesis to be tested** in Pilot Proof 02 Stage 2. |
+| **Unverified Hypothesis** | Regular quad UV parameterization on a bivariate patch will support smooth, non-distorted anisotropic surface strands. | **Hypothesis to be tested** in future strand phases. |
+
+### 10.4. Proposed Staged Validation Plan (Pilot Proof 02)
+To prevent scope creep and ensure rigorous visual verification, validation is strictly staged:
+
+1. **Stage 1 — Isolated Bivariate Primary Crest Patch (Structure B):**
+   - Construct one single open quad control cage ($8 \times 12$ quads) using analytical bivariate equations.
+   - Evaluate via Catmull-Clark subdivision.
+   - Render in neutral clay under reference lighting.
+   - Evaluate visual fidelity against `hero-fluid-mesh-primary.jpg`. Stop and review.
+2. **Stage 2 — Two-Patch Overlap & Occlusion Proof (Structure B + Structure C):**
+   - Authorized only if Stage 1 is visually approved.
+   - Introduce the foreground undulating swell (Patch C) at foreground depth.
+   - Validate that the inter-surface chasm renders as an obsidian-black void without visible seam artifacts. Stop and review.
+3. **Stage 3 — Full Composition (Patches A, B, C):**
+   - Evaluated only after Stage 2 receives explicit approval.
+   - No website integration, shader implementation, or strand generation before geometry approval.
+

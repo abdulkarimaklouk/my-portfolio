@@ -54,9 +54,11 @@ Never approve or repeat these visual outcomes:
 
 The following approaches were tried and visually rejected:
 
-- Gaussian and analytical heightfields.
+- Gaussian and analytical heightfields (lacked vertical folding, undercuts, and occlusion).
 - Simple parametric surface profiles.
 - Blender guided cloth simulation experiments.
+- Swept-spine curves with variable profiles (Primary Crest v01 and v01.1 in Blender Python): produced extruded ribbon, leaf, and aerodynamic wing aesthetics lacking compound double curvature.
+- Three.js CurveModifier GPU spline deformation (CurveModifier Technology Proof 01): verified WebGL performance, but rejected due to Frenet-Serret frame locking and developable cylinder topology.
 
 Their outputs failed to reproduce the approved visual reference.
 
@@ -97,17 +99,20 @@ The user has removed the previous generated geometry experiment folders. Do not 
 
 ## Current Project Status
 
-- Previous geometry experiments have been deleted by the user.
-- **Provisional Methodology Selected:** C + A Hybrid — Procedurally Lofted Quad Surfaces with Catmull-Clark Subdivision.
-- **Approval Scope:** Approved **ONLY** for an isolated Primary Crest Visual Proof (Structure B). It is **NOT** approved for full Hero geometry, secondary layers, or production.
-- **Mandatory Technical Constraints for Pilot:**
-  1. Use parallel transport (Bishop / rotation-minimizing) frames along the 3D spine to ensure stable, flip-free cross-section orientation.
-  2. Use non-uniform asymmetric cross-sections with variable width, curvature, banking, and undercut curl.
-  3. Use support loops or crease control where necessary to preserve crest sharpness during subdivision.
-  4. Treat clean UV flow as a useful basis for future strand generation, not a guarantee of final strand alignment.
-  5. Visual fidelity must be judged strictly using actual renders against `hero-fluid-mesh-primary.jpg`, not code, logs, or mathematical claims.
-- **Pilot Scope Limits:** One single isolated primary crest surface patch. No secondary layers, no background composition, no foreground layer, no strands, no animation, and no website integration.
-- **Pilot Goal:** Visually demonstrate that the generated surface avoids looking like a flat ribbon, tape, pipe, curtain, terrain, or mountain.
+- Previous geometry approaches (analytical heightfields, cloth simulation, swept-spine curves v01/v01.1, and Three.js CurveModifier) were visually rejected.
+- **Selected Methodology for Experimental Validation:** **Candidate D — Hybrid Multi-Patch Architecture (Independent Parametric 3D Quad Control Cages $\to$ Catmull-Clark Subdivision)**.
+  - Full details in `docs/design/references/geometry/multi-patch-architecture-research.md`.
+  - Replaces the earlier C + A swept-spine direction.
+- **Strict Architecture Status & Guardrails:**
+  - This is **NOT** an approved final architecture. It is authorized **ONLY** for a small, isolated visual proof.
+  - Independent overlapping patches do not automatically guarantee a seamless final composition; boundary clipping, depth-of-field, and shadow tucking must prevent them from reading as disconnected ribbons.
+  - Catmull-Clark subdivision yields $C^2$ continuity in regular quad regions and $C^1$ continuity at extraordinary vertices.
+  - Visual fidelity must be judged strictly against rendered imagery compared to `hero-fluid-mesh-primary.jpg`. Candidate D has **not** yet achieved visual success; it is an experimental candidate.
+- **Authorized Pilot Scope Limits:**
+  - Stage 1: Exactly one isolated bivariate surface patch (Structure B Primary Crest).
+  - Stage 2: Two-patch overlap and occlusion (Structure B + Foreground Swell C) only after Stage 1 visual review.
+  - Absolute exclusion: No full scene composition, no secondary background layers, no strands, no animation, and no website integration without explicit user authorization.
+- **Pilot Goal:** Visually demonstrate that a bivariate parametric quad cage produces true compound double curvature ($K \neq 0$) and natural undercuts, avoiding the extruded ribbon, leaf, wing, terrain, or curtain appearance of previous attempts.
 
 > [!IMPORTANT]
-> This memory records project decisions, constraints, and the provisional pilot scope. It does not authorize production or complete Hero implementation.
+> This memory records project decisions, constraints, and the provisional pilot scope. It does not authorize production, website integration, or complete Hero implementation.
