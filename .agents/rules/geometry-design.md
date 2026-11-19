@@ -98,9 +98,16 @@ The user has removed the previous generated geometry experiment folders. Do not 
 ## Current Project Status
 
 - Previous geometry experiments have been deleted by the user.
-- No geometry implementation is currently approved.
-- No new geometry methodology has been selected.
-- The next engineering task is an independent review of the original visual reference and a proposal for a fundamentally better geometry construction method.
+- **Provisional Methodology Selected:** C + A Hybrid — Procedurally Lofted Quad Surfaces with Catmull-Clark Subdivision.
+- **Approval Scope:** Approved **ONLY** for an isolated Primary Crest Visual Proof (Structure B). It is **NOT** approved for full Hero geometry, secondary layers, or production.
+- **Mandatory Technical Constraints for Pilot:**
+  1. Use parallel transport (Bishop / rotation-minimizing) frames along the 3D spine to ensure stable, flip-free cross-section orientation.
+  2. Use non-uniform asymmetric cross-sections with variable width, curvature, banking, and undercut curl.
+  3. Use support loops or crease control where necessary to preserve crest sharpness during subdivision.
+  4. Treat clean UV flow as a useful basis for future strand generation, not a guarantee of final strand alignment.
+  5. Visual fidelity must be judged strictly using actual renders against `hero-fluid-mesh-primary.jpg`, not code, logs, or mathematical claims.
+- **Pilot Scope Limits:** One single isolated primary crest surface patch. No secondary layers, no background composition, no foreground layer, no strands, no animation, and no website integration.
+- **Pilot Goal:** Visually demonstrate that the generated surface avoids looking like a flat ribbon, tape, pipe, curtain, terrain, or mountain.
 
 > [!IMPORTANT]
-> This memory records project decisions and constraints. It does not authorize implementation.
+> This memory records project decisions, constraints, and the provisional pilot scope. It does not authorize production or complete Hero implementation.

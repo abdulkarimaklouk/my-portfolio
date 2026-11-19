@@ -308,3 +308,25 @@ By varying the cross-section along the spine, different regions of the same surf
 | 6 | **Does the original reference come from a real 3D application?** | If the reference was rendered from an actual 3D scene (rather than being a 2D illustration), the original tool, surface representation, and render setup would provide the most direct reconstruction path. This is unknown. |
 | 7 | **How should the swept surface cross-sections transition between surfaces?** | In regions where structures appear to merge (e.g., the left end of Structure B descending toward Structure C), it is unclear whether the surfaces actually connect or merely approach each other visually. |
 | 8 | **What is the minimum polygon budget for the target web deployment?** | The website uses WebGL/Three.js. The mesh resolution must be high enough for smooth crests and correct strand density, but low enough for real-time rendering. This constrains all three hypotheses differently. |
+
+---
+
+## 9. Provisional Method Decision & Pilot Validation Plan
+
+### Decision
+**C + A Hybrid — Procedurally Lofted Quad Surfaces with Catmull-Clark Subdivision.**
+
+> [!IMPORTANT]
+> **Provisional Status:** This methodology is approved **ONLY** for an isolated Primary Crest Visual Proof. It is **NOT** yet approved for complete Hero geometry or production implementation.
+
+### Technical Constraints for Construction
+1. **Parallel Transport Frames:** Use parallel transport (Bishop / rotation-minimizing) frames along the 3D space spine $\mathbf{C}(u)$ to prevent torsion, twist discontinuities, or axis flipping during profile sweep.
+2. **Dynamic Asymmetric Cross-Sections:** Cross-sections $\mathbf{P}(u, v)$ must be non-uniform and asymmetric with variable width, curvature radius, dynamic banking, and undercut curl, avoiding extruded or planar ribbon appearances.
+3. **Crest Sharpness Preservation:** Implement geometric support edge loops or subdivision crease weights where needed to maintain crisp, luminous crest edges under Catmull-Clark subdivision without smoothing into flat mounds.
+4. **UV Streamlines as Basis:** Treat clean longitudinal quad UV parameterization as a useful spatial foundation for subsequent strand generation, not as an unverified guarantee of final strand visual alignment.
+5. **Visual Evidence First:** Visual fidelity must be evaluated strictly against rendered imagery compared to `hero-fluid-mesh-primary.jpg`, not justified by clean code, parametric metrics, or execution logs.
+
+### Pilot Proof Scope (Structure B Primary Crest Only)
+- **Scope Limit:** Exactly one isolated, independent primary crest surface patch (Structure B).
+- **Exclusions:** No secondary layers, no background composition, no foreground layer, no strands, no animation, and no website integration.
+- **Proof Goal:** Demonstrate conclusively that a procedurally lofted, subdivided quad patch achieves the sculptural, flowing organic crest of the reference without resembling a flat ribbon, tape, pipe, curtain, terrain, or mountain.
