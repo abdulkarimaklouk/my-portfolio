@@ -20,7 +20,8 @@ Serve as a public, static personal portfolio presenting Abdulkarim Aklouk's soft
 
 - Static single-page portfolio with dark and light themes persisted in `localStorage`.
 - Interactive project filtering (`All`, `Full-Stack`, `Frontend`), keyboard-accessible service detail dialogs, scroll-spy navigation, and scroll-triggered reveal animations.
-- Pointer-reactive 3D perspective backdrop ([`.bg-3d`](../index.html#L86-L104)) with ambient gradients, perspective grid, orbital rings, and reduced-motion / pointer-type gating.
+- 3D Fluid Mesh Hero Background ([`assets/js/hero-background.js`](../assets/js/hero-background.js)) powered by lightweight Three.js `0.160.0`, featuring organic procedural wave folds, screen-space anti-aliased strands, emerald-to-obsidian shading, and full theme/reduced-motion adaptation.
+- Pointer-reactive 3D perspective backdrop ([`.bg-3d`](../index.html#L86-L104)) with ambient gradients, perspective grid, orbital rings, and reduced-motion / pointer-type gating across lower sections.
 - SEO and social metadata (Open Graph, Twitter Cards, Google Search Console verification, JSON-LD `Person` schema, and XML sitemap).
 
 ### Future Goals (Planned Direction)
@@ -48,6 +49,7 @@ _(Note: Target audiences are inferred from existing sections, project framing, a
 ### Global Shell & Interactive Layer
 
 - **Header & Navigation:** Fixed top bar with brand link and theme toggle (`#theme-button`), floating bottom icon navigation dock with scroll-spy active state, skip-to-content link, and footer navigation.
+- **3D Fluid Mesh Hero Background:** Lightweight Three.js WebGL canvas (`#hero-waves-canvas`) providing an organic sculptural fluid wave with obsidian-to-emerald shading in `#home`.
 - **3D Perspective Background:** Multi-layer CSS/JS ambient backdrop responding subtly to fine-pointer movement and disabled under `prefers-reduced-motion: reduce`.
 
 ### Existing Eight Main Sections

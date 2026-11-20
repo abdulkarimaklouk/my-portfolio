@@ -42,7 +42,8 @@ Concise requirements for the public portfolio website ([`index.html`](../index.h
 ## 3. 3D Experience
 
 ### Existing Functionality
-- Non-interactive `.bg-3d` perspective backdrop (`aria-hidden="true"`, `pointer-events: none`) featuring ambient radial lighting, tilted floor grid, three orbital rings, and corner crosshairs adapting to dark/light themes and mobile screens.
+- **3D Fluid Mesh Hero Background:** Lightweight Three.js `0.160.0` WebGL canvas (`#hero-waves-canvas`, [`assets/js/hero-background.js`](../assets/js/hero-background.js)) in `#home`, rendering an organic sculptural fluid wave with obsidian-to-emerald/mint shading, screen-space anti-aliased strands, dynamic theme adaptation, and `prefers-reduced-motion` compliance.
+- Non-interactive `.bg-3d` perspective backdrop (`aria-hidden="true"`, `pointer-events: none`) featuring ambient radial lighting, tilted floor grid, three orbital rings, and corner crosshairs adapting to dark/light themes across lower sections.
 - Subtle pointer-driven parallax (`±2.5deg` tilt, `±10px` translation) on fine-pointer devices, resetting on pointer leave or blur and disabled under `prefers-reduced-motion: reduce`.
 
 ### Planned Improvements
