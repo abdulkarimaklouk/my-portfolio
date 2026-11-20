@@ -22,7 +22,7 @@
 (async function initHeroFluidBackground() {
   // 1. Guard against duplicate initialization
   const canvas = document.getElementById('hero-waves-canvas');
-  const heroSection = document.getElementById('home');
+  const heroSection = document.getElementById('home') || document.querySelector('.home');
   if (!canvas || !heroSection) return;
   if (canvas.__heroWavesInitialized) return;
 
@@ -376,12 +376,13 @@
 
     camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
     camera.position.set(0.0, 8.2, 22.5);
-    camera.lookAt(0.5, 1.8, -1.0);
+    camera.lookAt(0.8, 1.8, -1.0);
 
     renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       alpha: true,
       antialias: true,
+      preserveDrawingBuffer: true,
       powerPreference: 'high-performance'
     });
     renderer.setClearColor(0x000000, 0);
@@ -451,7 +452,7 @@
     } else {
       camera.fov = 34;
       camera.position.set(0.0, 8.2, 22.5);
-      camera.lookAt(0.5, 1.8, -1.0);
+      camera.lookAt(0.8, 1.8, -1.0);
     }
     camera.updateProjectionMatrix();
 
