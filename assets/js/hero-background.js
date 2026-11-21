@@ -1,20 +1,20 @@
 /**
- * Fluid Mesh 3D Hero Background — Three.js WebGL Implementation
- * Portfolio of Abdulkarim Aklouk
+ * Fluid Mesh Waves — Hero Section Background
+ * Prototype Implementation (Integrated from Approved Production Architecture)
  * 
- * Production-ready, zero-build, lightweight 3D sculptural fluid mesh background:
- * - Direct ESM dynamic import of Three.js 0.160.0 with offline/fallback protection
- * - WebGL availability check via off-DOM probe canvas with graceful non-blocking degradation
- * - Parametric 3D fluid wave surface with two-tier simplex noise domain warping
- * - Multi-fold organic composition capturing hero-fluid-mesh-primary.jpg:
- *     - Fold 1: Dominant Midground Crest (sweeping diagonal ridge catching key light)
+ * Recreates the approved Fluid Mesh Waves visual reference with slow, organic silk motion:
+ * - Dynamic ESM import via Three.js 0.160.0 with window.THREE fallback & WebGL probe check
+ * - Strict duplicate initialization protection
+ * - High-precision monotonic accumulated time tracking (smooth across scroll & tab switch)
+ * - Multi-fold procedural geometry:
+ *     - Fold 1: Dominant Midground Crest (sweeping diagonal ridge catching key light on right)
  *     - Fold 2: Cascading Rear Billow (elevated background swell)
  *     - Fold 3: Transverse Cascades (organic interconnecting folds)
  *     - Fold 4: Foreground Undulating Roll (near-field depth)
  * - Screen-space anti-aliased procedural strand shading via fwidth standard derivatives
- * - Rich obsidian-to-emerald/mint color ramp with grazing Fresnel & specular apex highlight
- * - High readability: soft depression & negative space behind hero typography
- * - Dynamic theme adaptation: seamless live response to dark/light theme toggles
+ * - Balanced obsidian-to-emerald/mint color ramp with grazing Fresnel & specular apex highlight
+ * - Compositional balance: quiet negative space for left-column hero text; elevated crest for right-column portrait
+ * - Dynamic light/dark theme adaptation with live MutationObserver
  * - Lifecycle: pauses offscreen (IntersectionObserver), pauses on inactive tab, static frame on prefers-reduced-motion
  * - Zero allocations in requestAnimationFrame loop for steady 60fps GPU performance
  */
@@ -22,7 +22,7 @@
 (async function initHeroFluidBackground() {
   // 1. Guard against duplicate initialization
   const canvas = document.getElementById('hero-waves-canvas');
-  const heroSection = document.getElementById('home') || document.querySelector('.home');
+  const heroSection = document.getElementById('home') || document.querySelector('.hero');
   if (!canvas || !heroSection) return;
   if (canvas.__heroWavesInitialized) return;
 
@@ -42,16 +42,16 @@
   }
 
   if (!THREE) {
-    console.warn('Three.js unavailable. Hero 3D background degraded gracefully.');
+    console.warn('Three.js unavailable. Prototype hero background degraded gracefully.');
     return;
   }
 
-  // 3. Verify WebGL support via probe canvas
+  // 3. Verify WebGL support via off-DOM probe canvas
   try {
     const probe = document.createElement('canvas');
     const gl = probe.getContext('webgl2') || probe.getContext('webgl') || probe.getContext('experimental-webgl');
     if (!gl) {
-      console.warn('WebGL not supported. Hero 3D background disabled.');
+      console.warn('WebGL not supported. Prototype hero background disabled.');
       return;
     }
   } catch (e) {
@@ -61,7 +61,7 @@
 
   canvas.__heroWavesInitialized = true;
 
-  // 4. State & Configuration
+  // 4. Configuration & State
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let renderer = null;
@@ -81,8 +81,8 @@
   let accumulatedTime = 0.0;
 
   const isLightTheme = () =>
-    document.body.classList.contains('light-theme') ||
-    document.documentElement.classList.contains('light-theme');
+    document.documentElement.classList.contains('light-theme') ||
+    document.body.classList.contains('light-theme');
 
   // 5. GLSL Shaders
   const vertexShader = /* glsl */ `
@@ -182,10 +182,10 @@
       float d5 = dot(wp, vec2(0.60, 0.80));
       float pleats = 0.30 * sin(d5 * 0.65 - t * 0.25) * cos(wp.x * 0.16 + 0.4);
 
-      // 7. Spatial Modulation & Text Readability
-      // Boost crests toward the right/upper flanks, gently depress directly behind center text
-      float rightBias = smoothstep(-6.0, 8.5, p.x) * 1.25;
-      float centerTrough = smoothstep(10.0, 0.0, length(vec2(p.x * 1.2, p.z * 0.8))) * 0.95;
+      // 7. Spatial Modulation & Text Readability for 2-column layout
+      // Elevated crests on right flank (x > 0) framing the portrait; soft basin on left (x < 0) for text:
+      float rightBias = smoothstep(-6.0, 8.5, p.x) * 1.30;
+      float leftTrough = smoothstep(2.0, -8.0, p.x) * 1.05;
 
       // Gerstner horizontal pinch for peaked crests and broad valleys
       vec2 pinch1 = dir1 * (-0.34 * crest1 * amp1 * 0.10);
@@ -194,7 +194,7 @@
       vec2 totalPinch = pinch1 + pinch2 + pinch3;
 
       float totalY = (crest1 * amp1 + crest2 * amp2 + crest3 * amp3 + crest4 * amp4 + pleats)
-                   * (0.85 + rightBias * 0.35) - centerTrough;
+                   * (0.85 + rightBias * 0.35) - leftTrough;
 
       // Local ridge prominence for crest highlights
       float r1 = max(0.0, crest1);
@@ -238,9 +238,9 @@
       // Curvature estimate
       vCurvature = clamp(1.0 - abs(norm.y), 0.0, 1.0);
 
-      // Text negative space attenuation: soft contrast reduction where text sits
-      float distToCenter = length(vec2(dispP.x * 0.9, dispP.z * 0.6));
-      vTextNegativeSpace = smoothstep(1.5, 9.5, distToCenter);
+      // Text negative space attenuation: soft contrast reduction where left-column text sits
+      float xSpan = clamp((dispP.x - (-8.0)) / 10.0, 0.0, 1.0);
+      vTextNegativeSpace = xSpan * xSpan * (3.0 - 2.0 * xSpan);
 
       // Continuous monotonic strand flow along wave propagation
       vec2 flowDir = normalize(vec2(0.55, 0.835));
@@ -347,7 +347,7 @@
       float valleyDarken = smoothstep(-1.5, 1.2, vElevation);
       finalColor *= mix(0.18, 1.0, valleyDarken);
 
-      // Soft readability attenuation behind center text
+      // Soft readability attenuation behind text
       finalColor *= mix(0.55, 1.0, vTextNegativeSpace);
 
       // 5. Light Theme Adaptation
@@ -552,7 +552,7 @@
     }
   });
 
-  // Watch for theme class changes on body and html
+  // Watch for theme class changes on html and body
   const themeObserver = new MutationObserver(() => {
     if (material && material.uniforms && material.uniforms.uTheme) {
       material.uniforms.uTheme.value = isLightTheme() ? 1.0 : 0.0;
@@ -561,8 +561,8 @@
       }
     }
   });
-  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   // 10. Bootstrap
   initThreeScene();
