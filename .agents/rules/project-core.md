@@ -11,11 +11,11 @@ description: "Core project scope, static architecture, Quiet 3D design constrain
 - Preserve the eight main sections in order: Home (`#home`), About (`#about`), Skills (`#skills`), Services (`#services`), Projects (`#work`), Experience & Education (`#experience`), Engineering Focus, and Contact (`#contact`), along with the header and footer.
 - Preserve existing functionality, owner information, project records, live demo/source links, CV download (`assets/pdf/cv.pdf`), contact workflows, and unhosted-backend disclosures.
 - Out of scope: Admin Dashboard, CMS, authentication, backend APIs, database persistence, hosting backends for featured projects, multi-page routing, and analytics tracking.
-- Refer to `docs/PROJECT_OVERVIEW.md` and `docs/REQUIREMENTS.md` (along with upcoming specs in `docs/design/`, `docs/architecture/`, and `docs/planning/`) as project sources of truth.
+- Refer to `docs/PROJECT_OVERVIEW.md` and `docs/REQUIREMENTS.md` (along with design specifications in `docs/design/`) as project sources of truth.
 
 ## 2. Technology & Architecture Constraints
 
-- Use the existing zero-build static stack: Vanilla HTML5 (`index.html`), CSS3 (`assets/css/styles.css`), and ES6+ JavaScript (`assets/js/main.js`).
+- Use the existing zero-build static stack: Vanilla HTML5 (`index.html`), CSS3 (`assets/css/styles.css`), and ES6+ JavaScript (`assets/js/main.js`, `assets/js/hero-background.js`).
 - Keep production deployment 100% compatible with static hosting on GitHub Pages.
 - Prefer native browser capabilities over external dependencies.
 - Do not introduce frameworks, bundlers, build systems, package managers, or heavy 3D engines (e.g., WebGL/Three.js) without explicit approval.

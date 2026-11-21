@@ -8,13 +8,13 @@ description: >-
 
 # UI Implementation Workflow
 
-Use this workflow for any UI/UX redesign, layout fix, theme update, or Quiet 3D enhancement in `index.html`, `assets/css/styles.css`, and `assets/js/main.js`.
+Use this workflow for any UI/UX redesign, layout fix, theme update, or Quiet 3D enhancement in `index.html`, `assets/css/styles.css`, `assets/js/main.js`, and `assets/js/hero-background.js`.
 
 ## 1. Inspection
 
 Before editing any UI code:
 
-1. Read `docs/PROJECT_OVERVIEW.md`, `docs/REQUIREMENTS.md`, and any relevant documents in `docs/design/`, `docs/architecture/`, and `docs/planning/`.
+1. Read `docs/PROJECT_OVERVIEW.md`, `docs/REQUIREMENTS.md`, and design specifications in `docs/design/`.
 2. Inspect the target markup in `index.html`, styles/tokens in `assets/css/styles.css`, and interactive behavior in `assets/js/main.js`.
 3. Map existing IDs, classes, `aria-*` attributes, JS event hooks, and content disclosures (such as project backend status notes and contact disclaimers) so existing functionality and data remain intact.
 

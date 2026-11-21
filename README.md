@@ -204,26 +204,39 @@ I developed the page layout, structured the content sections, and implemented th
 
 ```text
 index.html
+sitemap.xml
 README.md
 assets/
 ├── css/
 │   └── styles.css
 ├── js/
+│   ├── hero-background.js
 │   ├── main.js
 │   └── mixitup.min.js
 ├── img/
-├── pdf/
-│   └── cv.pdf
-└── favicons/
+│   ├── profile.png
+│   └── social-preview.png
+└── pdf/
+    └── cv.pdf
+docs/
+├── PROJECT_OVERVIEW.md
+├── REQUIREMENTS.md
+└── design/
+    ├── design-system.md
+    ├── section-blueprints.md
+    └── references/
 ```
 
 **Features & Implementation**
 
-- **Static Website:** Built using HTML, CSS, and JavaScript.
-- **Dark / Light Theme:** Theme preference is stored in `localStorage`.
-- **Project Filtering:** Project cards are filtered using MixItUp.
-- **Scroll Animations:** ScrollReveal is integrated through a CDN.
-- **CV:** PDF version of my CV is included in the assets directory.
+- **Static Architecture:** Built with semantic HTML5, modern CSS3, and vanilla ES6+ JavaScript (zero-build, 100% GitHub Pages compatible).
+- **Typography:** `Plus Jakarta Sans` for clean structural display and `IBM Plex Mono` for technical metadata.
+- **3D Fluid Hero:** Lightweight Three.js `0.160.0` WebGL canvas (`hero-waves-canvas`) featuring procedural obsidian-to-emerald wave ribbons, screen-space anti-aliasing, and dynamic theme synchronization.
+- **Dark / Light Themes:** Accessible theme switching persisted in `localStorage` with a synchronous pre-paint guard to eliminate FOUC.
+- **Accessibility & Motion:** Semantic inline SVGs, WCAG 2.1 Level AA contrast ratios, accessible dialog modals with background `inert` isolation and focus trapping, screen-reader live regions, and `prefers-reduced-motion` support.
+- **Scroll Reveals:** Built using native browser `IntersectionObserver` (zero external CDN animation libraries).
+- **Project Filtering:** Client-side project filtering with MixItUp and accessible status announcements.
+- **CV & Contact:** Downloadable PDF CV and client-side contact workflow with Gmail compose generation and accessible email copy.
 
 **Running Locally**
 

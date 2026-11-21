@@ -18,10 +18,10 @@ Serve as a public, static personal portfolio presenting Abdulkarim Aklouk's soft
 
 ### Current Capabilities (Observed in Repository)
 
-- Static single-page portfolio with dark and light themes persisted in `localStorage`.
-- Interactive project filtering (`All`, `Full-Stack`, `Frontend`), keyboard-accessible service detail dialogs, scroll-spy navigation, and scroll-triggered reveal animations.
-- 3D Fluid Mesh Hero Background ([`assets/js/hero-background.js`](../assets/js/hero-background.js)) powered by lightweight Three.js `0.160.0`, featuring organic procedural wave folds, screen-space anti-aliased strands, emerald-to-obsidian shading, and full theme/reduced-motion adaptation.
-- Pointer-reactive 3D perspective backdrop ([`.bg-3d`](../index.html#L86-L104)) with ambient gradients, perspective grid, orbital rings, and reduced-motion / pointer-type gating across lower sections.
+- Static single-page portfolio with dark and light themes persisted in `localStorage` with a synchronous pre-paint guard to eliminate FOUC.
+- Interactive project filtering (`All`, `Full-Stack`, `Frontend`) with screen-reader status announcements, keyboard-accessible service detail dialogs with background `inert` landmark isolation, throttled scroll-spy navigation, and native `IntersectionObserver` reveal animations.
+- 3D Fluid Mesh Hero Background ([`assets/js/hero-background.js`](../assets/js/hero-background.js)) powered by lightweight Three.js `0.160.0` ESM, featuring organic procedural wave ribbons, screen-space anti-aliased strands, emerald-to-obsidian shading, negative space protection for typography, and full theme/reduced-motion adaptation.
+- Quiet 3D visual language (Midnight Black `#0B0B0C`, Pure White `#FFFFFF`, Lime Green `#C6F432`) with architectural plinths, hairline rules, and zero decorative clutter.
 - SEO and social metadata (Open Graph, Twitter Cards, Google Search Console verification, JSON-LD `Person` schema, and XML sitemap).
 
 ### Future Goals (Planned Direction)
@@ -48,9 +48,9 @@ _(Note: Target audiences are inferred from existing sections, project framing, a
 
 ### Global Shell & Interactive Layer
 
-- **Header & Navigation:** Fixed top bar with brand link and theme toggle (`#theme-button`), floating bottom icon navigation dock with scroll-spy active state, skip-to-content link, and footer navigation.
-- **3D Fluid Mesh Hero Background:** Lightweight Three.js WebGL canvas (`#hero-waves-canvas`) providing an organic sculptural fluid wave with obsidian-to-emerald shading in `#home`.
-- **3D Perspective Background:** Multi-layer CSS/JS ambient backdrop responding subtly to fine-pointer movement and disabled under `prefers-reduced-motion: reduce`.
+- **Header & Navigation:** Fixed top bar with brand link and theme toggle (`#theme-button`), floating bottom icon navigation dock with throttled scroll-spy active state, skip-to-content link, and grounded footer navigation.
+- **3D Fluid Mesh Hero Background:** Lightweight Three.js WebGL canvas (`#hero-waves-canvas`) providing an organic sculptural fluid wave with obsidian-to-emerald shading and negative-space protection in `#home`.
+- **Architectural Surface Vocabulary:** Quiet 3D tactile surface grammar (Midnight Black foundation, alternating recessed section bands, hairline dividers, and high-contrast typography) with zero legacy DOM backdrops or render-blocking CDN scripts.
 
 ### Existing Eight Main Sections
 
@@ -68,10 +68,12 @@ _(Note: Target audiences are inferred from existing sections, project framing, a
 ## 6. Technology Stack (Observed in Repository)
 
 - **Core Frontend:** Zero-build static HTML5 ([`index.html`](../index.html)), CSS3 ([`styles.css`](../assets/css/styles.css)), and vanilla ES6+ JavaScript ([`main.js`](../assets/js/main.js)).
+- **3D Graphics:** Three.js `0.160.0` ESM ([`hero-background.js`](../assets/js/hero-background.js)) dynamically imported with local fallback support.
+- **Typography:** Google Fonts (`Plus Jakarta Sans` for headings/body and `IBM Plex Mono` for technical labels and metadata).
 - **Vendored Library:** MixItUp v3.3.1 ([`mixitup.min.js`](../assets/js/mixitup.min.js)) for project card filtering.
-- **External CDN Assets:** Google Fonts (`Poppins`), Boxicons v2.1.2, and ScrollReveal (loaded from `unpkg.com`).
-- **Client-Side Integrations:** Gmail web compose URL generation, `tel:` link, and static SEO and social metadata.
-- **Build & QA Tooling:** None currently configured (no package manager, bundler, linter, or automated test suite).
+- **Icons & Animations:** 100% semantic inline SVGs (`aria-hidden="true"`); scroll-triggered reveals via native browser `IntersectionObserver` (zero external icon or animation CDN dependencies).
+- **Client-Side Integrations:** Gmail web compose URL generation, clipboard email copy with live region status, `tel:` link, and static SEO / JSON-LD metadata.
+- **Build & QA Tooling:** None required for production (zero-build architecture 100% compatible with GitHub Pages).
 
 ---
 
